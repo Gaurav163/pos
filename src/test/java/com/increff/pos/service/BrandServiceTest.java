@@ -1,9 +1,11 @@
 package com.increff.pos.service;
 
+import com.increff.pos.model.BrandForm;
 import com.increff.pos.pojo.BrandPojo;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -19,6 +21,13 @@ public class BrandServiceTest extends AbstractUnitTest {
         brandService.normalize(b);
         BrandPojo test = new BrandPojo("name", "category");
         assertEquals(b, test);
+//        System.out.println("check");
+//        Field[] fields = BrandPojo.class.getDeclaredFields();
+//
+//        for (Field f : fields) {
+//            System.out.println(f.getName());
+//            System.out.println(f.getGenericType());
+//        }
 
     }
 
