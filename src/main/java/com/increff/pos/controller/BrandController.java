@@ -1,70 +1,58 @@
 package com.increff.pos.controller;
 
+import com.increff.pos.dto.BrandDto;
+import com.increff.pos.model.BrandData;
 import com.increff.pos.model.BrandForm;
-import com.increff.pos.pojo.BrandPojo;
-import com.increff.pos.service.BrandService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Arrays;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/brands")
 public class BrandController {
-    private final BrandService brandService;
-    private final ModelMapper modelMapper;
+    private final BrandDto brandDto;
 
     @Autowired
-    public BrandController(BrandService brandService) {
-        this.brandService = brandService;
-        this.modelMapper = new ModelMapper();
+    public BrandController(BrandDto brandDto) {
+        this.brandDto = brandDto;
     }
 
     @PostMapping("/")
-    public ResponseEntity<BrandForm> saveBrand(@RequestBody BrandForm brandForm) {
-        if (brandForm.getName() == null || brandForm.getCategory() == null) {
-            throw new IllegalStateException("name And category are required fields!");
-        }
-        BrandPojo brand = modelMapper.map(brandForm, BrandPojo.class);
-        brand = brandService.save(brand);
-        return ResponseEntity.ok().body(modelMapper.map(brand, BrandForm.class));
-
+    public BrandData save(@RequestBody BrandForm brandForm) {
+        return brandDto.save(brandForm);
     }
 
-    @GetMapping("/brand/{id}")
-    public BrandForm getById(@PathVariable("id") Long id) {
-        BrandPojo brand = brandService.getById(id);
-        return modelMapper.map(brand, BrandForm.class);
+    @PostMapping("/upload")
+    public List<String> uploadBrands(@RequestParam("file") MultipartFile file) throws IOException {
+        return brandDto.upload(file);
     }
 
-    @GetMapping("/all")
-    public List<BrandForm> getAll() {
-        List<BrandPojo> brands = brandService.getAll();
-        return Arrays.asList(modelMapper.map(brands, BrandForm[].class));
+    @GetMapping("/{id}")
+    public BrandData getById(@PathVariable("id") Long id) {
+        return brandDto.getById(id);
+    }
+
+    @GetMapping("/")
+    public List<BrandData> getAll() {
+        return brandDto.getAll();
     }
 
     @GetMapping("/name/{name}")
-    public List<BrandForm> getByName(@PathVariable("name") String name) {
-        List<BrandPojo> brands = brandService.getByName(name);
-        return Arrays.asList(modelMapper.map(brands, BrandForm[].class));
+    public List<BrandData> getByName(@PathVariable("name") String name) {
+        return brandDto.getByName(name);
     }
 
     @GetMapping("/category/{category}")
-    public List<BrandForm> getByCategory(@PathVariable("category") String category) {
-        List<BrandPojo> brands = brandService.getByCategory(category);
-        return Arrays.asList(modelMapper.map(brands, BrandForm[].class));
+    public List<BrandData> getByCategory(@PathVariable("category") String category) {
+        return brandDto.getByCategory(category);
     }
 
     @PutMapping("/{id}")
-    public BrandForm update(@RequestBody BrandForm brandForm, @PathVariable("id") Long id) {
-        if (brandForm.getName() == null || brandForm.getCategory() == null) {
-            throw new IllegalStateException("name And category are required fields!");
-        }
-        BrandPojo brand = modelMapper.map(brandForm, BrandPojo.class);
-        return modelMapper.map(brandService.update(id, brand), BrandForm.class);
+    public BrandData update(@RequestBody BrandForm brandForm, @PathVariable("id") Long id) {
+        return brandDto.update(id, brandForm);
     }
 
 

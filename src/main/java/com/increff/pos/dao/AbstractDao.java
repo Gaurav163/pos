@@ -1,6 +1,7 @@
 package com.increff.pos.dao;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
@@ -9,8 +10,13 @@ public abstract class AbstractDao {
     @PersistenceContext
     private EntityManager em;
 
+
     protected <T> T getSingle(TypedQuery<T> query) {
-        return query.getResultList().stream().findFirst().orElse(null);
+        try {
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     protected <T> TypedQuery<T> getQuery(String jpql, Class<T> clazz) {
@@ -20,5 +26,6 @@ public abstract class AbstractDao {
     protected EntityManager em() {
         return em;
     }
+
 
 }

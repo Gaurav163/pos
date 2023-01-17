@@ -15,9 +15,11 @@ function saveBrand() {
         },
         success: function (response) {
             console.log(response);
+            toast("success", "Brand Saved Successfully !");
         },
         error: function (error) {
             console.log(error);
+            toast("error", "Error : " + error.responseJSON.message);
         },
     });
 }
@@ -34,71 +36,92 @@ function loadAllBrands() {
             $("#tablebody").html("");
             response.forEach((brand) => {
                 $("#tablebody").append(
-                    `<tr>
-                    <th scope="row">${brand.id}</th>
+                    `<tr id='${"brand" + brand.id}'>
                     <td>${brand.name}</td>
                     <td>${brand.category}</td>
-                    <td><div class="btn btn-warning"
-                    onclick="showUpdateForm(${brand.id},'${brand.name}','${brand.category}')">
-                    Update</div></td>
+                    <td><div class="btn btn-primary"
+                    onclick="showUpdateForm(${brand.id},'${brand.name}','${
+                        brand.category
+                    }')">
+                    Edit</div></td>
                     </tr>`
                 );
             });
         },
         error: function (error) {
             console.log(error);
+            console.log(error);
+            toast(
+                "error",
+                "Error in Fetching All Brands : " + error.responseJSON.message
+            );
         },
     });
 }
 
-function searchById() {
-    let id = $("#ids").val();
-    id = parseInt(id);
-    if (id > 0) {
-        $.ajax({
-            url: "/api/brands/brand/" + id,
-            type: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            success: function (response) {
-                console.log("response");
-                showUpdateForm(response.id, response.name, response.category);
-            },
-            error: function (error) {
-                console.log(error);
-            },
-        });
-    } else {
-        console.log("Id is a number greater than 0.");
-    }
-}
-
-function showBrandFrom() {
-    console.log("hide-update show-save");
-    $("#updateBrand").hide();
-    $("#saveBrand").show();
-    $("#searchBrandId").hide();
-}
-
-function showGetIdForm() {
-    $("#updateBrand").hide();
-    $("#saveBrand").hide();
-    $("#searchBrandId").show();
-}
-
 function showUpdateForm(id, name, category) {
-    $("#idc").val(id);
-    $("#namec").val(name);
-    $("#categoryc").val(category);
-    console.log("hide-save show-update");
-    $("#updateBrand").show();
-    $("#saveBrand").hide();
-    $("#searchBrandId").hide();
-    $("html, body").animate(
-        {
-            scrollTop: $("#updateBrand").offset(),
+    $("#brand" + id).html(`<td>
+                            <input
+                            style="width:200px;"
+                            class="form-control"
+                            name=${"name" + id}
+                            id=${"name" + id}
+                            type="text"
+                            placeholder="Brand Name"
+                            value='${name}'
+                            autofocus
+                            /> 
+                            </td> <td>
+                            <input
+                             style="width:200px;"
+                                class="form-control"
+                                name=${"category" + id}
+                                id=${"category" + id}
+                                type="text"
+                                placeholder="Category"
+                                value='${category}'
+                            /> </td>
+                            <td>
+                            <div class="btn btn-primary" onclick="update(${id})">Edit </div>
+                            </td>
+                        `);
+}
+
+function update(id) {
+    console.log("Updating " + id);
+    let name = $(`#name${id}`).val();
+    let category = $(`#category${id}`).val();
+    let brand = {
+        name,
+        category,
+    };
+    console.log(brand);
+
+    let data = JSON.stringify(brand);
+
+    $.ajax({
+        url: "/api/brands/" + id,
+        type: "PUT",
+        data: data,
+        headers: {
+            "Content-Type": "application/json",
         },
-        1000
-    );
+        success: function (response) {
+            console.log(response);
+            brand = response;
+            $("#brand" + id).html(`
+                    <td>${brand.name}</td>
+                    <td>${brand.category}</td>
+                    <td><div class="btn btn-primary"
+                    onclick="showUpdateForm(${brand.id},'${brand.name}','${brand.category}')">
+                    Edit</div></td>
+                    
+                `);
+            toast("success", "Brand Updated Successfully !");
+        },
+        error: function (error) {
+            console.log(error);
+            toast("error", "Error : " + error.responseJSON.message);
+        },
+    });
 }

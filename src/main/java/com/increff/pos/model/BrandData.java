@@ -1,6 +1,5 @@
 package com.increff.pos.model;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,9 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BrandForm {
-    @NotNull
+public class BrandData {
+    private Long id;
     private String name;
-    @NotNull
     private String category;
 }

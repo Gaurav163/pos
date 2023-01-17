@@ -1,92 +1,59 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
-<div th:replace="snippets.html :: header"></div>
-<link rel="stylesheet" th:href="@{/static/brand.css}">
-<body>
-<div th:replace="navbar.html :: navbar"></div>
-<div class="container p-4">
-    <div id="saveBrand">
-        <h4> Add Brand </h4>
-        <form class="form-inline">
-            <div class="form-group m-2">
-                <input class="form-control" name="names" id="names" type="text" placeholder="Brand Name">
-
-            </div>
-            <div class="form-group m-2">
-                <input class="form-control" name="categorys" id="categorys" type="text" placeholder="Category">
-            </div>
-            <div class="btn btn-primary m-2" onclick="saveBrand()">Add New Brand</div>
-        </form>
-        <div class="c-div" onclick="showGetIdForm()">Go to Update Page</div>
-    </div>
-
-    <div id="searchBrandId" style="display:none;">
-        <h4>Search Brand to Update</h4>
-        <form class="form-inline">
-
-            <div class="form-group m-2">
-                <input class="form-control" name="ids" id="ids" type="text" placeholder="ID">
-            </div>
-            <div class="btn btn-primary m-2" onclick="searchById()">Search Brand with ID</div>
-
-        </form>
-        <div class="c-div" onclick="showBrandFrom()">Go to Add Brand</div>
-    </div>
-
-    <div id="updateBrand" style="display:none;">
-        <h4>Update form</h4>
-        <form class="form-inline">
-
-            <div class="form-group m-2">
-                <input class="form-control" name="idc" id="idc" type="text" placeholder="ID" readonly>
+    <div th:replace="snippets.html :: header"></div>
+    <link rel="stylesheet" th:href="@{/static/brand.css}" />
+    <body>
+        <div th:replace="navbar.html :: navbar"></div>
+        <div class="p-4">
+            <div id="saveBrand">
+                <h4>Add Brand</h4>
+                <form class="form-inline">
+                    <div class="form-group m-2">
+                        <input
+                            class="form-control"
+                            name="name"
+                            id="name"
+                            type="text"
+                            placeholder="Brand Name"
+                        />
+                    </div>
+                    <div class="form-group m-2">
+                        <input
+                            class="form-control"
+                            name="category"
+                            id="category"
+                            type="text"
+                            placeholder="Category"
+                        />
+                    </div>
+                    <div class="btn btn-primary m-2" onclick="saveBrand()">
+                        Submit
+                    </div>
+                </form>
             </div>
 
-            <div class="form-group m-2">
-                <input class="form-control" name="namec" id="namec" type="text" placeholder="Brand Name">
+            <hr />
+            <br />
+            <h4>All Brands</h4>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Category</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody id="tablebody"></tbody>
+            </table>
+        </div>
 
-            </div>
-            <div class="form-group m-2">
-                <input class="form-control" name="categoryc" id="categoryc" type="text" placeholder="Category">
-            </div>
-            <div class="btn btn-primary m-2" onclick="saveBrand()">Update Brand</div>
-
-        </form>
-        <div class="c-div" onclick="showBrandFrom()">Go to Add Brand</div>
-    </div>
-    <br>
-    <hr>
-    <br>
-    <h4>All Brands</h4>
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th scope="col"># ID</th>
-            <th scope="col">Name</th>
-            <th scope="col">Category</th>
-            <th scope="col"></th>
-        </tr>
-        </thead>
-        <tbody id="tablebody">
-
-        </tbody>
-    </table>
-
-
-</div>
-
-<div th:replace="snippets.html :: footer"></div>
-<script th:src="@{/static/brand.js}"></script>
-<script>
-    $( document ).ready(function() {
-    console.log( "ready!" );
-    loadAllBrands();
-});
-
-
-
-
-
-</script>
-</body>
+        <div th:replace="snippets.html :: footer"></div>
+        <script th:src="@{/static/brand.js}"></script>
+        <script>
+            $(document).ready(function () {
+                console.log("ready!");
+                loadAllBrands();
+            });
+        </script>
+    </body>
 </html>

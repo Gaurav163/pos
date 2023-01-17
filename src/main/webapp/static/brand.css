@@ -1,11 +1,5 @@
-
-.btn-primary{
-color:white;
-background-color: rgb(0, 33, 78) !important;
-}
-
-.c-div{
-cursor:pointer;
-font-size:smaller;
-margin-left:20px;
+.c-div {
+	cursor: pointer;
+	font-size: smaller;
+	margin-left: 20px;
 }
