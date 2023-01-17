@@ -58,6 +58,7 @@ public class FileUploadUtil {
                     forms.add(null);
                     continue;
                 }
+                // check merge
                 T form = clazz.newInstance();
 
                 for (int i = 0; i < columnCount; i++) {
