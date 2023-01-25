@@ -5,7 +5,8 @@ function toast(type, message) {
 	$("#toaster").attr("class", "");
 	$("#toaster").addClass("toast-" + type);
 	$("#toaster").text(message);
-	$("#toaster").fadeIn(500);
+	$("#toaster").fadeOut();
+	$("#toaster").fadeIn(1000);
 	toastId = c;
 	fadeToast(c);
 }
@@ -19,7 +20,7 @@ function fadeToast(time) {
 				$("#toaster").fadeOut(1000);
 			}
 		},
-		3000,
+		7000,
 		time
 	);
 }

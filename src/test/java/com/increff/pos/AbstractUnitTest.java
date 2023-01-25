@@ -1,4 +1,4 @@
-package com.increff.pos.service;
+package com.increff.pos;
 
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;

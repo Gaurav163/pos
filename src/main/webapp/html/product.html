@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <div th:replace="snippets.html :: header"></div>
+  <body>
+    <div th:replace="navbar.html :: navbar"></div>
+    <div class="p-4">
+      <h4>Add Products</h4>
+      <form action="javascript:saveProduct();">
+        <div class="form-group">
+          <label for="name"> Name : </label>
+          <input
+            id="name"
+            name="name"
+            type="text"
+            class="form-control"
+            placeholder="Name"
+          />
+        </div>
+        <div class="form-group">
+          <label for="barcode">Barcode :</label>
+          <input
+            id="barcode"
+            name="barcode"
+            type="text"
+            class="form-control"
+            placeholder="Barcode"
+          />
+        </div>
+        <div class="form-group">
+          <label for="mrp">MRP : </label>
+          <input
+            id="mrp"
+            name="mrp"
+            type="text"
+            class="form-control"
+            placeholder="MRP"
+          />
+        </div>
+        <br />
+
+        <div class="form-group">
+          <label for="brand">Brand : </label>
+          <select
+            class="form-control"
+            id="brand"
+            name="brand"
+            onchange="showcategory('')"
+          ></select>
+        </div>
+
+        <div class="form-group">
+          <label for="category">Category : </label>
+          <select class="form-control" id="category" name="category">
+            <option selected value="">First Select Brand</option>
+          </select>
+        </div>
+        <button class="btn btn-primary ml-4">Submit</button>
+      </form>
+      <br />
+      <form action="javascript:saveProduct1();" hidden>
+        <input type="file" id="file" />
+        <button class="btn btn-primary ml-4">Submit</button>
+      </form>
+      <hr />
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Barcode</th>
+            <th scope="col">MRP</th>
+            <th scope="col">Brand</th>
+            <th scope="col">Category</th>
+            <th scope="col">#</th>
+          </tr>
+        </thead>
+        <tbody id="tablebody"></tbody>
+      </table>
+    </div>
+
+    <div th:replace="snippets.html :: footer"></div>
+    <script th:src="@{/static/product.js}"></script>
+    <script>
+      $(document).ready(function () {
+        console.log("ready!");
+        initProduct();
+      });
+    </script>
+  </body>
+</html>

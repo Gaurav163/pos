@@ -5,7 +5,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class BrandForm {
+public class ProductForm {
     private String name;
-    private String category;
+    private String barcode;
+    private Double mrp;
+    private Long brandId;
 }

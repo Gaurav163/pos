@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class BrandData extends BrandForm {
+public class ProductData extends ProductForm {
     private Long id;
+    private String brandName;
+    private String brandCategory;
 }

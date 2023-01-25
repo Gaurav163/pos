@@ -1,3 +1,5 @@
 target/
 .idea
 docs/
+jetty.log
+/src/main/java/com/increff/pos/pdf/

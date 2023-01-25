@@ -1,9 +1,9 @@
 package com.increff.pos.util;
 
+import com.increff.pos.model.ApiException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -12,68 +12,48 @@ import java.util.List;
 
 public class FileUploadUtil {
 
-    public static <T> List<T> convert(MultipartFile file, Class<T> clazz) throws IOException {
+    public static <T> List<T> convert(MultipartFile file, Class<T> clazz) throws ApiException {
         try {
-            Field[] fields = clazz.getDeclaredFields();
-            int columnCount = fields.length;
-            String[] names = new String[columnCount];
-            String[] types = new String[columnCount];
-            int[] index = new int[columnCount];
-            for (int i = 0; i < columnCount; i++) {
-                index[i] = -1;
-                names[i] = fields[i].getName();
-                types[i] = fields[i].getType().getName();
-            }
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
-            String[] columns = reader.readLine().split("\t");
-
-            for (int j = 0; j < columns.length; j++) {
-                String column = columns[j].trim();
-                for (int i = 0; i < columnCount; i++) {
-                    if (column.equals(names[i])) {
-                        if (index[i] != -1) {
-                            throw new IllegalStateException("Multiple Column with heading : '" + column + "' exist in file");
-                        }
-                        index[i] = j;
-                        break;
-                    }
-                }
-            }
-            int maxIndex = 0;
-            for (int i = 0; i < columnCount; i++) {
-                maxIndex = Math.max(maxIndex, index[i]);
-                if (index[i] == -1) {
-                    throw new IllegalStateException("No Column with heading : '" + names[i] + "' exist in file");
-                }
-            }
-
-
+            Field[] fields = clazz.getDeclaredFields();
             List<T> forms = new ArrayList<>();
-
+            System.out.println(reader.readLine());
             while (reader.ready()) {
                 String[] values = reader.readLine().split("\t");
-                List<String> obj = new ArrayList<>();
-                if (values.length < maxIndex) {
-                    forms.add(null);
-                    continue;
-                }
-                // check merge
                 T form = clazz.newInstance();
-
-                for (int i = 0; i < columnCount; i++) {
-                    String methodName = "set" + names[i].substring(0, 1).toUpperCase() + names[i].substring(1);
-                    Method sett = clazz.getMethod(methodName, String.class);
-                    sett.invoke(form, values[i]);
+                int i = 0;
+                for (Field field : fields) {
+                    String name = field.getName();
+                    String setter = "set" + name.substring(0, 1).toUpperCase() + name.substring(1);
+                    Method set = clazz.getMethod(setter, field.getType());
+                    set.invoke(form, getValue(values[i], field.getType()));
+                    i++;
                 }
                 forms.add(form);
             }
             return forms;
         } catch (Exception e) {
-            System.out.println(e);
-            throw new RuntimeException("Somthing weent wrong with file");
+            throw new ApiException("Something wrong with file, Error :");
         }
     }
 
+    public static <T> T getValue(String input, Class<T> clazz) {
+        // BEHOLD, MAGIC!
 
+        if (clazz.isAssignableFrom(String.class)) {
+            return (T) input;
+        } else if (clazz.isAssignableFrom(Long.class)) {
+            return (T) Long.valueOf(input);
+        } else if (clazz.isAssignableFrom(Integer.class)) {
+            return (T) Integer.valueOf(input);
+        } else if (clazz.isAssignableFrom(Boolean.class)) {
+            return (T) Boolean.valueOf(input);
+        } else if (clazz.isAssignableFrom(Double.class)) {
+            return (T) Double.valueOf(input);
+        } else {
+            return null;
+        }
+
+    }
 }
