@@ -38,8 +38,20 @@ public class InventoryService extends AbstractService<InventoryPojo> {
         pojo.setQuantity(pojo.getQuantity() + quantity);
     }
 
+    public InventoryPojo getQuantity(Long id) {
+        InventoryPojo pojo = inventoryDao.findById(id);
+        InventoryPojo result = new InventoryPojo();
+        result.setId(id);
+        if (pojo == null) {
+            result.setQuantity(0L);
+        } else {
+            result.setQuantity(pojo.getQuantity());
+        }
+        return result;
+    }
+
     @Transactional(rollbackOn = ApiException.class)
-    public InventoryPojo getQuantity(Long id, Long quantity) throws ApiException {
+    public InventoryPojo removeQuantity(Long id, Long quantity) throws ApiException {
         InventoryPojo pojo = inventoryDao.findById(id);
         if (pojo.getQuantity() < quantity) {
             throw new ApiException("Quantity of Product not satisfied by Inventory.");

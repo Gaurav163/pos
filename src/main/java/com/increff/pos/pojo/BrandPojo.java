@@ -17,7 +17,7 @@ import static com.increff.pos.pojo.PojoConstants.BRAND_TABLE_NAME;
 public class BrandPojo {
 
     @Id
-    @SequenceGenerator(allocationSize = 1,
+    @SequenceGenerator(allocationSize = 10,
             name = BRAND_SEQUENCE,
             sequenceName = BRAND_SEQUENCE)
     @GeneratedValue(strategy = GenerationType.SEQUENCE,

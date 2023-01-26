@@ -4,8 +4,10 @@ import com.increff.pos.model.ApiException;
 import com.increff.pos.model.ProductData;
 import com.increff.pos.model.ProductForm;
 import com.increff.pos.pojo.BrandPojo;
+import com.increff.pos.pojo.InventoryPojo;
 import com.increff.pos.pojo.ProductPojo;
 import com.increff.pos.service.BrandService;
+import com.increff.pos.service.InventoryService;
 import com.increff.pos.service.ProductService;
 import com.increff.pos.util.FileUploadUtil;
 import com.increff.pos.util.MapperUtil;
@@ -24,12 +26,14 @@ public class ProductDto {
 
     private final ProductService productService;
     private final BrandService brandService;
+    private final InventoryService inventoryService;
     private static final String BRAND_ID = "brandId";
 
     @Autowired
-    public ProductDto(ProductService productService, BrandService brandService) {
+    public ProductDto(ProductService productService, BrandService brandService, InventoryService inventoryService) {
         this.productService = productService;
         this.brandService = brandService;
+        this.inventoryService = inventoryService;
     }
 
     @Transactional(rollbackOn = ApiException.class)
@@ -40,7 +44,7 @@ public class ProductDto {
         validate(form);
         ProductPojo productPojo = MapperUtil.mapper(form, ProductPojo.class);
         productService.create(productPojo);
-        return extendBrand(productPojo);
+        return extendData(productPojo);
     }
 
     public ProductData update(Long id, ProductForm form) throws ApiException {
@@ -49,12 +53,15 @@ public class ProductDto {
         }
         validate(form);
         ProductPojo productPojo = MapperUtil.mapper(form, ProductPojo.class);
-        return extendBrand(productService.update(id, productPojo));
+        return extendData(productService.update(id, productPojo));
     }
 
     @Transactional(rollbackOn = ApiException.class)
     public List<String> upload(MultipartFile file) throws ApiException {
         List<ProductForm> forms = FileUploadUtil.convert(file, ProductForm.class);
+        if (forms.size() > 5000) {
+            throw new ApiException("Files should not contains more than 5000 Entries");
+        }
         List<String> responses = new ArrayList<>();
         for (ProductForm form : forms) {
             try {
@@ -75,21 +82,21 @@ public class ProductDto {
     public List<ProductData> getAll() throws ApiException {
         log.info("Getting all products");
         List<ProductPojo> products = productService.getAll();
-        return extendBrand(products);
+        return extendData(products);
     }
 
     public ProductData getById(Long id) throws ApiException {
-        return extendBrand(productService.getById(id));
+        return extendData(productService.getById(id));
     }
 
     public ProductData getByBarcode(String barcode) throws ApiException {
-        return extendBrand(productService.getOneByParameter("barcode", normalize(barcode)));
+        return extendData(productService.getOneByParameter("barcode", normalize(barcode)));
     }
 
     public List<ProductData> getByBrandCategory(Long brandId) throws ApiException {
         BrandPojo brand = brandService.getById(brandId);
         List<ProductPojo> products = productService.getListByParameter(BRAND_ID, brand.getId().toString());
-        return extendBrand(products);
+        return extendData(products);
     }
 
     public List<ProductData> getByBrandName(String brandName) throws ApiException {
@@ -100,7 +107,7 @@ public class ProductDto {
             List<ProductPojo> products2 = productService.getListByParameter(BRAND_ID, brand.getId().toString());
             products.addAll(products2);
         }
-        return extendBrand(products);
+        return extendData(products);
     }
 
     public List<ProductData> getByBrandCategory(String brandCategory) throws ApiException {
@@ -110,22 +117,24 @@ public class ProductDto {
             List<ProductPojo> products2 = productService.getListByParameter(BRAND_ID, brand.getId().toString());
             products.addAll(products2);
         }
-        return extendBrand(products);
+        return extendData(products);
     }
 
-    private List<ProductData> extendBrand(List<ProductPojo> products) throws ApiException {
+    private List<ProductData> extendData(List<ProductPojo> products) throws ApiException {
         List<ProductData> data = new ArrayList<>();
         for (ProductPojo product : products) {
-            data.add(extendBrand(product));
+            data.add(extendData(product));
         }
         return data;
     }
 
-    private ProductData extendBrand(ProductPojo product) throws ApiException {
+    private ProductData extendData(ProductPojo product) throws ApiException {
         ProductData data = MapperUtil.mapper(product, ProductData.class);
         BrandPojo brand = brandService.getById(product.getBrandId());
         data.setBrandName(brand.getName());
         data.setBrandCategory(brand.getCategory());
+        InventoryPojo inventory = inventoryService.getQuantity(data.getId());
+        data.setQuantity(inventory.getQuantity());
         return data;
     }
 

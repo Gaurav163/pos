@@ -23,7 +23,7 @@ public class InventoryController {
         inventoryDto.upload(file);
     }
 
-    @PostMapping("/")
+    @PutMapping("/")
     public String addQuantity(@RequestBody InventoryForm form) throws ApiException {
         return inventoryDto.addQuantity(form);
     }
@@ -32,5 +32,4 @@ public class InventoryController {
     public InventoryForm getQuantity(@PathVariable("barcode") String barcode) throws ApiException {
         return inventoryDto.getQuantity(barcode);
     }
-
 }

@@ -62,6 +62,9 @@ public class BrandDto {
     @Transactional(rollbackOn = ApiException.class)
     public List<String> upload(MultipartFile file) throws ApiException {
         List<BrandForm> forms = FileUploadUtil.convert(file, BrandForm.class);
+        if (forms.size() > 5000) {
+            throw new ApiException("Files should not contains more than 5000 Entries");
+        }
         List<String> responses = new ArrayList<>();
 
         for (BrandForm form : forms) {

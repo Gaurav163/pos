@@ -12,7 +12,7 @@ import java.util.List;
 
 @Repository
 public abstract class AbstractDao<T> {
-    private final Class<T> clazz;
+    private final Class clazz;
 
     @PersistenceContext
     protected EntityManager em;
@@ -23,7 +23,6 @@ public abstract class AbstractDao<T> {
 
     @Transactional
     public T create(T pojo) {
-
         em.persist(pojo);
         return pojo;
     }
@@ -32,7 +31,6 @@ public abstract class AbstractDao<T> {
         String queryString = String.format("select p from %s p", this.clazz.getSimpleName());
         TypedQuery<T> query = getQuery(queryString);
         return query.getResultList();
-
     }
 
     public T findById(Long id) {

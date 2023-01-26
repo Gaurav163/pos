@@ -29,7 +29,7 @@ public class BrandServiceTest extends AbstractUnitTest {
         BrandPojo pojo = new BrandPojo();
         pojo.setName(name);
         pojo.setCategory(category);
-        brandService.create(pojo);
+//        brandService.create(pojo);
         return pojo;
     }
 

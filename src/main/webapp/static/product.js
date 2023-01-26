@@ -45,8 +45,9 @@ function update(id) {
                     <td>${product.mrp}</td>
                     <td>${product.brandName}</td>
                     <td>${product.brandCategory}</td>
+                    <td>${product.quantity}</td>
                     <td><div class="btn btn-primary"
-                    onclick="showEdit(${product.id},'${product.name}','${product.barcode}','${product.mrp}','${product.brandName}','${product.brandCategory}')">
+                    onclick="showEdit(${product.id},'${product.name}','${product.barcode}','${product.mrp}','${product.brandName}','${product.brandCategory}','${product.quantity}')">
                     Edit</div></td>
                     `
             );
@@ -85,15 +86,16 @@ function saveProduct1() {
 
 }
 
-function cancelUpdate(id, name, barcode, mrp, brandName, brandCategory) {
+function cancelUpdate(id, name, barcode, mrp, brandName, brandCategory, quantity) {
     $("#product" + id).html(
         `   <td>${name}</td>
                     <td>${barcode}</td>
                     <td>${mrp}</td>
                     <td>${brandName}</td>
                     <td>${brandCategory}</td>
+                    <td>${quantity}</td>
                     <td><div class="btn btn-primary"
-                    onclick="showEdit(${id},'${name}','${barcode}','${mrp}','${brandName}','${brandCategory}')">
+                    onclick="showEdit(${id},'${name}','${barcode}','${mrp}','${brandName}','${brandCategory}','${quantity}')">
                     Edit</div></td>
                     `
     );
@@ -137,6 +139,7 @@ function saveProduct() {
                     <td>${product.mrp}</td>
                     <td>${product.brandName}</td>
                     <td>${product.brandCategory}</td>
+                    <td>${product.quantity}</td>
                     <td><div class="btn btn-primary"
                     onclick="showEdit(${product.id},'${product.name}','${product.barcode}','${product.mrp}','${product.brandName}','${product.brandCategory}')">
                     Edit</div></td>
@@ -151,7 +154,7 @@ function saveProduct() {
 
 }
 
-function showEdit(id, name, barcode, mrp, brandName, brandCategory) {
+function showEdit(id, name, barcode, mrp, brandName, brandCategory, quantity) {
     $("#product" + id).
         html(`<td>
         <input
@@ -188,9 +191,10 @@ function showEdit(id, name, barcode, mrp, brandName, brandCategory) {
          <select class="form-control" id="category${id}" name="category${id}" ></select>
 
           </td>
+          <td>${quantity}</td>
         <td style="display:inline-block;">
         <div class="btn btn-primary" onclick="update(${id})">Save </div>
-        <div class="btn btn-secondary ml-2" onclick="cancelUpdate(${id},'${name}','${barcode}','${mrp}','${brandName}','${brandCategory}')">Cancel </div>
+        <div class="btn btn-secondary ml-2" onclick="cancelUpdate(${id},'${name}','${barcode}','${mrp}','${brandName}','${brandCategory}','${quantity}')">Cancel </div>
         </td>
     `);
     renderBrands(id);
@@ -221,8 +225,9 @@ function loadAllProducts() {
                     <td>${product.mrp}</td>
                     <td>${product.brandName}</td>
                     <td>${product.brandCategory}</td>
+                    <td>${product.quantity}</td>
                     <td><div class="btn btn-primary"
-                    onclick="showEdit(${product.id},'${product.name}','${product.barcode}','${product.mrp}','${product.brandName}','${product.brandCategory}')">
+                    onclick="showEdit(${product.id},'${product.name}','${product.barcode}','${product.mrp}','${product.brandName}','${product.brandCategory}','${product.quantity}')">
                     Edit</div></td>
                     </tr>`
                 );

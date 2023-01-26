@@ -20,6 +20,7 @@ public class BrandService extends AbstractService<BrandPojo> {
         this.dao = brandDao;
     }
 
+    // TODO change to spring transaction
     @Transactional(rollbackOn = ApiException.class)
     public BrandPojo create(BrandPojo brand) throws ApiException {
         BrandPojo check = brandDao.findByNameAndCategory(brand.getName(), brand.getCategory());
