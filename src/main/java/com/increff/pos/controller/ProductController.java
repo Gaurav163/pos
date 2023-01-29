@@ -24,37 +24,37 @@ public class ProductController {
     }
 
     @ApiOperation(value = "Create Product")
-    @PostMapping(path = "/", value = "Create New Product !")
+    @RequestMapping(path = "/", method = RequestMethod.POST)
     public ProductData create(@RequestBody ProductForm brandForm) throws ApiException {
         return productDto.create(brandForm);
     }
 
-    @ApiOperation(value = "Create multiple Products using tsv file.")
-    @PostMapping("/upload")
+    @ApiOperation(value = "Create multiple products using tsv file")
+    @RequestMapping(path = "/upload", method = RequestMethod.POST)
     public List<String> uploadProducts(@RequestPart("file") MultipartFile file) throws ApiException {
         return productDto.upload(file);
     }
 
-    @ApiOperation(value = "Get Product By Id")
-    @GetMapping("/{id}")
+    @ApiOperation(value = "Get product by Id")
+    @RequestMapping(path = "/{id}", method = RequestMethod.GET)
     public ProductData getById(@PathVariable("id") Long id) throws ApiException {
         return productDto.getById(id);
     }
 
-    @ApiOperation(value = "Get Product By Barcode")
-    @GetMapping("/barcode/{barcode}")
+    @ApiOperation(value = "Get product by barcode")
+    @RequestMapping(path = "/barcode/{barcode}", method = RequestMethod.GET)
     public ProductData getByBarcode(@PathVariable("barcode") String barcode) throws ApiException {
         return productDto.getByBarcode(barcode);
     }
 
-    @ApiOperation(value = "Get All Products")
-    @GetMapping("/")
+    @ApiOperation(value = "Get all products")
+    @RequestMapping(path = "/", method = RequestMethod.GET)
     public List<ProductData> getAll() throws ApiException {
         return productDto.getAll();
     }
 
-    @ApiOperation(value = "Update Product with Given Id and Provided Data.")
-    @PutMapping("/{id}")
+    @ApiOperation(value = "Update product with provided ID")
+    @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
     public ProductData update(@RequestBody ProductForm brandForm, @PathVariable("id") Long id) throws ApiException {
         return productDto.update(id, brandForm);
     }

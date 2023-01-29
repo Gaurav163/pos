@@ -10,6 +10,10 @@ import java.util.List;
 @Repository
 public class OrderDao extends AbstractDao<OrderPojo> {
 
+    public OrderDao() {
+        super(OrderPojo.class);
+    }
+
     private static final String SELECT_BY_DATETIME_RANGE = "select b from OrderPojo b where datetime>=:startTime && datetime<=endTime";
 
     public List<OrderPojo> findByDatetimeRange(Date startTime, Date endTime) {

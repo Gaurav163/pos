@@ -37,12 +37,8 @@ public class InventoryDto {
     public String addQuantity(InventoryForm form) throws ApiException {
         ProductPojo product = getProduct(form.getBarcode());
         InventoryPojo pojo = inventoryService.getById(product.getId());
-        if (pojo == null) {
-            inventoryService.create(product.getId(), form.getQuantity());
-        } else {
-            inventoryService.addQuantity(product.getId(), form.getQuantity());
-        }
-        return "Quantity Added to inventory of product with barcode : " + form.getBarcode();
+        inventoryService.addQuantity(product.getId(), form.getQuantity());
+        return "Quantity added to inventory of product with barcode : " + form.getBarcode();
     }
 
     public InventoryForm getQuantity(String barcode) throws ApiException {
@@ -62,12 +58,7 @@ public class InventoryDto {
     }
 
     private ProductPojo getProduct(String barcode) throws ApiException {
-        ProductPojo product = productService.getOneByParameter("barcode", barcode);
-        if (product == null) {
-            throw new ApiException("Product Not Exist with Barcode :" + barcode);
-        } else {
-            return product;
-        }
+        return productService.getOneByParameter("barcode", barcode);
     }
 
 }

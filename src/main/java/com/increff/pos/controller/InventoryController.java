@@ -4,10 +4,13 @@ package com.increff.pos.controller;
 import com.increff.pos.dto.InventoryDto;
 import com.increff.pos.model.ApiException;
 import com.increff.pos.model.InventoryForm;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+@Api
 @RestController
 @RequestMapping("/api/inventories")
 public class InventoryController {
@@ -18,17 +21,20 @@ public class InventoryController {
         this.inventoryDto = inventoryDto;
     }
 
-    @PostMapping("/upload")
+    @ApiOperation(value = "Add quantity to multiple inventory using tsv file")
+    @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public void upload(@RequestPart("file") MultipartFile file) throws ApiException {
         inventoryDto.upload(file);
     }
 
-    @PutMapping("/")
+    @ApiOperation(value = "Add quantity to inventory for provided barcode")
+    @RequestMapping(value = "/", method = RequestMethod.PUT)
     public String addQuantity(@RequestBody InventoryForm form) throws ApiException {
         return inventoryDto.addQuantity(form);
     }
 
-    @GetMapping("/{barcode}")
+    @ApiOperation(value = "Get quantity in inventory for product with given barcode")
+    @RequestMapping(value = "/{barcode}", method = RequestMethod.GET)
     public InventoryForm getQuantity(@PathVariable("barcode") String barcode) throws ApiException {
         return inventoryDto.getQuantity(barcode);
     }

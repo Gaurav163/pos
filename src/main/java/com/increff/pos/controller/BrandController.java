@@ -17,50 +17,46 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/brands")
 public class BrandController {
-    private final BrandDto brandDto;
-
     @Autowired
-    public BrandController(BrandDto brandDto) {
-        this.brandDto = brandDto;
-    }
+    private BrandDto brandDto;
 
-    @ApiOperation(value = "Create Brand")
-    @PostMapping(path = "/", value = "Create New Brand !")
+    @ApiOperation(value = "Create brand with provided name and category")
+    @RequestMapping(path = "/", method = RequestMethod.POST)
     public BrandData create(@RequestBody BrandForm brandForm) throws ApiException {
         return brandDto.create(brandForm);
     }
 
-    @ApiOperation(value = "Create multiple Brands using tsv file.")
-    @PostMapping("/upload")
+    @ApiOperation(value = "Create multiple brands using tsv file")
+    @RequestMapping(path = "/upload", method = RequestMethod.POST)
     public List<String> uploadBrands(@RequestPart("file") MultipartFile file) throws IOException, ApiException {
         return brandDto.upload(file);
     }
 
-    @ApiOperation(value = "Get Brand By Id")
-    @GetMapping("/{id}")
+    @ApiOperation(value = "Get brand by ID")
+    @RequestMapping(path = "/{id}", method = RequestMethod.GET)
     public BrandData getById(@PathVariable("id") Long id) throws ApiException {
         return brandDto.getById(id);
     }
 
-    @ApiOperation(value = "Get All Brands")
-    @GetMapping("/")
+    @ApiOperation(value = "Get all brands")
+    @RequestMapping(path = "/", method = RequestMethod.GET)
     public List<BrandData> getAll() throws ApiException {
         return brandDto.getAll();
     }
 
-    @ApiOperation(value = "Get All Brands With Name Provided")
-    @GetMapping("/name/{name}")
+    @ApiOperation(value = "Get all brands with name provided")
+    @RequestMapping(path = "/name/{name}", method = RequestMethod.GET)
     public List<BrandData> getByName(@PathVariable("name") String name) throws ApiException {
         return brandDto.getByName(name);
     }
 
-    @ApiOperation(value = "Get All Brands With Category Provided")
-    @GetMapping("/category/{category}")
+    @ApiOperation(value = "Get all brands with category provided")
+    @RequestMapping(path = "/category/{category}", method = RequestMethod.GET)
     public List<BrandData> getByCategory(@PathVariable("category") String category) throws ApiException {
         return brandDto.getByCategory(category);
     }
 
-    @ApiOperation(value = "Update Brand with Given Id and Provided Data.")
+    @ApiOperation(value = "Update brand with given ID and provided data")
     @PutMapping("/{id}")
     public BrandData update(@RequestBody BrandForm brandForm, @PathVariable("id") Long id) throws ApiException {
         return brandDto.update(id, brandForm);

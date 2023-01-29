@@ -5,41 +5,41 @@ import com.increff.pos.model.ApiException;
 import com.increff.pos.pojo.InventoryPojo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
-public class InventoryService extends AbstractService<InventoryPojo> {
-    private final InventoryDao inventoryDao;
-
+@Transactional(rollbackFor = ApiException.class)
+public class InventoryService {
     @Autowired
-    public InventoryService(InventoryDao inventoryDao) {
-        this.inventoryDao = inventoryDao;
-        this.dao = inventoryDao;
+    private InventoryDao inventoryDao;
+
+    public InventoryPojo getById(Long id) {
+        return inventoryDao.getById(id);
     }
 
-    @Transactional
-    public InventoryPojo create(Long id, Long quantity) throws ApiException {
-        if (inventoryDao.check(id)) {
-            throw new ApiException("Inventory Already exist.");
-        }
-        InventoryPojo pojo = new InventoryPojo();
-        pojo.setId(id);
-        pojo.setQuantity(quantity);
-        return inventoryDao.create(pojo);
+    public List<InventoryPojo> getAll() {
+        return inventoryDao.getAll();
     }
 
-    @Transactional
-    public void addQuantity(Long id, Long quantity) throws ApiException {
-        InventoryPojo pojo = inventoryDao.findById(id);
+
+    public InventoryPojo addQuantity(Long id, Long quantity) throws ApiException {
+        InventoryPojo pojo = inventoryDao.getById(id);
         if (pojo == null) {
-            throw new ApiException("Inventory With given Id not exist");
+            InventoryPojo newInventory = new InventoryPojo();
+            newInventory.setId(id);
+            newInventory.setQuantity(quantity);
+            return inventoryDao.create(newInventory);
+        } else {
+            pojo.setQuantity(pojo.getQuantity() + quantity);
+            return pojo;
         }
-        pojo.setQuantity(pojo.getQuantity() + quantity);
+
     }
 
     public InventoryPojo getQuantity(Long id) {
-        InventoryPojo pojo = inventoryDao.findById(id);
+        InventoryPojo pojo = inventoryDao.getById(id);
         InventoryPojo result = new InventoryPojo();
         result.setId(id);
         if (pojo == null) {
@@ -50,11 +50,10 @@ public class InventoryService extends AbstractService<InventoryPojo> {
         return result;
     }
 
-    @Transactional(rollbackOn = ApiException.class)
     public InventoryPojo removeQuantity(Long id, Long quantity) throws ApiException {
-        InventoryPojo pojo = inventoryDao.findById(id);
+        InventoryPojo pojo = inventoryDao.getById(id);
         if (pojo.getQuantity() < quantity) {
-            throw new ApiException("Quantity of Product not satisfied by Inventory.");
+            throw new ApiException("Quantity of product not satisfied by inventory");
         }
         pojo.setQuantity(pojo.getQuantity() - quantity);
         return pojo;

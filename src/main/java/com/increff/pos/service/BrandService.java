@@ -3,53 +3,59 @@ package com.increff.pos.service;
 import com.increff.pos.dao.BrandDao;
 import com.increff.pos.model.ApiException;
 import com.increff.pos.pojo.BrandPojo;
-import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
+import java.util.List;
 
-@Log4j
 @Service
-public class BrandService extends AbstractService<BrandPojo> {
-    private final BrandDao brandDao;
-
+@Transactional(rollbackFor = ApiException.class)
+public class BrandService {
     @Autowired
-    public BrandService(BrandDao brandDao) {
-        this.brandDao = brandDao;
-        this.dao = brandDao;
+    private BrandDao brandDao;
+
+    public BrandPojo getById(Long id) {
+        return brandDao.getById(id);
     }
 
-    // TODO change to spring transaction
-    @Transactional(rollbackOn = ApiException.class)
+    public List<BrandPojo> getAll() {
+        return brandDao.getAll();
+    }
+
+    public List<BrandPojo> getListByParameter(String name, String value) {
+        return brandDao.getListByMember(name, value);
+    }
+
     public BrandPojo create(BrandPojo brand) throws ApiException {
-        BrandPojo check = brandDao.findByNameAndCategory(brand.getName(), brand.getCategory());
-        if (check != null) {
-            throw new ApiException("Brand Already exist with given Name and Category");
+        BrandPojo existingBrand = brandDao.getByNameAndCategory(brand.getName(), brand.getCategory());
+        if (existingBrand != null) {
+            throw new ApiException("Brand already exist with provided name and category");
         }
         brandDao.create(brand);
         return brand;
     }
 
+    public BrandPojo update(Long id, BrandPojo newPojo) throws ApiException {
 
-    public BrandPojo getByNameAndCategory(String name, String category) {
-        return brandDao.findByNameAndCategory(name, category);
-    }
-
-    @Transactional(rollbackOn = ApiException.class)
-    public BrandPojo update(Long id, BrandPojo form) throws ApiException {
-        BrandPojo brand = brandDao.findById(id);
+        BrandPojo brand = brandDao.getById(id);
         if (brand == null) {
-            log.error("wrong Id");
-            throw new ApiException("Brand with ID :" + id.toString() + " does not exist.");
+            throw new ApiException("Brand with ID :" + id.toString() + " does not exist");
         }
-        BrandPojo check = brandDao.findByNameAndCategory(form.getName(), form.getCategory());
-        if (check != null && check.getId() != id) {
-            log.error("brand and category Already Exist");
-            throw new ApiException("Brand with given Name and Category Already Exist.");
+        if (newPojo.getName() == null || newPojo.getName().isEmpty()) {
+            newPojo.setName(brand.getName());
         }
-        brand.setCategory(form.getCategory());
-        brand.setName(form.getName());
+        if (newPojo.getCategory() == null || newPojo.getCategory().isEmpty()) {
+            newPojo.setCategory(brand.getCategory());
+        }
+        BrandPojo existingPojo = brandDao.getByNameAndCategory(newPojo.getName(), newPojo.getCategory());
+        if (existingPojo != null && !existingPojo.getId().equals(id)) {
+            throw new ApiException("Brand already exist with provided name and category");
+        }
+
+        brand.setName(newPojo.getName());
+        brand.setCategory(newPojo.getCategory());
+
         return brand;
     }
 }

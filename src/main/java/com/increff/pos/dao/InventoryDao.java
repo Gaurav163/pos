@@ -5,4 +5,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class InventoryDao extends AbstractDao<InventoryPojo> {
+    public InventoryDao() {
+        super(InventoryPojo.class);
+    }
 }

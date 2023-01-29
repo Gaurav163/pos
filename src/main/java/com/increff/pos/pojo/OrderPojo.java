@@ -4,14 +4,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.ZonedDateTime;
 
 import static com.increff.pos.pojo.PojoConstants.ORDER_SEQUENCE;
+import static com.increff.pos.pojo.PojoConstants.ORDER_TABLE_NAME;
 
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "orders")
+@Table(name = ORDER_TABLE_NAME)
 public class OrderPojo {
 
     @Id
@@ -22,7 +23,6 @@ public class OrderPojo {
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
             generator = ORDER_SEQUENCE)
     private Long id;
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    private Date datetime;
+    private ZonedDateTime datetime;
 }

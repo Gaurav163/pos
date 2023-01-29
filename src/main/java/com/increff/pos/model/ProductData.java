@@ -9,5 +9,4 @@ public class ProductData extends ProductForm {
     private Long id;
     private String brandName;
     private String brandCategory;
-    private Long quantity;
 }

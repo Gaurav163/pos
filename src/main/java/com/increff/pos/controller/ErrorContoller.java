@@ -32,7 +32,7 @@ public class ErrorContoller {
     @ExceptionHandler(Throwable.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorMessage handle(Throwable e) {
-        log.error(e);
+        log.error(e.getMessage());
         ErrorMessage data = new ErrorMessage();
         data.setMessage("An unknown error has occurred - " + e.getMessage());
         return data;

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <div th:replace="snippets.html :: header"></div>
+  <body>
+    <div th:replace="navbar.html :: navbar"></div>
+    <div class="p-4">
+      <h3>Report</h3>
+      <div class="form-group">
+        <label for="startDate">Start Date : </label>
+        <input type="date" class="form-control" id="startDate" />
+      </div>
+      <div class="form-group">
+        <label for="endDate">End Date : </label>
+        <input type="date" class="form-control" id="endDate" />
+      </div>
+      <br />
+      <div class="form-group">
+        <label for="brand">Brand : </label>
+        <input type="text" id="brand" class="form-control" />
+      </div>
+      <div class="form-group">
+        <label for="category">Category : </label>
+        <input type="text" id="category" class="form-control" />
+      </div>
+      <br />
+      <button class="btn btn-primary" onclick="showReport()">
+        Show Report
+      </button>
+    </div>
+
+    <div th:replace="snippets.html :: footer"></div>
+    <script th:src="@{/static/report.js}"></script>
+  </body>
+</html>

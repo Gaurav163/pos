@@ -1,6 +1,34 @@
 
 const productList = {};
 
+function createOrder() {
+    const itemList = Object.values(productList).map(item => {
+        return {
+            barcode: item.barcode,
+            quantity: item.quantity,
+            sellingPrice: item.sellingPrice
+        }
+    });
+    const data = JSON.stringify(itemList);
+    console.log(data);
+    $.ajax({
+        url: "/api/orders/",
+        type: "POST",
+        data,
+        headers: {
+            "Content-Type": "application/json",
+        },
+        success: function (response) {
+            console.log("order created");
+        },
+        error: function (error) {
+            console.log(error);
+            toast("error", "Error : " + error.responseJSON.message);
+        },
+    });
+
+}
+
 function addProduct() {
     let barcode = $("#barcode").val();
     let quantity = $("#quantity").val();

@@ -6,7 +6,7 @@ function toast(type, message) {
 	$("#toaster").addClass("toast-" + type);
 	$("#toaster").text(message);
 	$("#toaster").fadeOut();
-	$("#toaster").fadeIn(1000);
+	$("#toaster").fadeIn(200);
 	toastId = c;
 	fadeToast(c);
 }

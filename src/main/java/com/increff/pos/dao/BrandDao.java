@@ -8,13 +8,16 @@ import javax.persistence.TypedQuery;
 @Repository
 public class BrandDao extends AbstractDao<BrandPojo> {
 
+    public BrandDao() {
+        super(BrandPojo.class);
+    }
+
     private static final String SELECT_BY_NAME_AND_CATEGORY = "select b from BrandPojo b where name=:name and category=:category";
 
-    public BrandPojo findByNameAndCategory(String name, String category) {
+    public BrandPojo getByNameAndCategory(String name, String category) {
         TypedQuery<BrandPojo> query = getQuery(SELECT_BY_NAME_AND_CATEGORY);
         query.setParameter("name", name);
         query.setParameter("category", category);
         return getSingle(query);
     }
-
 }

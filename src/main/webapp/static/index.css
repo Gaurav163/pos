@@ -55,6 +55,11 @@ a.nav-link:hover:before {
   transform: scaleX(1);
 }
 
+th,
+td {
+  min-width: 240px;
+}
+
 .navbar {
   background: rgb(0, 33, 78) !important;
 }

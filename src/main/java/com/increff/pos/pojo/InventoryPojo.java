@@ -8,10 +8,12 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import static com.increff.pos.pojo.PojoConstants.INVENTORY_TABLE_NAME;
+
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "inventories")
+@Table(name = INVENTORY_TABLE_NAME)
 public class InventoryPojo {
     @Id
     private Long id;

@@ -5,38 +5,49 @@ import com.increff.pos.model.ApiException;
 import com.increff.pos.pojo.ProductPojo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
-public class ProductService extends AbstractService<ProductPojo> {
-
-    private final ProductDao productDao;
+@Transactional(rollbackFor = ApiException.class)
+public class ProductService {
 
     @Autowired
-    public ProductService(ProductDao productDao) {
-        this.productDao = productDao;
-        this.dao = productDao;
+    private ProductDao productDao;
+
+    public ProductPojo getById(Long id) {
+        return productDao.getById(id);
     }
 
-    @Transactional(rollbackOn = ApiException.class)
+    public List<ProductPojo> getAll() {
+        return productDao.getAll();
+    }
+
+    public ProductPojo getOneByParameter(String name, String value) {
+        return productDao.getOneByMember(name, value);
+    }
+
+    public List<ProductPojo> getListByParameter(String name, String value) {
+        return productDao.getListByMember(name, value);
+    }
+
     public ProductPojo create(ProductPojo pojo) throws ApiException {
-        if (productDao.findOneByMember("barcode", pojo.getBarcode()) != null) {
-            throw new ApiException("Barcode Already Assigned to other Product");
+        if (productDao.getOneByMember("barcode", pojo.getBarcode()) != null) {
+            throw new ApiException("Barcode already assigned to another product");
         }
         productDao.create(pojo);
         return pojo;
     }
 
-    @Transactional(rollbackOn = ApiException.class)
     public ProductPojo update(Long id, ProductPojo form) throws ApiException {
-        ProductPojo checkBarcode = productDao.findOneByMember("barcode", form.getBarcode());
-        if (checkBarcode != null && !id.equals(checkBarcode.getId())) {
-            throw new ApiException("Barcode Already Assigned to other Product");
+        ProductPojo existingBarcode = productDao.getOneByMember("barcode", form.getBarcode());
+        if (existingBarcode != null && !id.equals(existingBarcode.getId())) {
+            throw new ApiException("Barcode already assigned to another product");
         }
-        ProductPojo pojo = productDao.findById(id);
+        ProductPojo pojo = productDao.getById(id);
         if (pojo == null) {
-            throw new ApiException("Product not found");
+            throw new ApiException("Product not found with ID: " + id);
         }
         pojo.setBarcode(form.getBarcode());
         pojo.setName(form.getName());

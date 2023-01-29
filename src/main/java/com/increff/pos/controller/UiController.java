@@ -32,4 +32,9 @@ public class UiController {
         return "inventory.html";
     }
 
+    @GetMapping("/report")
+    public String reportPage(Model model) {
+        return "report.html";
+    }
+
 }

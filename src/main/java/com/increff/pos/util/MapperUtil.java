@@ -14,7 +14,7 @@ public class MapperUtil {
 
     public static <T, S> T mapper(S ob, Class<T> clazz) throws ApiException {
         try {
-            if (ob == null) throw new ApiException("Object provided to Mapper should not be null");
+            if (ob == null) return null;
             List<Field> oldFields = getFields(ob.getClass());
             List<Field> newFields = getFields(clazz);
             T newObj = clazz.newInstance();

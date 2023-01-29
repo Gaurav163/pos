@@ -34,13 +34,11 @@ public class FileUploadUtil {
             }
             return forms;
         } catch (Exception e) {
-            throw new ApiException("Something wrong with file, Error :");
+            throw new ApiException("Something wrong with file, Error : " + e.getMessage());
         }
     }
 
     public static <T> T getValue(String input, Class<T> clazz) {
-        // BEHOLD, MAGIC!
-
         if (clazz.isAssignableFrom(String.class)) {
             return (T) input;
         } else if (clazz.isAssignableFrom(Long.class)) {
@@ -54,6 +52,6 @@ public class FileUploadUtil {
         } else {
             return null;
         }
-
     }
+    
 }
