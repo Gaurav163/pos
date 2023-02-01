@@ -1,6 +1,7 @@
 package com.increff.pos.dto;
 
 import com.increff.pos.model.ApiException;
+import com.increff.pos.model.InventoryData;
 import com.increff.pos.model.InventoryForm;
 import com.increff.pos.pojo.InventoryPojo;
 import com.increff.pos.pojo.ProductPojo;
@@ -8,23 +9,22 @@ import com.increff.pos.service.InventoryService;
 import com.increff.pos.service.ProductService;
 import com.increff.pos.util.FileUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
-@Component
+import static com.increff.pos.util.MapperUtil.mapper;
+
+@Service
 public class InventoryDto {
-
-    private final InventoryService inventoryService;
-    private final ProductService productService;
-
     @Autowired
-    public InventoryDto(InventoryService inventoryService, ProductService productService) {
-        this.inventoryService = inventoryService;
-        this.productService = productService;
-    }
+    private InventoryService inventoryService;
+    @Autowired
+    private ProductService productService;
+
 
     @Transactional(rollbackOn = ApiException.class)
     public void upload(MultipartFile file) throws ApiException {
@@ -32,6 +32,18 @@ public class InventoryDto {
         for (InventoryForm form : forms) {
             addQuantity(form);
         }
+    }
+
+    public List<InventoryData> getAllInventory() throws ApiException {
+        List<ProductPojo> products = productService.getAll();
+        List<InventoryData> inventoryDataList = new ArrayList<>();
+        for (ProductPojo product : products) {
+            InventoryData data = mapper(product, InventoryData.class);
+            InventoryPojo inventoryPojo = inventoryService.getQuantity(product.getId());
+            data.setQuantity(inventoryPojo.getQuantity());
+            inventoryDataList.add(data);
+        }
+        return inventoryDataList;
     }
 
     public String addQuantity(InventoryForm form) throws ApiException {

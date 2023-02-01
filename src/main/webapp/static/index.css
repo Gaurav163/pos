@@ -55,11 +55,6 @@ a.nav-link:hover:before {
   transform: scaleX(1);
 }
 
-th,
-td {
-  min-width: 240px;
-}
-
 .navbar {
   background: rgb(0, 33, 78) !important;
 }
@@ -94,13 +89,17 @@ td {
 
 .btn-primary {
   color: white;
-  border-color: rgb(0, 142, 167) !important;
-  background-color: rgb(0, 142, 167) !important;
+  border-color: rgb(0, 33, 78) !important;
+  background-color: rgb(0, 33, 78) !important;
 }
 
 .btn-primary:hover {
-  background-color: rgb(0, 127, 150) !important;
-  box-shadow: 1px 1px rgb(0, 217, 255) !important;
+  background-color: rgb(0, 45, 107) !important;
+  box-shadow: 1px 1px rgb(0, 64, 155) !important;
+}
+
+.btn {
+  cursor: pointer;
 }
 
 td .btn {

@@ -3,12 +3,15 @@ package com.increff.pos.controller;
 
 import com.increff.pos.dto.InventoryDto;
 import com.increff.pos.model.ApiException;
+import com.increff.pos.model.InventoryData;
 import com.increff.pos.model.InventoryForm;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Api
 @RestController
@@ -37,5 +40,11 @@ public class InventoryController {
     @RequestMapping(value = "/{barcode}", method = RequestMethod.GET)
     public InventoryForm getQuantity(@PathVariable("barcode") String barcode) throws ApiException {
         return inventoryDto.getQuantity(barcode);
+    }
+
+    @ApiOperation(value = "Get all inventory")
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public List<InventoryData> getAll() throws ApiException {
+        return inventoryDto.getAllInventory();
     }
 }

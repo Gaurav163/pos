@@ -37,4 +37,14 @@ public class UiController {
         return "report.html";
     }
 
+    @GetMapping("/login")
+    public String loginPage(Model model) {
+        return "login.html";
+    }
+
+    @GetMapping("/signup")
+    public String signupPage(Model model) {
+        return "signup.html";
+    }
+
 }

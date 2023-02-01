@@ -17,7 +17,8 @@ function showReport() {
         },
         success: function (response) {
             console.log(response);
-            toast("success", "Brand Saved Successfully !");
+            showdata(response);
+            toast("success", "Report fetched success");
 
         },
         error: function (error) {
@@ -26,4 +27,18 @@ function showReport() {
         },
     });
 
+}
+
+function showdata(reports) {
+    $("#tablebody").html("");
+    reports.forEach(report => {
+        $("#tablebody").append(`
+        <tr>
+        <td>${report.brand}</td>
+        <td>${report.category}</td>
+        <td>${report.quantity}</td>
+        <td>${report.revenue}</td>
+        </tr>
+        `);
+    });
 }

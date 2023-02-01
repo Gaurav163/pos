@@ -7,7 +7,7 @@ import com.increff.pos.model.BrandForm;
 import com.increff.pos.pojo.BrandPojo;
 import com.increff.pos.service.BrandService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,7 +18,7 @@ import static com.increff.pos.util.FileUploadUtil.convert;
 import static com.increff.pos.util.FormUtil.*;
 import static com.increff.pos.util.MapperUtil.mapper;
 
-@Component
+@Service
 public class BrandDto {
     @Autowired
     private BrandService brandService;

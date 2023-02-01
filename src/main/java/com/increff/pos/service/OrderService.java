@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -32,7 +31,7 @@ public class OrderService {
         return order;
     }
 
-    public List<OrderPojo> getByDatetimeRange(Date startTime, Date endTime) {
+    public List<OrderPojo> getByDatetimeRange(ZonedDateTime startTime, ZonedDateTime endTime) {
         return orderDao.findByDatetimeRange(startTime, endTime);
     }
 }

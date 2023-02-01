@@ -12,14 +12,18 @@ import com.increff.pos.service.OrderItemService;
 import com.increff.pos.service.OrderService;
 import com.increff.pos.service.ProductService;
 import com.increff.pos.util.MapperUtil;
+import com.increff.pos.util.PdfUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
-@Component
+@Service
 public class OrderDto {
     @Autowired
     private OrderService orderService;
@@ -31,7 +35,7 @@ public class OrderDto {
     private ProductService productService;
 
     @Transactional(rollbackFor = ApiException.class)
-    public void create(List<OrderItemForm> items) throws ApiException {
+    public String create(List<OrderItemForm> items) throws ApiException {
         OrderPojo orderPojo = orderService.create();
         for (OrderItemForm item : items) {
             ProductPojo productPojo = productService.getOneByParameter("barcode", item.getBarcode());
@@ -43,25 +47,57 @@ public class OrderDto {
             orderItemPojo.setProductId(productPojo.getId());
             orderItemService.create(orderItemPojo);
         }
+        PdfUtil.convertToPDF(getById(orderPojo.getId()));
+        return getInvoiceAsBase64(orderPojo.getId());
     }
 
     public List<OrderData> getAll() throws ApiException {
-        return MapperUtil.mapper(orderService.getAll(), OrderData.class);
+        List<OrderPojo> orders = orderService.getAll();
+        List<OrderData> orderDataList = new ArrayList<>();
+        for (OrderPojo order : orders) {
+            OrderData orderData = new OrderData();
+            orderData.setId(order.getId());
+            orderData.setDate(order.getDatetime().toLocalDate().toString());
+            orderData.setTime(order.getDatetime().toLocalTime().toString());
+            orderDataList.add(orderData);
+        }
+        return orderDataList;
     }
 
     public OrderData getById(Long id) throws ApiException {
-        OrderData order = MapperUtil.mapper(orderService.getById(id), OrderData.class);
-        List<OrderItemPojo> itemPojos = orderItemService.getListByParameter("orderId", id);
+        OrderPojo order = orderService.getById(id);
+        OrderData orderData = new OrderData();
+        orderData.setId(order.getId());
+        orderData.setDate(order.getDatetime().toLocalDate().toString());
+        orderData.setTime(order.getDatetime().toLocalTime().toString());
+        orderData.setItems(getOrderItems(order.getId()));
+        return orderData;
+    }
+
+    public List<OrderItemData> getOrderItems(Long id) throws ApiException {
+        List<OrderItemPojo> orderItems = orderItemService.getListByParameter("orderId", id);
         List<OrderItemData> items = new ArrayList<>();
-        for (OrderItemPojo itemPojo : itemPojos) {
-            ProductPojo product = productService.getById(itemPojo.getProductId());
-            OrderItemData item = MapperUtil.mapper(itemPojo, OrderItemData.class);
+        for (OrderItemPojo orderItem : orderItems) {
+            ProductPojo product = productService.getById(orderItem.getProductId());
+            OrderItemData item = MapperUtil.mapper(orderItem, OrderItemData.class);
             item.setName(product.getName());
             item.setBarcode(product.getBarcode());
             item.setMrp(product.getMrp());
             items.add(item);
         }
-        order.setItems(items);
-        return order;
+        return items;
     }
+
+    public String getInvoiceAsBase64(Long id) throws ApiException {
+        try {
+            String baseurl = "src/main/resources/invoices/";
+            File file = new File(baseurl + "invoice-" + id.toString() + ".pdf");
+            byte[] bytes = Files.readAllBytes(file.toPath());
+
+            return Base64.getEncoder().encodeToString(bytes);
+        } catch (Exception e) {
+            throw new ApiException(e.getMessage());
+        }
+    }
+
 }

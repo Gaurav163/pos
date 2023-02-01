@@ -1,6 +1,86 @@
 
 const productList = {};
 
+
+function showAll() {
+    $.ajax({
+        url: "/api/orders/",
+        type: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        success: function (response) {
+            showOrders(response);
+        },
+        error: function (error) {
+            console.log(error);
+            toast("error", "Error : " + error.responseJSON.message);
+        },
+    });
+}
+
+function getInvoice(id, task) {
+    $.ajax({
+        url: "/api/orders/invoice/" + id,
+        type: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        success: function (response) {
+            if (task == "print") {
+                printInvoice(response);
+            } else {
+                downloadInvoice(response, id);
+            }
+        },
+        error: function (error) {
+            console.log(error);
+            toast("error", "Error : " + error.responseJSON.message);
+        },
+    });
+}
+
+function printInvoice(data) {
+    let winparams = 'dependent=yes,locationbar=no,scrollbars=yes,menubar=yes,' +
+        'resizable,screenX=50,screenY=50,width=1200,height=1050';
+
+    let htmlPop = '<embed width=100% height=100%'
+        + ' type="application/pdf"'
+        + ' src="data:application/pdf;base64,'
+        + data
+        + '"></embed>';
+
+    let printWindow = window.open("", "PDF", winparams);
+    printWindow.document.write(htmlPop);
+}
+
+function downloadInvoice(data, id) {
+    const linkSource = `data:application/pdf;base64,${data}`;
+    const downloadLink = document.createElement("a");
+    const fileName = "invoice-" + id + ".pdf";
+    downloadLink.href = linkSource;
+    downloadLink.download = fileName;
+    downloadLink.click();
+}
+
+function showOrders(orders) {
+    $("#tablebody2").html("");
+    orders.forEach(order => {
+        $("#tablebody2").append(`
+        <tr>
+        <td>${order.id}</td>
+        <td>${order.date}</td>
+        <td>${order.time}</td>
+        <td> 
+        <button class="btn btn-info" onclick="getInvoice(${order.id},'download')"> Download </button>
+        <button class="btn btn-info" onclick="getInvoice(${order.id},'print')"> Print </button>
+        </td>
+        </tr>
+        `);
+    });
+
+}
+
 function createOrder() {
     const itemList = Object.values(productList).map(item => {
         return {
@@ -20,6 +100,8 @@ function createOrder() {
         },
         success: function (response) {
             console.log("order created");
+            toast("success", "Order created")
+            printInvoice(response);
         },
         error: function (error) {
             console.log(error);

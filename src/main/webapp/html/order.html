@@ -57,8 +57,28 @@
       </table>
       <br />
       <div class="btn btn-primary" onclick="createOrder()">Create Order</div>
+      <br />
+      <br />
+      <hr />
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Order No</th>
+            <th scope="col">Time</th>
+            <th scope="col">Date</th>
+            <th scope="col">Invoice</th>
+          </tr>
+        </thead>
+        <tbody id="tablebody2"></tbody>
+      </table>
     </div>
     <div th:replace="snippets.html :: footer"></div>
     <script th:src="@{/static/order.js}"></script>
+    <script>
+      $(document).ready(function () {
+        console.log("ready!");
+        showAll();
+      });
+    </script>
   </body>
 </html>

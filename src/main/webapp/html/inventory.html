@@ -22,9 +22,26 @@
 
         <button class="btn btn-primary" type="submit">Add Quantity</button>
       </form>
+      <hr />
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Barcode</th>
+            <th scope="col">Name</th>
+            <th scope="col">Quantity</th>
+          </tr>
+        </thead>
+        <tbody id="tablebody"></tbody>
+      </table>
     </div>
 
     <div th:replace="snippets.html :: footer"></div>
     <script th:src="@{/static/inventory.js}"></script>
+    <script>
+      $(document).ready(function () {
+        console.log("ready!");
+        initInventory();
+      });
+    </script>
   </body>
 </html>

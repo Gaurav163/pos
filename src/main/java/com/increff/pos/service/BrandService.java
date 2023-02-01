@@ -27,6 +27,10 @@ public class BrandService {
         return brandDao.getListByMember(name, value);
     }
 
+    public BrandPojo getByNameAndCategory(String name, String category) {
+        return brandDao.getByNameAndCategory(name, category);
+    }
+
     public BrandPojo create(BrandPojo brand) throws ApiException {
         BrandPojo existingBrand = brandDao.getByNameAndCategory(brand.getName(), brand.getCategory());
         if (existingBrand != null) {
@@ -52,10 +56,8 @@ public class BrandService {
         if (existingPojo != null && !existingPojo.getId().equals(id)) {
             throw new ApiException("Brand already exist with provided name and category");
         }
-
         brand.setName(newPojo.getName());
         brand.setCategory(newPojo.getCategory());
-
         return brand;
     }
 }

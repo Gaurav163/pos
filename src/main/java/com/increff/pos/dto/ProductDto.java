@@ -8,9 +8,8 @@ import com.increff.pos.pojo.ProductPojo;
 import com.increff.pos.service.BrandService;
 import com.increff.pos.service.ProductService;
 import com.increff.pos.util.FileUploadUtil;
-import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,8 +19,7 @@ import java.util.List;
 import static com.increff.pos.util.FormUtil.*;
 import static com.increff.pos.util.MapperUtil.mapper;
 
-@Component
-@Log4j
+@Service
 public class ProductDto {
     @Autowired
     private ProductService productService;

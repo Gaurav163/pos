@@ -32,3 +32,36 @@ function addQuantity() {
     })
 
 }
+
+function initInventory() {
+
+    $.ajax({
+        url: "/api/inventories/",
+        type: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        success: function (response) {
+            console.log(response);
+            showTable(response);
+            toast("success", "Data loaded");
+        },
+        error: function (error) {
+            console.log(error);
+            toast("error", "Error : " + error.responseJSON.message);
+        },
+    })
+}
+
+function showTable(data) {
+    $("#tablebody").html("");
+    data.forEach(inv => {
+        $("#tablebody").append(`
+        <tr>
+        <td>${inv.barcode}</td>
+        <td>${inv.name}</td>
+        <td>${inv.quantity}</td>
+        </tr>
+        `);
+    });
+}
