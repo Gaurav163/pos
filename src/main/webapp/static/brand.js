@@ -2,7 +2,7 @@ function saveBrand() {
     console.log("Saving Brand");
     let name = $("#name").val();
     let category = $("#category").val();
-    const brand = { name, category };
+    let brand = { name, category };
     console.log(brand);
     let data = JSON.stringify(brand);
 
@@ -16,6 +16,19 @@ function saveBrand() {
         success: function (response) {
             console.log(response);
             toast("success", "Brand Saved Successfully !");
+            brand = response;
+            $("#name").val("");
+            $("#category").val("");
+            $("#tablebody").prepend(
+                `<tr id='${"brand" + brand.id}'>
+                    <td>${brand.name}</td>
+                    <td>${brand.category}</td>
+                    <td><div class="btn btn-primary"
+                    onclick="showUpdateForm(${brand.id},'${brand.name}','${brand.category
+                }')">
+                    Edit</div></td>
+                    </tr>`
+            );
         },
         error: function (error) {
             console.log(error);
@@ -26,7 +39,7 @@ function saveBrand() {
 
 function loadAllBrands() {
     $.ajax({
-        url: "/api/brands/all",
+        url: "/api/brands/",
         type: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -40,8 +53,7 @@ function loadAllBrands() {
                     <td>${brand.name}</td>
                     <td>${brand.category}</td>
                     <td><div class="btn btn-primary"
-                    onclick="showUpdateForm(${brand.id},'${brand.name}','${
-                        brand.category
+                    onclick="showUpdateForm(${brand.id},'${brand.name}','${brand.category
                     }')">
                     Edit</div></td>
                     </tr>`
@@ -61,30 +73,28 @@ function loadAllBrands() {
 
 function showUpdateForm(id, name, category) {
     $("#brand" + id).html(`<td>
-                            <input
-                            style="width:200px;"
-                            class="form-control"
-                            name=${"name" + id}
-                            id=${"name" + id}
-                            type="text"
-                            placeholder="Brand Name"
-                            value='${name}'
-                            autofocus
-                            /> 
-                            </td> <td>
-                            <input
-                             style="width:200px;"
-                                class="form-control"
-                                name=${"category" + id}
-                                id=${"category" + id}
-                                type="text"
-                                placeholder="Category"
-                                value='${category}'
-                            /> </td>
-                            <td>
-                            <div class="btn btn-primary" onclick="update(${id})">Edit </div>
-                            </td>
-                        `);
+        <input
+            class="form-control"
+            name=${"name" + id}
+            id=${"name" + id}
+            type="text"
+            placeholder="Brand Name"
+            value='${name}'
+            autofocus
+        /> 
+        </td> <td>
+        <input
+            class="form-control"
+            name=${"category" + id}
+            id=${"category" + id}
+            type="text"
+            placeholder="Category"
+            value='${category}'
+        /> </td>
+        <td>
+        <div class="btn btn-primary" onclick="update(${id})">Edit </div>
+        </td>
+   `);
 }
 
 function update(id) {

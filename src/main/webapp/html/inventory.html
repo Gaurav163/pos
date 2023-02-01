@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <div th:replace="snippets.html :: header"></div>
+  <body>
+    <div th:replace="navbar.html :: navbar"></div>
+    <div class="p-4">
+      <h4>Inventory Interaction</h4>
+      <form action="javascript:addQuantity()">
+        <div class="form-group">
+          <label for="barcode"> Barcode : </label>
+          <input type="text" name="barcode" id="barcode" class="form-control" />
+        </div>
+        <div class="form-group">
+          <label for="quantity"> Quantity : </label>
+          <input
+            type="text"
+            name="quantity"
+            id="quantity"
+            class="form-control"
+          />
+        </div>
+
+        <button class="btn btn-primary" type="submit">Add Quantity</button>
+      </form>
+      <hr />
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Barcode</th>
+            <th scope="col">Name</th>
+            <th scope="col">Quantity</th>
+          </tr>
+        </thead>
+        <tbody id="tablebody"></tbody>
+      </table>
+    </div>
+
+    <div th:replace="snippets.html :: footer"></div>
+    <script th:src="@{/static/inventory.js}"></script>
+    <script>
+      $(document).ready(function () {
+        console.log("ready!");
+        initInventory();
+      });
+    </script>
+  </body>
+</html>

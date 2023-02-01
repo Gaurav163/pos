@@ -1,59 +1,61 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    <div th:replace="snippets.html :: header"></div>
-    <link rel="stylesheet" th:href="@{/static/brand.css}" />
-    <body>
-        <div th:replace="navbar.html :: navbar"></div>
-        <div class="p-4">
-            <div id="saveBrand">
-                <h4>Add Brand</h4>
-                <form class="form-inline">
-                    <div class="form-group m-2">
-                        <input
-                            class="form-control"
-                            name="name"
-                            id="name"
-                            type="text"
-                            placeholder="Brand Name"
-                        />
-                    </div>
-                    <div class="form-group m-2">
-                        <input
-                            class="form-control"
-                            name="category"
-                            id="category"
-                            type="text"
-                            placeholder="Category"
-                        />
-                    </div>
-                    <div class="btn btn-primary m-2" onclick="saveBrand()">
-                        Submit
-                    </div>
-                </form>
-            </div>
+  <div th:replace="snippets.html :: header"></div>
+  <link rel="stylesheet" th:href="@{/static/brand.css}" />
+  <body>
+    <div th:replace="navbar.html :: navbar"></div>
+    <div class="p-4">
+      <div id="saveBrand">
+        <h4>Add Brand</h4>
+        <form class="form">
+          <div class="form-group m-2">
+            <label for="name">Brand Name : </label>
+            <input
+              class="form-control"
+              name="name"
+              id="name"
+              type="text"
+              placeholder="Brand Name"
+            />
+          </div>
+          <div class="form-group m-2">
+            <label for="category"> Category : </label>
+            <input
+              class="form-control"
+              name="category"
+              id="category"
+              type="text"
+              placeholder="Category"
+            />
+          </div>
+          <div class="btn btn-primary m-2 ml-4" onclick="saveBrand()">
+            Submit
+          </div>
+        </form>
+      </div>
 
-            <hr />
-            <br />
-            <h4>All Brands</h4>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Category</th>
-                        <th scope="col"></th>
-                    </tr>
-                </thead>
-                <tbody id="tablebody"></tbody>
-            </table>
-        </div>
+      <hr />
+      <br />
+      <h4>All Brands</h4>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Category</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody id="tablebody"></tbody>
+      </table>
+    </div>
 
-        <div th:replace="snippets.html :: footer"></div>
-        <script th:src="@{/static/brand.js}"></script>
-        <script>
-            $(document).ready(function () {
-                console.log("ready!");
-                loadAllBrands();
-            });
-        </script>
-    </body>
+    <div th:replace="snippets.html :: footer"></div>
+    <script th:src="@{/static/brand.js}"></script>
+    <script>
+      $(document).ready(function () {
+        console.log("ready!");
+        loadAllBrands();
+      });
+    </script>
+  </body>
 </html>

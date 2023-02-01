@@ -1,75 +1,63 @@
 package com.increff.pos.service;
 
 import com.increff.pos.dao.BrandDao;
+import com.increff.pos.model.ApiException;
 import com.increff.pos.pojo.BrandPojo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
+@Transactional(rollbackFor = ApiException.class)
 public class BrandService {
-    private final BrandDao brandDao;
-
     @Autowired
-    public BrandService(BrandDao brandDao) {
-        this.brandDao = brandDao;
-    }
-
-
-    public static String normalize(String s) {
-        return s.toLowerCase().trim();
-    }
-
-    public BrandPojo save(BrandPojo brand) {
-        BrandPojo check = brandDao.findByNameAndCategory(brand.getName(), brand.getCategory());
-        if (check != null) {
-            throw new IllegalStateException("Brand Already exist with given Name and Category");
-        }
-        brandDao.save(brand);
-        return brand;
-    }
+    private BrandDao brandDao;
 
     public BrandPojo getById(Long id) {
-        BrandPojo brand = brandDao.findById(id);
-
-        return brand;
+        return brandDao.getById(id);
     }
 
     public List<BrandPojo> getAll() {
-        return brandDao.findAll();
+        return brandDao.getAll();
     }
 
-    public List<BrandPojo> getByName(String name) {
-        name = normalize(name);
-        return brandDao.findByName(name);
-    }
-
-
-    public List<BrandPojo> getByCategory(String category) {
-        category = normalize(category);
-        return brandDao.findByCategory(category);
+    public List<BrandPojo> getListByParameter(String name, String value) {
+        return brandDao.getListByMember(name, value);
     }
 
     public BrandPojo getByNameAndCategory(String name, String category) {
-        name = normalize(name);
-        category = normalize(category);
-        return brandDao.findByNameAndCategory(name, category);
+        return brandDao.getByNameAndCategory(name, category);
     }
 
-    @Transactional
-    public BrandPojo update(Long id, BrandPojo form) {
-        BrandPojo brand = brandDao.findById(id);
+    public BrandPojo create(BrandPojo brand) throws ApiException {
+        BrandPojo existingBrand = brandDao.getByNameAndCategory(brand.getName(), brand.getCategory());
+        if (existingBrand != null) {
+            throw new ApiException("Brand already exist with provided name and category");
+        }
+        brandDao.create(brand);
+        return brand;
+    }
+
+    public BrandPojo update(Long id, BrandPojo newPojo) throws ApiException {
+
+        BrandPojo brand = brandDao.getById(id);
         if (brand == null) {
-            throw new IllegalStateException("Brand with ID :" + id.toString() + " does not exist.");
+            throw new ApiException("Brand with ID :" + id.toString() + " does not exist");
         }
-        BrandPojo check = brandDao.findByNameAndCategory(form.getName(), form.getCategory());
-        if (check != null) {
-            throw new IllegalStateException("Brand with given Name and Category Already Exist.");
+        if (newPojo.getName() == null || newPojo.getName().isEmpty()) {
+            newPojo.setName(brand.getName());
         }
-        brand.setCategory(form.getCategory());
-        brand.setName(form.getName());
+        if (newPojo.getCategory() == null || newPojo.getCategory().isEmpty()) {
+            newPojo.setCategory(brand.getCategory());
+        }
+        BrandPojo existingPojo = brandDao.getByNameAndCategory(newPojo.getName(), newPojo.getCategory());
+        if (existingPojo != null && !existingPojo.getId().equals(id)) {
+            throw new ApiException("Brand already exist with provided name and category");
+        }
+        brand.setName(newPojo.getName());
+        brand.setCategory(newPojo.getCategory());
         return brand;
     }
 }

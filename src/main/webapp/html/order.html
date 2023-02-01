@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <div th:replace="snippets.html :: header"></div>
+  <body>
+    <div th:replace="navbar.html :: navbar"></div>
+    <div class="p-4">
+      <h4>Create Orders</h4>
+      <form action="javascript:addProduct()">
+        <div class="form-group">
+          <lable for="barcode"> Barcode :</lable>
+          <input
+            type="text"
+            name="barcode"
+            id="barcode"
+            class="form-control"
+            placeholder="Barcode"
+          />
+        </div>
+        <div class="form-group">
+          <lable for="quantity"> Quantity :</lable>
+          <input
+            type="text"
+            name="quantity"
+            id="quantity"
+            class="form-control"
+            placeholder="Quantity"
+          />
+        </div>
+        <div class="form-group">
+          <lable for="sellingPrice"> Selling Price :</lable>
+          <input
+            type="text"
+            name="sellingPrice"
+            id="sellingPrice"
+            class="form-control"
+            placeholder="Selling Price"
+          />
+        </div>
+        <br />
+        <button class="btn btn-primary">Add Product</button>
+      </form>
+      <hr />
+      <h4>Product in Cart</h4>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Barcode</th>
+            <th scope="col">Brand</th>
+            <th scope="col">MRP</th>
+            <th scope="col">Selling Price</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">#</th>
+          </tr>
+        </thead>
+        <tbody id="tablebody"></tbody>
+      </table>
+      <br />
+      <div class="btn btn-primary" onclick="createOrder()">Create Order</div>
+      <br />
+      <br />
+      <hr />
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Order No</th>
+            <th scope="col">Time</th>
+            <th scope="col">Date</th>
+            <th scope="col">Invoice</th>
+          </tr>
+        </thead>
+        <tbody id="tablebody2"></tbody>
+      </table>
+    </div>
+    <div th:replace="snippets.html :: footer"></div>
+    <script th:src="@{/static/order.js}"></script>
+    <script>
+      $(document).ready(function () {
+        console.log("ready!");
+        showAll();
+      });
+    </script>
+  </body>
+</html>

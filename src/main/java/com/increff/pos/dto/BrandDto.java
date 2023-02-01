@@ -1,107 +1,81 @@
 package com.increff.pos.dto;
 
 
+import com.increff.pos.model.ApiException;
 import com.increff.pos.model.BrandData;
 import com.increff.pos.model.BrandForm;
 import com.increff.pos.pojo.BrandPojo;
 import com.increff.pos.service.BrandService;
-import com.increff.pos.util.FileUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+import static com.increff.pos.util.FileUploadUtil.convert;
+import static com.increff.pos.util.FormUtil.*;
+import static com.increff.pos.util.MapperUtil.mapper;
+
+@Service
 public class BrandDto {
-    private final BrandService brandService;
-
     @Autowired
-    public BrandDto(BrandService brandService) {
-        this.brandService = brandService;
+    private BrandService brandService;
+
+    public BrandData create(BrandForm form) throws ApiException {
+        validateForm(form);
+        normalizeForm(form);
+        BrandPojo brandPojo = mapper(form, BrandPojo.class);
+        return mapper(brandService.create(brandPojo), BrandData.class);
     }
 
-    public static void normalize(BrandForm b) {
-        b.setName(b.getName().toLowerCase().trim());
-        b.setCategory(b.getCategory().toLowerCase().trim());
+    public List<BrandData> getAll() throws ApiException {
+        return mapper(brandService.getAll(), BrandData.class);
     }
 
-    public BrandData save(BrandForm form) {
-        if (form.getName() == null || form.getCategory() == null) {
-            throw new IllegalStateException("Brand Name and Category are required to Update Brand.");
+    public BrandData getById(Long id) throws ApiException {
+        BrandPojo pojo = brandService.getById(id);
+        if (pojo == null) {
+            throw new ApiException("Invalid brand ID");
+        } else {
+            return mapper(brandService.getById(id), BrandData.class);
         }
-        normalize(form);
-        if (form.getName().isEmpty() || form.getCategory().isEmpty()) {
-            throw new IllegalStateException("Brand Name and Category are required to Update Brand.");
+    }
+
+    public List<BrandData> getByName(String name) throws ApiException {
+        return mapper(brandService.getListByParameter("name", normalize(name)), BrandData.class);
+    }
+
+    public List<BrandData> getByCategory(String category) throws ApiException {
+        return mapper(brandService.getListByParameter("category", normalize(category)), BrandData.class);
+    }
+
+    public BrandData update(Long id, BrandForm form) throws ApiException {
+        normalizeForm(form);
+        BrandPojo brandPojo = mapper(form, BrandPojo.class);
+        return mapper(brandService.update(id, brandPojo), BrandData.class);
+    }
+
+    @Transactional(rollbackFor = ApiException.class)
+    public List<String> upload(MultipartFile file) throws ApiException {
+        List<BrandForm> forms = convert(file, BrandForm.class);
+        if (forms.size() > 5000) {
+            throw new ApiException("Files should not contains more than 5000 entries");
         }
-        BrandPojo brandPojo = new BrandPojo(form.getName(), form.getCategory());
-        return pojoToBrand(brandService.save(brandPojo));
-    }
-
-    public List<BrandData> getAll() {
-        return pojoToList(brandService.getAll());
-    }
-
-    public BrandData getById(Long id) {
-        return pojoToBrand(brandService.getById(id));
-    }
-
-    public List<BrandData> getByName(String name) {
-        return pojoToList(brandService.getByName(name));
-    }
-
-    public List<BrandData> getByCategory(String category) {
-        return pojoToList(brandService.getByCategory(category));
-    }
-
-    public BrandData update(Long id, BrandForm form) {
-        if (form.getName() == null || form.getCategory() == null) {
-            throw new IllegalStateException("Brand Name and Category are required to Update Brand.");
-        }
-        normalize(form);
-        if (form.getName().isEmpty() || form.getCategory().isEmpty()) {
-            throw new IllegalStateException("Brand Name and Category are required to Update Brand.");
-        }
-        BrandPojo brandPojo = new BrandPojo(form.getName(), form.getCategory());
-        brandPojo.setId(id);
-        return pojoToBrand(brandService.update(id, brandPojo));
-    }
-
-    public List<String> upload(MultipartFile file) throws IOException {
-        List<BrandForm> forms = FileUploadUtil.convert(file, BrandForm.class);
         List<String> responses = new ArrayList<>();
-        int currentLine = 0;
         for (BrandForm form : forms) {
-            if (form == null) responses.add("Invalid row");
             try {
-                BrandPojo pojo = formToPojo(form);
-                brandService.save(pojo);
-                responses.add("Brand Added Successfully");
-            } catch (Exception e) {
-                responses.add("Error : " + e.getMessage());
+                validateForm(form);
+                normalizeForm(form);
+                BrandPojo pojo = mapper(form, BrandPojo.class);
+                brandService.create(pojo);
+                responses.add("Brand added successfully");
+            } catch (ApiException e) {
+                throw new ApiException("Error : " + e.getMessage());
             }
         }
-
         return responses;
     }
-
-    private List<BrandData> pojoToList(List<BrandPojo> brandPojos) {
-        List<BrandData> brandData = new ArrayList<>();
-        for (BrandPojo b : brandPojos) {
-            brandData.add(pojoToBrand(b));
-        }
-        return brandData;
-    }
-
-    private BrandData pojoToBrand(BrandPojo b) {
-        return new BrandData(b.getId(), b.getName(), b.getCategory());
-    }
-
-    private BrandPojo formToPojo(BrandForm b) {
-        return new BrandPojo(b.getName(), b.getCategory());
-    }
-
 
 }

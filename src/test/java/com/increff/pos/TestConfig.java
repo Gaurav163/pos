@@ -1,4 +1,4 @@
-package com.increff.pos.service;
+package com.increff.pos;
 
 import com.increff.pos.spring.SpringConfig;
 import org.springframework.context.annotation.*;

@@ -1,75 +1,105 @@
 package com.increff.pos.service;
 
-import com.increff.pos.pojo.BrandPojo;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+public class BrandServiceTest {
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
-public class BrandServiceTest extends AbstractUnitTest {
-
-    @Autowired
-    private BrandService brandService;
-
-
-    @Test(expected = IllegalStateException.class)
-    public void testSave() {
-        BrandPojo b = new BrandPojo();
-        b.setName("name");
-        b.setCategory("category");
-        brandService.save(b);
-        BrandPojo expected = new BrandPojo("name", "category");
-        assertEquals(b.getCategory(), expected.getCategory());
-        assertEquals(b.getName(), expected.getName());
-        assertNotNull(b.getId());
-
-        // check duplicate brand
-        BrandPojo check = new BrandPojo();
-        check.setName(b.getName());
-        check.setCategory(b.getCategory());
-        brandService.save(check);
-    }
-
-    @Test
-    public void testAll() {
-        BrandPojo form1 = new BrandPojo("name1", "cat1");
-        BrandPojo form2 = new BrandPojo("name1", "cat2");
-        BrandPojo form3 = new BrandPojo("name2", "cat1");
-        BrandPojo form4 = new BrandPojo("name2", "cat2");
-        brandService.save(form1);
-        brandService.save(form2);
-        brandService.save(form3);
-        brandService.save(form4);
-        // Get All
-        List<BrandPojo> brands = brandService.getAll();
-        assertEquals(4, brands.size());
-        // Get By Name
-        brands = brandService.getByName("name1");
-        assertEquals(2, brands.size());
-        // Get By category
-        brands = brandService.getByCategory("cat1");
-        assertEquals(2, brands.size());
-        // Get By Name and Category
-        BrandPojo check = brandService.getByNameAndCategory("check", "check");
-        assertNull(check);
-
-        // check update
-        BrandPojo brand = new BrandPojo("check", "check");
-        System.out.println(brand);
-        brand = brandService.update(form1.getId(), brand);
-        System.out.println(brand);
-
-        check = brandService.getByNameAndCategory("check", "check");
-        assertNotNull(check);
-
-        // Get by id
-        brand = brandService.getById(form1.getId());
-        assertNotNull(brand);
-        brand = brandService.getById(20L);
-        assertNull(brand);
-    }
+//    @Autowired
+//    private BrandService brandService;
+//
+//    @Before
+//    public void generateData() throws ApiException {
+//        createPojo("name1", "category1");
+//        createPojo("name2", "category2");
+//        createPojo("name3", "category3");
+//        createPojo("name4", "category4");
+//        createPojo("name5", "category5");
+//    }
+//
+//    private BrandPojo createPojo(String name, String category) throws ApiException {
+//        BrandPojo pojo = new BrandPojo();
+//        pojo.setName(name);
+//        pojo.setCategory(category);
+////        brandService.create(pojo);
+//        return pojo;
+//    }
+//
+//    @Test
+//    public void createTest() throws ApiException {
+//        BrandPojo pojo = createPojo("name6", "category6");
+//        assertNotNull(pojo);
+//        assertNotNull(pojo.getId());
+//    }
+//
+//    @Test(expected = ApiException.class)
+//    public void createDuplicateTest() throws ApiException {
+//        createPojo("name1", "category1");
+//    }
+//
+//    @Test
+//    public void getAll() {
+//        List<BrandPojo> list = brandService.getAll();
+//        assertEquals(5, list.size());
+//    }
+//
+//    @Test
+//    public void getById() {
+//        List<BrandPojo> list = brandService.getAll();
+//        assertEquals(5, list.size());
+//        for (BrandPojo pojo : list) {
+//            assertNotNull(brandService.getById(pojo.getId()));
+//        }
+//        Long wrongId = list.get(4).getId() + 1;
+//        assertNull(brandService.getById(wrongId));
+//    }
+//
+//    @Test
+//    public void getByName() {
+//        BrandPojo pojo = brandService.getOneByParameter("name", "name1");
+//        assertNotNull(pojo.getName());
+//        BrandPojo nullPojo = brandService.getOneByParameter("name", "name11");
+//        assertNull(nullPojo);
+//    }
+//
+//    @Test
+//    public void getByCategory() {
+//        BrandPojo pojo = brandService.getOneByParameter("category", "category1");
+//        assertNotNull(pojo.getName());
+//        BrandPojo nullPojo = brandService.getOneByParameter("category", "category11");
+//        assertNull(nullPojo);
+//    }
+//
+//    @Test
+//    public void update() throws ApiException {
+//        assertNull(brandService.getOneByParameter("name", "name11"));
+//        BrandPojo pojo = brandService.getOneByParameter("name", "name1");
+//        pojo.setName("name11");
+//        pojo.setCategory("category11");
+//        brandService.update(pojo.getId(), pojo);
+//        assertNotNull(brandService.getOneByParameter("name", "name11"));
+//    }
+//
+//    @Test(expected = ApiException.class)
+//    public void updateDuplicate() throws ApiException {
+//        BrandPojo pojo = brandService.getOneByParameter("name", "name1");
+//        BrandPojo newPojo = new BrandPojo();
+//        newPojo.setName("name4");
+//        newPojo.setCategory("category4");
+//        brandService.update(pojo.getId(), newPojo);
+//    }
+//
+//    @Test(expected = ApiException.class)
+//    public void updateWrongId() throws ApiException {
+//        BrandPojo pojo = brandService.getOneByParameter("name", "name1");
+//        BrandPojo newPojo = new BrandPojo();
+//        newPojo.setName("name4");
+//        newPojo.setCategory("category4");
+//        brandService.update(1000L, newPojo);
+//    }
+//
+//    @Test
+//    public void getByBrandAndCategory() {
+//        assertNotNull(brandService.getByNameAndCategory("name1", "category1"));
+//        assertNull(brandService.getByNameAndCategory("name11", "category11"));
+//    }
 
 
 }

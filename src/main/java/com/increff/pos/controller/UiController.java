@@ -16,4 +16,35 @@ public class UiController {
     public String brandPage(Model model) {
         return "brand.html";
     }
+
+    @GetMapping("/product")
+    public String productPage(Model model) {
+        return "product.html";
+    }
+
+    @GetMapping("/order")
+    public String orderPage(Model model) {
+        return "order.html";
+    }
+
+    @GetMapping("/inventory")
+    public String inventoryPage(Model model) {
+        return "inventory.html";
+    }
+
+    @GetMapping("/report")
+    public String reportPage(Model model) {
+        return "report.html";
+    }
+
+    @GetMapping("/login")
+    public String loginPage(Model model) {
+        return "login.html";
+    }
+
+    @GetMapping("/signup")
+    public String signupPage(Model model) {
+        return "signup.html";
+    }
+
 }

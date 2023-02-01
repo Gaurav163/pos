@@ -5,7 +5,8 @@ function toast(type, message) {
 	$("#toaster").attr("class", "");
 	$("#toaster").addClass("toast-" + type);
 	$("#toaster").text(message);
-	$("#toaster").fadeIn(500);
+	$("#toaster").fadeOut();
+	$("#toaster").fadeIn(200);
 	toastId = c;
 	fadeToast(c);
 }
@@ -19,7 +20,69 @@ function fadeToast(time) {
 				$("#toaster").fadeOut(1000);
 			}
 		},
-		3000,
+		7000,
 		time
 	);
+}
+
+function login() {
+	const email = $("#email").val();
+	const password = $("#password").val();
+	if (email.length == 0 || password.length == 0) {
+		toast("error", "Enter email ans password");
+		return;
+	}
+	$.ajax({
+		url: `/login?username=${email}&password=${password}`,
+		type: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		success: function (response) {
+			console.log(response);
+			setTimeout(() => {
+				window.location.replace("/");
+			}, 2000);
+			toast("success", "Signin success");
+
+
+		},
+		error: function (error) {
+			toast("error", error);
+
+		},
+	});
+}
+
+
+function signup() {
+	const name = $("#name").val()
+	const email = $("#email").val();
+	const password = $("#password").val();
+	if (email.length == 0 || password.length == 0 || name.length == 0) {
+		toast("error", "Enter email ans password");
+		return;
+	}
+	const user = { name, email, password };
+	const data = JSON.stringify(user);
+	$.ajax({
+		url: `/api/users/signup`,
+		type: "POST",
+		data,
+		headers: {
+			"Content-Type": "application/json",
+		},
+		success: function (response) {
+			console.log(response);
+			setTimeout(() => {
+				window.location.replace("/login");
+			}, 2000);
+			toast("success", "Sign up success, Redirecting to signin page");
+
+		},
+		error: function (error) {
+			toast("error", error);
+
+		},
+	});
 }
