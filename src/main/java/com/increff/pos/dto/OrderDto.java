@@ -19,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -39,6 +41,9 @@ public class OrderDto {
         OrderPojo orderPojo = orderService.create();
         for (OrderItemForm item : items) {
             ProductPojo productPojo = productService.getOneByParameter("barcode", item.getBarcode());
+            if (productPojo == null) {
+                throw new ApiException("Invalid Barcode");
+            }
             inventoryService.removeQuantity(productPojo.getId(), item.getQuantity());
             OrderItemPojo orderItemPojo = new OrderItemPojo();
             orderItemPojo.setQuantity(item.getQuantity());
@@ -57,8 +62,9 @@ public class OrderDto {
         for (OrderPojo order : orders) {
             OrderData orderData = new OrderData();
             orderData.setId(order.getId());
-            orderData.setDate(order.getDatetime().toLocalDate().toString());
-            orderData.setTime(order.getDatetime().toLocalTime().toString());
+            ZonedDateTime dateTime = order.getDatetime().truncatedTo(ChronoUnit.SECONDS);
+            orderData.setDate(dateTime.toLocalDate().toString());
+            orderData.setTime(dateTime.toLocalTime().toString());
             orderDataList.add(orderData);
         }
         return orderDataList;
@@ -68,8 +74,9 @@ public class OrderDto {
         OrderPojo order = orderService.getById(id);
         OrderData orderData = new OrderData();
         orderData.setId(order.getId());
-        orderData.setDate(order.getDatetime().toLocalDate().toString());
-        orderData.setTime(order.getDatetime().toLocalTime().toString());
+        ZonedDateTime dateTime = order.getDatetime().truncatedTo(ChronoUnit.SECONDS);
+        orderData.setDate(dateTime.toLocalDate().toString());
+        orderData.setTime(dateTime.toLocalTime().toString());
         orderData.setItems(getOrderItems(order.getId()));
         return orderData;
     }

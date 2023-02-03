@@ -32,6 +32,7 @@ public class PdfUtil {
     private static final String pdfurl = "../../invoices";
 
     public static void convertToPDF(OrderData order) throws ApiException {
+        System.out.println(order);
         // the XSL FO file
         try {
             File xsltFile = new File(tempurl + "/template/invoice.xsl");
@@ -77,14 +78,14 @@ public class PdfUtil {
 
             Element orderItems = doc.createElement("order-items");
             List<OrderItemData> items = order.getItems();
-            int index = 1;
-            double netTotal = 0.0;
-            int netQuantity = 0;
+            Long index = 1L;
+            Double netTotal = 0.0;
+            Long netQuantity = 0L;
             for (OrderItemData item : items) {
                 Element orderItem = doc.createElement("item");
 
                 Element id_ = doc.createElement("sn");
-                id_.appendChild(doc.createTextNode(Integer.toString(index)));
+                id_.appendChild(doc.createTextNode(Long.toString(index)));
                 orderItem.appendChild(id_);
 
                 Element name = doc.createElement("name");
@@ -105,7 +106,7 @@ public class PdfUtil {
 
                 double total_1 = item.getQuantity() * item.getSellingPrice();
                 Element total = doc.createElement("total");
-                total.appendChild(doc.createTextNode(Double.toString(total_1)));
+                total.appendChild(doc.createTextNode(String.format("%.2f", total_1)));
                 orderItem.appendChild(total);
 
                 orderItems.appendChild(orderItem);
@@ -119,11 +120,11 @@ public class PdfUtil {
             rootElement.appendChild(orderItems);
 
             Element itemCount = doc.createElement("items-count");
-            itemCount.appendChild(doc.createTextNode(Integer.toString(netQuantity)));
+            itemCount.appendChild(doc.createTextNode(Long.toString(netQuantity)));
             rootElement.appendChild(itemCount);
 
             Element totalBill = doc.createElement("total-bill");
-            totalBill.appendChild(doc.createTextNode(Double.toString(netTotal)));
+            totalBill.appendChild(doc.createTextNode(String.format("%.2f", netTotal)));
             rootElement.appendChild(totalBill);
 
             TransformerFactory transformerFactory = TransformerFactory.newInstance();

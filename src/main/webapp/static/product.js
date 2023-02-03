@@ -78,7 +78,7 @@ function saveProduct1() {
         },
         error: function (e) {
 
-            console.log("ERROR : ", e);
+            console.log("ERROR : ", e.responseJSON.message);
 
         }
     });

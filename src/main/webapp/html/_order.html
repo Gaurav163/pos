@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <div th:replace="snippets.html :: header"></div>
+  <body>
+    <div th:replace="navbar.html :: navbar"></div>
+
+    <div class="main">
+      <h5>Order Page</h5>
+      <br />
+      <div class="cdiv" onclick="$('#createModal').modal('show')">
+        Create New Order
+      </div>
+      <hr />
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Order No</th>
+            <th scope="col">Date</th>
+            <th scope="col">Time</th>
+            <th scope="col">Invoice</th>
+          </tr>
+        </thead>
+        <tbody id="tablebody2"></tbody>
+      </table>
+    </div>
+
+    <!-- Create Modal -->
+    <div
+      class="modal fade"
+      id="createModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+      data-bs-backdrop="static"
+    >
+      <div class="modal-dialog modal-dialog-centered" style="max-width: 1450px">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Create Brand</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body" style="padding: 2rem">
+            <form action="javascript:addProduct()">
+              <div class="form-group mb-3">
+                <label for="barcode">Barcode </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Barcode"
+                  name="barcode"
+                  id="barcode"
+                />
+              </div>
+              <div class="form-group mb-3">
+                <label for="quantity">Quantity </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Quantity"
+                  name="quantity"
+                  id="quantity"
+                />
+              </div>
+              <div class="form-group mb-3">
+                <label for="price">Price</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Price"
+                  name="price"
+                  id="price"
+                />
+              </div>
+              <button type="submit" class="btn btn-primary">Add Product</button>
+            </form>
+            <hr />
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th scope="col">Barcode</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody id="tablebody"></tbody>
+            </table>
+
+            <button
+              type="button"
+              class="btn btn-primary ms-4"
+              onclick="createOrder()"
+            >
+              Create Order
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-secondary ms-4"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <br />
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Create Modal end -->
+
+    <div th:replace="snippets.html :: footer"></div>
+    <script th:src="@{/static/_order.js}"></script>
+
+    <script>
+      $(document).ready(function () {
+        setCurrent("order");
+        initOrders();
+      });
+    </script>
+  </body>
+</html>

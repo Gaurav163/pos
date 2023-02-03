@@ -20,17 +20,21 @@ public class FileUploadUtil {
             List<T> forms = new ArrayList<>();
             System.out.println(reader.readLine());
             while (reader.ready()) {
-                String[] values = reader.readLine().split("\t");
-                T form = clazz.newInstance();
-                int i = 0;
-                for (Field field : fields) {
-                    String name = field.getName();
-                    String setter = "set" + name.substring(0, 1).toUpperCase() + name.substring(1);
-                    Method set = clazz.getMethod(setter, field.getType());
-                    set.invoke(form, getValue(values[i], field.getType()));
-                    i++;
+                try {
+                    String[] values = reader.readLine().split("\t");
+                    T form = clazz.newInstance();
+                    int i = 0;
+                    for (Field field : fields) {
+                        String name = field.getName();
+                        String setter = "set" + name.substring(0, 1).toUpperCase() + name.substring(1);
+                        Method set = clazz.getMethod(setter, field.getType());
+                        set.invoke(form, getValue(values[i], field.getType()));
+                        i++;
+                    }
+                    forms.add(form);
+                } catch (Exception e) {
+                    forms.add(null);
                 }
-                forms.add(form);
             }
             return forms;
         } catch (Exception e) {
@@ -53,5 +57,5 @@ public class FileUploadUtil {
             return null;
         }
     }
-    
+
 }

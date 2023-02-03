@@ -31,9 +31,15 @@ public class InventoryController {
     }
 
     @ApiOperation(value = "Add quantity to inventory for provided barcode")
-    @RequestMapping(value = "/", method = RequestMethod.PUT)
+    @RequestMapping(value = "/add", method = RequestMethod.PUT)
     public String addQuantity(@RequestBody InventoryForm form) throws ApiException {
         return inventoryDto.addQuantity(form);
+    }
+
+    @ApiOperation(value = "Add quantity to inventory for provided barcode")
+    @RequestMapping(value = "/", method = RequestMethod.PUT)
+    public String updateInventory(@RequestBody InventoryForm form) throws ApiException {
+        return inventoryDto.updateInventory(form);
     }
 
     @ApiOperation(value = "Get quantity in inventory for product with given barcode")

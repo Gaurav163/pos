@@ -17,7 +17,8 @@ public class ProductForm {
     @NotNull
     @Min(value = 0)
     private Double mrp;
-    @NotNull
-    @Min(value = 1)
-    private Long brandId;
+    @NotBlank
+    private String brand;
+    @NotBlank
+    private String category;
 }

@@ -1,21 +1,23 @@
 <div th:fragment="footer">
-    <div id="toaster"></div>
+  <div id="toaster"></div>
 
-    <script th:src="@{/static/index.js}"></script>
-    <script th:src="@{/static/jquery.slim.min.js}"></script>
-    <script th:src="@{/static/bootstrap/js/bootstrap.bundle.min.js}"></script>
+  <div id="footer"><div>&copy;Copyright POS-Increff</div></div>
 
-    <script th:src="@{/static/jquery.min.js}"></script>
+  <script th:src="@{/static/_index.js}"></script>
+  <script th:src="@{/static/jquery.slim.min.js}"></script>
+  <script th:src="@{/static/_bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+  <script th:src="@{/static/jquery.min.js}"></script>
 </div>
 
 <head th:fragment="header">
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>POS</title>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>POS</title>
 
-    <link
-        rel="stylesheet"
-        th:href="@{/static/bootstrap/css/bootstrap.min.css}"
-    />
-    <link rel="stylesheet" th:href="@{/static/index.css}" />
+  <link
+    rel="stylesheet"
+    th:href="@{/static/_bootstrap/css/bootstrap.min.css}"
+  />
+  <link rel="stylesheet" th:href="@{/static/_index.css}" />
 </head>

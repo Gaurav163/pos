@@ -28,8 +28,8 @@ public class BrandController {
 
     @ApiOperation(value = "Create multiple brands using tsv file")
     @RequestMapping(path = "/upload", method = RequestMethod.POST)
-    public List<String> uploadBrands(@RequestPart("file") MultipartFile file) throws IOException, ApiException {
-        return brandDto.upload(file);
+    public void uploadBrands(@RequestPart("file") MultipartFile file) throws IOException, ApiException {
+        brandDto.upload(file);
     }
 
     @ApiOperation(value = "Get brand by ID")

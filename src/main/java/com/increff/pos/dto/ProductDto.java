@@ -30,48 +30,43 @@ public class ProductDto {
 
 
     public ProductData create(ProductForm form) throws ApiException {
-        if (brandService.getById(form.getBrandId()) == null) {
-            throw new ApiException("Brand selected does not exist");
-        }
-        validateForm(form);
-        normalizeForm(form);
-        ProductPojo productPojo = mapper(form, ProductPojo.class);
+        ProductPojo productPojo = convertToPojo(form);
         productService.create(productPojo);
         return extendData(productPojo);
     }
 
     public ProductData update(Long id, ProductForm form) throws ApiException {
-        if (brandService.getById(form.getBrandId()) == null) {
-            throw new ApiException("Brand selected does not exist");
-        }
-        validateForm(form);
-        normalizeForm(form);
-        ProductPojo productPojo = mapper(form, ProductPojo.class);
-        return extendData(productService.update(id, productPojo));
+        return extendData(productService.update(id, convertToPojo(form)));
     }
 
-    @Transactional(rollbackFor = ApiException.class)
-    public List<String> upload(MultipartFile file) throws ApiException {
+    @Transactional(rollbackFor = Exception.class)
+    public void upload(MultipartFile file) throws ApiException {
         List<ProductForm> forms = FileUploadUtil.convert(file, ProductForm.class);
         if (forms.size() > 5000) {
             throw new ApiException("File should not contains more than 5000 entries");
         }
         List<String> responses = new ArrayList<>();
+        Long index = 0L;
+        boolean error = false;
         for (ProductForm form : forms) {
+            index += 1;
+            if (form == null) {
+                responses.add("Line " + index + ": invalid row");
+                error = true;
+                continue;
+            }
             try {
-                if (brandService.getById(form.getBrandId()) == null) {
-                    throw new ApiException("Brand selected does not exist");
-                }
-                validateForm(form);
-                normalizeForm(form);
-                ProductPojo productPojo = mapper(form, ProductPojo.class);
-                productService.create(productPojo);
-                responses.add("Product added successfully");
-            } catch (ApiException e) {
-                throw new ApiException("Error : " + e.getMessage());
+                productService.create(convertToPojo(form));
+                responses.add("Line " + index + ": All good");
+            } catch (Exception e) {
+                responses.add("Line " + index + ": Error while creating product -" + e.getMessage());
+                error = true;
             }
         }
-        return responses;
+
+        if (error) {
+            throw new ApiException(String.join("\n\r", responses));
+        }
     }
 
     public List<ProductData> getAll() throws ApiException {
@@ -98,9 +93,22 @@ public class ProductDto {
     private ProductData extendData(ProductPojo product) throws ApiException {
         ProductData data = mapper(product, ProductData.class);
         BrandPojo brand = brandService.getById(product.getBrandId());
-        data.setBrandName(brand.getName());
-        data.setBrandCategory(brand.getCategory());
+        data.setBrand(brand.getName());
+        data.setCategory(brand.getCategory());
         return data;
+    }
+
+    private ProductPojo convertToPojo(ProductForm form) throws ApiException {
+        validateForm(form);
+        normalizeForm(form);
+        BrandPojo existingBrand = brandService.getByNameAndCategory(form.getBrand(), form.getCategory());
+        if (existingBrand == null) {
+            throw new ApiException("Brand with name  '" + form.getBrand() + "' and category '" + form.getCategory() + "' does not exist");
+        }
+        ProductPojo productPojo = mapper(form, ProductPojo.class);
+        productPojo.setBrandId(existingBrand.getId());
+        return productPojo;
+
     }
 
 }

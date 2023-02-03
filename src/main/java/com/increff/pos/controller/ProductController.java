@@ -31,8 +31,8 @@ public class ProductController {
 
     @ApiOperation(value = "Create multiple products using tsv file")
     @RequestMapping(path = "/upload", method = RequestMethod.POST)
-    public List<String> uploadProducts(@RequestPart("file") MultipartFile file) throws ApiException {
-        return productDto.upload(file);
+    public void uploadProducts(@RequestPart("file") MultipartFile file) throws ApiException {
+        productDto.upload(file);
     }
 
     @ApiOperation(value = "Get product by Id")

@@ -57,25 +57,37 @@ public class BrandDto {
         return mapper(brandService.update(id, brandPojo), BrandData.class);
     }
 
-    @Transactional(rollbackFor = ApiException.class)
-    public List<String> upload(MultipartFile file) throws ApiException {
+    @Transactional(rollbackFor = Exception.class)
+    public void upload(MultipartFile file) throws ApiException {
         List<BrandForm> forms = convert(file, BrandForm.class);
         if (forms.size() > 5000) {
             throw new ApiException("Files should not contains more than 5000 entries");
         }
         List<String> responses = new ArrayList<>();
+        Long index = 0L;
+        boolean error = false;
         for (BrandForm form : forms) {
+            index += 1;
+            if (form == null) {
+                responses.add("Line " + index + ": invalid row");
+                error = true;
+                continue;
+            }
             try {
                 validateForm(form);
                 normalizeForm(form);
                 BrandPojo pojo = mapper(form, BrandPojo.class);
                 brandService.create(pojo);
-                responses.add("Brand added successfully");
-            } catch (ApiException e) {
-                throw new ApiException("Error : " + e.getMessage());
+                responses.add("Line " + index + ": All good");
+            } catch (Exception e) {
+                responses.add("Line " + index + ": Error while creating brand -" + e.getMessage());
+                error = true;
             }
+
         }
-        return responses;
+        if (error) {
+            throw new ApiException(String.join("\r", responses));
+        }
     }
 
 }

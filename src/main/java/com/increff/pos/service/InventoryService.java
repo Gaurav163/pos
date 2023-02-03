@@ -52,10 +52,27 @@ public class InventoryService {
 
     public InventoryPojo removeQuantity(Long id, Long quantity) throws ApiException {
         InventoryPojo pojo = inventoryDao.getById(id);
+        if (pojo == null) {
+            throw new ApiException("Quantity of product not satisfied by inventory");
+        }
         if (pojo.getQuantity() < quantity) {
             throw new ApiException("Quantity of product not satisfied by inventory");
         }
         pojo.setQuantity(pojo.getQuantity() - quantity);
         return pojo;
+    }
+
+    public InventoryPojo updateInventory(Long id, Long quantity) {
+        InventoryPojo pojo = inventoryDao.getById(id);
+        if (pojo == null) {
+            InventoryPojo newInventory = new InventoryPojo();
+            newInventory.setId(id);
+            newInventory.setQuantity(quantity);
+            return inventoryDao.create(newInventory);
+        } else {
+            pojo.setQuantity(quantity);
+            return pojo;
+        }
+
     }
 }

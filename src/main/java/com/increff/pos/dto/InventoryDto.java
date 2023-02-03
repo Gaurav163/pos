@@ -48,9 +48,22 @@ public class InventoryDto {
 
     public String addQuantity(InventoryForm form) throws ApiException {
         ProductPojo product = getProduct(form.getBarcode());
+        if (product == null) {
+            throw new ApiException("Invalid Barcode");
+        }
         InventoryPojo pojo = inventoryService.getById(product.getId());
         inventoryService.addQuantity(product.getId(), form.getQuantity());
         return "Quantity added to inventory of product with barcode : " + form.getBarcode();
+    }
+
+    public String updateInventory(InventoryForm form) throws ApiException {
+        ProductPojo product = getProduct(form.getBarcode());
+        if (product == null) {
+            throw new ApiException("Invalid Barcode");
+        }
+        InventoryPojo pojo = inventoryService.getById(product.getId());
+        inventoryService.updateInventory(product.getId(), form.getQuantity());
+        return "Inventory updated of product with barcode : " + form.getBarcode();
     }
 
     public InventoryForm getQuantity(String barcode) throws ApiException {

@@ -9,27 +9,27 @@ public class UiController {
 
     @GetMapping("/")
     public String homePage(Model model) {
-        return "index.html";
+        return "_index.html";
     }
 
     @GetMapping("/brand")
     public String brandPage(Model model) {
-        return "brand.html";
+        return "_brand.html";
     }
 
     @GetMapping("/product")
     public String productPage(Model model) {
-        return "product.html";
+        return "_product.html";
     }
 
     @GetMapping("/order")
     public String orderPage(Model model) {
-        return "order.html";
+        return "_order.html";
     }
 
     @GetMapping("/inventory")
     public String inventoryPage(Model model) {
-        return "inventory.html";
+        return "_inventory.html";
     }
 
     @GetMapping("/report")

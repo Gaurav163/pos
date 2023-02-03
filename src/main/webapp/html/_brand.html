@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <div th:replace="snippets.html :: header"></div>
+  <body>
+    <div th:replace="navbar.html :: navbar"></div>
+
+    <div class="main">
+      <h5>Brand Page</h5>
+      <br />
+      <div class="cdiv" onclick="$('#createModal').modal('show')">Create</div>
+      <div class="cdiv" onclick="$('#uploadModal').modal('show')">Upload</div>
+      <hr />
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Category</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody id="tablebody"></tbody>
+      </table>
+    </div>
+
+    <!-- Create Modal -->
+    <div
+      class="modal fade"
+      id="createModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+      data-bs-backdrop="static"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Create Brand</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body" style="padding: 2rem">
+            <form action="javascript:createBrand()">
+              <div class="form-group mb-3">
+                <label for="name">Name </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Name"
+                  name="name"
+                  id="name"
+                />
+              </div>
+              <div class="form-group mb-3">
+                <label for="category">Category </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Category"
+                  name="category"
+                  id="category"
+                />
+              </div>
+              <br />
+              <br />
+              <button type="submit" class="btn btn-primary ms-4">Submit</button>
+              <button
+                type="button"
+                class="btn btn-secondary ms-4"
+                data-bs-dismiss="modal"
+              >
+                Cancel
+              </button>
+            </form>
+            <br />
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Create Modal end -->
+
+    <!-- Update Modal -->
+    <div
+      class="modal fade"
+      id="updateModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+      data-bs-backdrop="static"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Update Brand</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body" style="padding: 2rem">
+            <form action="javascript:updateBrand()">
+              <input type="text" hidden id="u-id" />
+              <div class="form-group mb-3">
+                <label for="u-name">Name </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Name"
+                  name="name"
+                  id="u-name"
+                />
+              </div>
+              <div class="form-group mb-3">
+                <label for="u-category">Category </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Category"
+                  name="category"
+                  id="u-category"
+                />
+              </div>
+              <br />
+              <br />
+              <button type="submit" class="btn btn-primary ms-4">Save</button>
+              <button
+                type="button"
+                class="btn btn-secondary ms-4"
+                data-bs-dismiss="modal"
+              >
+                Cancel
+              </button>
+            </form>
+            <br />
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Update Modal end -->
+
+    <!-- Upload Modal -->
+    <div
+      class="modal fade"
+      id="uploadModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+      data-bs-backdrop="static"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Upload Brands</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body" id="upload-modal-body" style="padding: 2rem">
+            <form action="javascript:uploadBrand()">
+              <div class="form-group mb-3">
+                <label for="file">File </label>
+                <input
+                  type="file"
+                  class="form-control"
+                  placeholder="Name"
+                  name="file"
+                  id="file"
+                />
+              </div>
+
+              <br />
+              <br />
+              <button type="submit" class="btn btn-primary ms-4">Upload</button>
+              <button
+                type="button"
+                class="btn btn-secondary ms-4"
+                data-bs-dismiss="modal"
+              >
+                Cancel
+              </button>
+            </form>
+            <br />
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Upload Modal end -->
+
+    <div th:replace="snippets.html :: footer"></div>
+    <script th:src="@{/static/_brand.js}"></script>
+
+    <script>
+      $(document).ready(function () {
+        setCurrent("brand");
+        initBrand();
+      });
+    </script>
+  </body>
+</html>

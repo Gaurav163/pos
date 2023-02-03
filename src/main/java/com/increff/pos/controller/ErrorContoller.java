@@ -34,6 +34,7 @@ public class ErrorContoller {
     public ErrorMessage handle(Throwable e) {
         log.error(e.getMessage());
         ErrorMessage data = new ErrorMessage();
+        System.out.println(e);
         data.setMessage("An unknown error has occurred - " + e.getMessage());
         return data;
     }
