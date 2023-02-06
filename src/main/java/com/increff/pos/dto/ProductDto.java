@@ -3,8 +3,8 @@ package com.increff.pos.dto;
 import com.increff.pos.model.ApiException;
 import com.increff.pos.model.ProductData;
 import com.increff.pos.model.ProductForm;
-import com.increff.pos.pojo.BrandPojo;
-import com.increff.pos.pojo.ProductPojo;
+import com.increff.pos.pojo.Brand;
+import com.increff.pos.pojo.Product;
 import com.increff.pos.service.BrandService;
 import com.increff.pos.service.ProductService;
 import com.increff.pos.util.FileUploadUtil;
@@ -30,13 +30,13 @@ public class ProductDto {
 
 
     public ProductData create(ProductForm form) throws ApiException {
-        ProductPojo productPojo = convertToPojo(form);
-        productService.create(productPojo);
-        return extendData(productPojo);
+        Product product = convertToProduct(form);
+        productService.create(product);
+        return extendData(product);
     }
 
     public ProductData update(Long id, ProductForm form) throws ApiException {
-        return extendData(productService.update(id, convertToPojo(form)));
+        return extendData(productService.update(id, convertToProduct(form)));
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -51,26 +51,26 @@ public class ProductDto {
         for (ProductForm form : forms) {
             index += 1;
             if (form == null) {
-                responses.add("Line " + index + ": invalid row");
+                responses.add("Row " + index + ": invalid row");
                 error = true;
                 continue;
             }
             try {
-                productService.create(convertToPojo(form));
-                responses.add("Line " + index + ": All good");
+                productService.create(convertToProduct(form));
+                responses.add("Row " + index + ": All good");
             } catch (Exception e) {
-                responses.add("Line " + index + ": Error while creating product -" + e.getMessage());
+                responses.add("Row " + index + ": Error while creating product -" + e.getMessage());
                 error = true;
             }
         }
 
         if (error) {
-            throw new ApiException(String.join("\n\r", responses));
+            throw new ApiException(String.join("\r", responses));
         }
     }
 
     public List<ProductData> getAll() throws ApiException {
-        List<ProductPojo> products = productService.getAll();
+        List<Product> products = productService.getAll();
         return extendData(products);
     }
 
@@ -82,32 +82,32 @@ public class ProductDto {
         return extendData(productService.getOneByParameter("barcode", normalize(barcode)));
     }
 
-    private List<ProductData> extendData(List<ProductPojo> products) throws ApiException {
+    private List<ProductData> extendData(List<Product> products) throws ApiException {
         List<ProductData> data = new ArrayList<>();
-        for (ProductPojo product : products) {
+        for (Product product : products) {
             data.add(extendData(product));
         }
         return data;
     }
 
-    private ProductData extendData(ProductPojo product) throws ApiException {
+    private ProductData extendData(Product product) throws ApiException {
         ProductData data = mapper(product, ProductData.class);
-        BrandPojo brand = brandService.getById(product.getBrandId());
+        Brand brand = brandService.getById(product.getBrandId());
         data.setBrand(brand.getName());
         data.setCategory(brand.getCategory());
         return data;
     }
 
-    private ProductPojo convertToPojo(ProductForm form) throws ApiException {
+    private Product convertToProduct(ProductForm form) throws ApiException {
         validateForm(form);
         normalizeForm(form);
-        BrandPojo existingBrand = brandService.getByNameAndCategory(form.getBrand(), form.getCategory());
+        Brand existingBrand = brandService.getByNameAndCategory(form.getBrand(), form.getCategory());
         if (existingBrand == null) {
             throw new ApiException("Brand with name  '" + form.getBrand() + "' and category '" + form.getCategory() + "' does not exist");
         }
-        ProductPojo productPojo = mapper(form, ProductPojo.class);
-        productPojo.setBrandId(existingBrand.getId());
-        return productPojo;
+        Product product = mapper(form, Product.class);
+        product.setBrandId(existingBrand.getId());
+        return product;
 
     }
 

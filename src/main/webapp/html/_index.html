@@ -4,6 +4,13 @@
   <body>
     <div th:replace="navbar.html :: navbar"></div>
 
+    <div class="main"></div>
+
     <div th:replace="snippets.html :: footer"></div>
+    <script>
+      $(document).ready(function () {
+        setCurrent("index");
+      });
+    </script>
   </body>
 </html>

@@ -31,21 +31,21 @@ public class InventoryController {
     }
 
     @ApiOperation(value = "Add quantity to inventory for provided barcode")
-    @RequestMapping(value = "/add", method = RequestMethod.PUT)
-    public String addQuantity(@RequestBody InventoryForm form) throws ApiException {
-        return inventoryDto.addQuantity(form);
+    @RequestMapping(value = "/increase", method = RequestMethod.PUT)
+    public InventoryData increaseInventory(@RequestBody InventoryForm form) throws ApiException {
+        return inventoryDto.increaseInventory(form);
     }
 
-    @ApiOperation(value = "Add quantity to inventory for provided barcode")
+    @ApiOperation(value = "Update inventory for provided barcode")
     @RequestMapping(value = "/", method = RequestMethod.PUT)
-    public String updateInventory(@RequestBody InventoryForm form) throws ApiException {
+    public InventoryData updateInventory(@RequestBody InventoryForm form) throws ApiException {
         return inventoryDto.updateInventory(form);
     }
 
     @ApiOperation(value = "Get quantity in inventory for product with given barcode")
     @RequestMapping(value = "/{barcode}", method = RequestMethod.GET)
-    public InventoryForm getQuantity(@PathVariable("barcode") String barcode) throws ApiException {
-        return inventoryDto.getQuantity(barcode);
+    public InventoryData getByBarcode(@PathVariable("barcode") String barcode) throws ApiException {
+        return inventoryDto.getByBarcode(barcode);
     }
 
     @ApiOperation(value = "Get all inventory")

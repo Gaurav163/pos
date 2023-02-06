@@ -1,12 +1,17 @@
 <div th:fragment="footer">
   <div id="toaster"></div>
 
-  <div id="footer"><div>&copy;Copyright POS-Increff</div></div>
+  <!-- <div id="footer"><div>&copy;Copyright POS-Increff</div></div> -->
 
   <script th:src="@{/static/_index.js}"></script>
   <script th:src="@{/static/jquery.slim.min.js}"></script>
   <script th:src="@{/static/_bootstrap/js/bootstrap.bundle.min.js}"></script>
 
+  <script
+    type="text/javascript"
+    th:src="@{/static/DataTables/datatables.min.js}"
+    defer
+  ></script>
   <script th:src="@{/static/jquery.min.js}"></script>
 </div>
 
@@ -18,6 +23,11 @@
   <link
     rel="stylesheet"
     th:href="@{/static/_bootstrap/css/bootstrap.min.css}"
+  />
+  <link
+    rel="stylesheet"
+    type="text/css"
+    th:href="@{/static/DataTables/datatables.min.css}"
   />
   <link rel="stylesheet" th:href="@{/static/_index.css}" />
 </head>

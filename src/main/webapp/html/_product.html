@@ -4,19 +4,18 @@
   <body>
     <div th:replace="navbar.html :: navbar"></div>
     <div class="main">
-      <h5>Brand Page</h5>
       <br />
       <div class="cdiv" onclick="$('#createModal').modal('show')">Create</div>
       <div class="cdiv" onclick="$('#uploadModal').modal('show')">Upload</div>
       <hr />
-      <table class="table table-striped">
+      <table class="table table-striped" id="main-table">
         <thead>
           <tr>
-            <th scope="col">Name</th>
             <th scope="col">Barcode</th>
-            <th scope="col">MRP</th>
+            <th scope="col">Name</th>
             <th scope="col">Brand</th>
             <th scope="col">Category</th>
+            <th scope="col">MRP</th>
             <th scope="col">Action</th>
           </tr>
         </thead>
@@ -33,10 +32,10 @@
       aria-hidden="true"
       data-bs-backdrop="static"
     >
-      <div class="modal-dialog modal-dialog-centered" style="max-width: 1000px">
+      <div class="modal-dialog" style="max-width: 900px">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Create Brand</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Create Product</h5>
             <button
               type="button"
               class="btn-close"
@@ -44,8 +43,8 @@
               aria-label="Close"
             ></button>
           </div>
-          <div class="modal-body" style="padding: 2rem 3rem">
-            <form action="javascript:createProduct()">
+          <div class="modal-body">
+            <form action="#">
               <div class="form-group mb-3">
                 <label for="name">Name </label>
                 <input
@@ -67,11 +66,11 @@
                 />
               </div>
               <div class="form-group mb-3">
-                <label for="mrp">Mrp </label>
+                <label for="mrp">MRP </label>
                 <input
                   type="text"
                   class="form-control"
-                  placeholder="Mrp"
+                  placeholder="MRP"
                   name="mrp"
                   id="mrp"
                 />
@@ -96,16 +95,19 @@
                   id="category"
                 />
               </div>
-              <button type="submit" class="btn btn-primary ms-4">Submit</button>
-              <button
-                type="button"
-                class="btn btn-secondary ms-4"
-                data-bs-dismiss="modal"
-              >
-                Cancel
-              </button>
             </form>
-            <br />
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary ms-4"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button onclick="createProduct()" class="btn btn-primary ms-4">
+              Submit
+            </button>
           </div>
         </div>
       </div>
@@ -121,10 +123,10 @@
       aria-hidden="true"
       data-bs-backdrop="static"
     >
-      <div class="modal-dialog modal-dialog-centered" style="max-width: 1000px">
+      <div class="modal-dialog" style="max-width: 900px">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Create Brand</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Update Product</h5>
             <button
               type="button"
               class="btn-close"
@@ -132,8 +134,8 @@
               aria-label="Close"
             ></button>
           </div>
-          <div class="modal-body" style="padding: 2rem 3rem">
-            <form action="javascript:updateProduct()">
+          <div class="modal-body">
+            <form action="#">
               <input type="text" hidden id="u-id" />
               <div class="form-group mb-3">
                 <label for="u-name">Name </label>
@@ -156,11 +158,11 @@
                 />
               </div>
               <div class="form-group mb-3">
-                <label for="u-mrp">Mrp </label>
+                <label for="u-mrp">MRP </label>
                 <input
                   type="text"
                   class="form-control"
-                  placeholder="Mrp"
+                  placeholder="MRP"
                   name="mrp"
                   id="u-mrp"
                 />
@@ -185,16 +187,19 @@
                   id="u-category"
                 />
               </div>
-              <button type="submit" class="btn btn-primary ms-4">Save</button>
-              <button
-                type="button"
-                class="btn btn-secondary ms-4"
-                data-bs-dismiss="modal"
-              >
-                Cancel
-              </button>
             </form>
-            <br />
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary ms-4"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button onclick="updateProduct()" class="btn btn-primary ms-4">
+              Save
+            </button>
           </div>
         </div>
       </div>
@@ -210,7 +215,7 @@
       aria-hidden="true"
       data-bs-backdrop="static"
     >
-      <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">Upload Products</h5>
@@ -221,13 +226,9 @@
               aria-label="Close"
             ></button>
           </div>
-          <div
-            class="modal-body"
-            id="upload-modal-body"
-            style="padding: 2rem 3rem"
-          >
-            <form action="javascript:uploadProduct()">
-              <div class="form-group mb-3">
+          <div class="modal-body" id="upload-modal-body">
+            <form action="#">
+              <div class="form-group ps-2 mb-3">
                 <label for="file">File </label>
                 <input
                   type="file"
@@ -237,19 +238,30 @@
                   id="file"
                 />
               </div>
-
-              <br />
-              <br />
-              <button type="submit" class="btn btn-primary ms-4">Upload</button>
-              <button
-                type="button"
-                class="btn btn-secondary ms-4"
-                data-bs-dismiss="modal"
-              >
-                Cancel
-              </button>
             </form>
-            <br />
+            <div class="cdiv" onclick="downloadSampleProduct()">
+              Download Sample
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              class="btn btn-warning"
+              disabled="true"
+              id="error-button"
+              onclick="downloadErrorFile()"
+            >
+              Download Errors
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary ms-4"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button onclick="uploadProduct()" class="btn btn-primary ms-4">
+              Submit
+            </button>
           </div>
         </div>
       </div>

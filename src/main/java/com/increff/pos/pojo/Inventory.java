@@ -14,7 +14,7 @@ import static com.increff.pos.pojo.PojoConstants.INVENTORY_TABLE_NAME;
 @NoArgsConstructor
 @Entity
 @Table(name = INVENTORY_TABLE_NAME)
-public class InventoryPojo {
+public class Inventory {
     @Id
     private Long id;
     @Column(nullable = false)

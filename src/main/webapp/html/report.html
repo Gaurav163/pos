@@ -3,29 +3,29 @@
   <div th:replace="snippets.html :: header"></div>
   <body>
     <div th:replace="navbar.html :: navbar"></div>
-    <div class="p-4">
+    <div class="main">
       <h3>Report</h3>
-      <div class="form-group">
-        <label for="startDate">Start Date : </label>
-        <input type="date" class="form-control" id="startDate" />
-      </div>
-      <div class="form-group">
-        <label for="endDate">End Date : </label>
-        <input type="date" class="form-control" id="endDate" />
-      </div>
-      <br />
-      <div class="form-group">
-        <label for="brand">Brand : </label>
-        <input type="text" id="brand" class="form-control" />
-      </div>
-      <div class="form-group">
-        <label for="category">Category : </label>
-        <input type="text" id="category" class="form-control" />
-      </div>
-      <br />
-      <button class="btn btn-primary" onclick="showReport()">
-        Show Report
-      </button>
+      <form action="javascript:showReport()">
+        <div class="form-group mb-3">
+          <label for="startDate">Start Date : </label>
+          <input type="date" class="form-control" id="startDate" />
+        </div>
+        <div class="form-group mb-3">
+          <label for="endDate">End Date : </label>
+          <input type="date" class="form-control" id="endDate" />
+        </div>
+        <br />
+        <div class="form-group mb-3">
+          <label for="brand">Brand : </label>
+          <input type="text" id="brand" class="form-control" />
+        </div>
+        <div class="form-group mb-3">
+          <label for="category">Category : </label>
+          <input type="text" id="category" class="form-control" />
+        </div>
+        <br />
+        <button class="btn btn-primary" type="submit">Show Report</button>
+      </form>
 
       <hr />
       <table class="table table-striped">
@@ -34,7 +34,7 @@
             <th scope="col">Brand</th>
             <th scope="col">category</th>
             <th scope="col">Quantity</th>
-            <th scope="col">Revenuue</th>
+            <th scope="col">Revenue</th>
           </tr>
         </thead>
         <tbody id="tablebody"></tbody>
@@ -43,5 +43,10 @@
 
     <div th:replace="snippets.html :: footer"></div>
     <script th:src="@{/static/report.js}"></script>
+    <script>
+      $(document).ready(function () {
+        setCurrent("report");
+      });
+    </script>
   </body>
 </html>

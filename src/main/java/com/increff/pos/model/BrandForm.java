@@ -8,8 +8,8 @@ import javax.validation.constraints.NotBlank;
 @Data
 @NoArgsConstructor
 public class BrandForm {
-    @NotBlank(message = "Brand name should not be empty")
+    @NotBlank()
     private String name;
-    @NotBlank(message = "Category should not be empty")
+    @NotBlank()
     private String category;
 }

@@ -4,14 +4,11 @@ import com.increff.pos.model.ApiException;
 import com.increff.pos.model.OrderData;
 import com.increff.pos.model.OrderItemData;
 import com.increff.pos.model.OrderItemForm;
-import com.increff.pos.pojo.OrderItemPojo;
-import com.increff.pos.pojo.OrderPojo;
-import com.increff.pos.pojo.ProductPojo;
-import com.increff.pos.service.InventoryService;
-import com.increff.pos.service.OrderItemService;
-import com.increff.pos.service.OrderService;
-import com.increff.pos.service.ProductService;
-import com.increff.pos.util.MapperUtil;
+import com.increff.pos.pojo.Brand;
+import com.increff.pos.pojo.Order;
+import com.increff.pos.pojo.OrderItem;
+import com.increff.pos.pojo.Product;
+import com.increff.pos.service.*;
 import com.increff.pos.util.PdfUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
+import static com.increff.pos.util.MapperUtil.mapper;
+
 @Service
 public class OrderDto {
     @Autowired
@@ -35,45 +34,68 @@ public class OrderDto {
     private InventoryService inventoryService;
     @Autowired
     private ProductService productService;
+    @Autowired
+    private BrandService brandService;
 
     @Transactional(rollbackFor = ApiException.class)
-    public String create(List<OrderItemForm> items) throws ApiException {
-        OrderPojo orderPojo = orderService.create();
-        for (OrderItemForm item : items) {
-            ProductPojo productPojo = productService.getOneByParameter("barcode", item.getBarcode());
-            if (productPojo == null) {
+    public OrderData create(List<OrderItemForm> itemForms) throws ApiException {
+        Order order = orderService.create();
+        for (OrderItemForm itemForm : itemForms) {
+            Product product = productService.getOneByParameter("barcode", itemForm.getBarcode());
+            if (product == null) {
                 throw new ApiException("Invalid Barcode");
             }
-            inventoryService.removeQuantity(productPojo.getId(), item.getQuantity());
-            OrderItemPojo orderItemPojo = new OrderItemPojo();
-            orderItemPojo.setQuantity(item.getQuantity());
-            orderItemPojo.setOrderId(orderPojo.getId());
-            orderItemPojo.setSellingPrice(item.getSellingPrice());
-            orderItemPojo.setProductId(productPojo.getId());
-            orderItemService.create(orderItemPojo);
+            inventoryService.reduceInventory(product.getId(), itemForm.getQuantity());
+            OrderItem orderItem = new OrderItem();
+            orderItem.setQuantity(itemForm.getQuantity());
+            orderItem.setOrderId(order.getId());
+            orderItem.setSellingPrice(itemForm.getSellingPrice());
+            orderItem.setProductId(product.getId());
+            orderItemService.create(orderItem);
         }
-        PdfUtil.convertToPDF(getById(orderPojo.getId()));
-        return getInvoiceAsBase64(orderPojo.getId());
+
+        return getOrderData(order);
     }
 
     public List<OrderData> getAll() throws ApiException {
-        List<OrderPojo> orders = orderService.getAll();
+
+        List<Order> orders = orderService.getAll();
         List<OrderData> orderDataList = new ArrayList<>();
-        for (OrderPojo order : orders) {
-            OrderData orderData = new OrderData();
-            orderData.setId(order.getId());
-            ZonedDateTime dateTime = order.getDatetime().truncatedTo(ChronoUnit.SECONDS);
-            orderData.setDate(dateTime.toLocalDate().toString());
-            orderData.setTime(dateTime.toLocalTime().toString());
-            orderDataList.add(orderData);
+        for (Order order : orders) {
+            orderDataList.add(getOrderData(order));
         }
         return orderDataList;
+
     }
 
     public OrderData getById(Long id) throws ApiException {
-        OrderPojo order = orderService.getById(id);
-        OrderData orderData = new OrderData();
-        orderData.setId(order.getId());
+        return getOrderData(orderService.getById(id));
+    }
+
+    public OrderData generateInvoice(Long id) throws ApiException {
+        orderService.createInvoice(id);
+        Order order = orderService.getById(id);
+        if (order == null) {
+            throw new ApiException("Order not exist");
+        }
+        OrderData orderData = getOrderData(order);
+        PdfUtil.convertToPDF(orderData);
+        return orderData;
+    }
+
+    public String getInvoiceAsBase64(Long id) throws ApiException {
+        try {
+            String baseurl = "/home/gaurav_inc/pos/invoices/";
+            File file = new File(baseurl + "invoice-" + id.toString() + ".pdf");
+            byte[] bytes = Files.readAllBytes(file.toPath());
+            return Base64.getEncoder().encodeToString(bytes);
+        } catch (Exception e) {
+            throw new ApiException(e.getMessage());
+        }
+    }
+
+    private OrderData getOrderData(Order order) throws ApiException {
+        OrderData orderData = mapper(order, OrderData.class);
         ZonedDateTime dateTime = order.getDatetime().truncatedTo(ChronoUnit.SECONDS);
         orderData.setDate(dateTime.toLocalDate().toString());
         orderData.setTime(dateTime.toLocalTime().toString());
@@ -81,30 +103,21 @@ public class OrderDto {
         return orderData;
     }
 
-    public List<OrderItemData> getOrderItems(Long id) throws ApiException {
-        List<OrderItemPojo> orderItems = orderItemService.getListByParameter("orderId", id);
+    private List<OrderItemData> getOrderItems(Long id) throws ApiException {
+        List<OrderItem> orderItems = orderItemService.getListByParameter("orderId", id);
         List<OrderItemData> items = new ArrayList<>();
-        for (OrderItemPojo orderItem : orderItems) {
-            ProductPojo product = productService.getById(orderItem.getProductId());
-            OrderItemData item = MapperUtil.mapper(orderItem, OrderItemData.class);
+        for (OrderItem orderItem : orderItems) {
+            Product product = productService.getById(orderItem.getProductId());
+            Brand brand = brandService.getById(product.getBrandId());
+            OrderItemData item = mapper(orderItem, OrderItemData.class);
             item.setName(product.getName());
             item.setBarcode(product.getBarcode());
             item.setMrp(product.getMrp());
+            item.setBrand(brand.getName());
+            item.setCategory(brand.getCategory());
             items.add(item);
         }
         return items;
-    }
-
-    public String getInvoiceAsBase64(Long id) throws ApiException {
-        try {
-            String baseurl = "src/main/resources/invoices/";
-            File file = new File(baseurl + "invoice-" + id.toString() + ".pdf");
-            byte[] bytes = Files.readAllBytes(file.toPath());
-
-            return Base64.getEncoder().encodeToString(bytes);
-        } catch (Exception e) {
-            throw new ApiException(e.getMessage());
-        }
     }
 
 }

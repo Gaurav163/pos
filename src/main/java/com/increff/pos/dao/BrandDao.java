@@ -1,21 +1,21 @@
 package com.increff.pos.dao;
 
-import com.increff.pos.pojo.BrandPojo;
+import com.increff.pos.pojo.Brand;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.TypedQuery;
 
 @Repository
-public class BrandDao extends AbstractDao<BrandPojo> {
+public class BrandDao extends AbstractDao<Brand> {
 
     public BrandDao() {
-        super(BrandPojo.class);
+        super(Brand.class);
     }
 
-    private static final String SELECT_BY_NAME_AND_CATEGORY = "select b from BrandPojo b where name=:name and category=:category";
+    private static final String SELECT_BY_NAME_AND_CATEGORY = "select b from Brand b where name=:name and category=:category";
 
-    public BrandPojo getByNameAndCategory(String name, String category) {
-        TypedQuery<BrandPojo> query = getQuery(SELECT_BY_NAME_AND_CATEGORY);
+    public Brand getByNameAndCategory(String name, String category) {
+        TypedQuery<Brand> query = getQuery(SELECT_BY_NAME_AND_CATEGORY);
         query.setParameter("name", name);
         query.setParameter("category", category);
         return getSingle(query);

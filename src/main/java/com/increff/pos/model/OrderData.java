@@ -9,5 +9,6 @@ public class OrderData {
     private Long id;
     private String date;
     private String time;
+    private Boolean invoiced;
     private List<OrderItemData> items;
 }

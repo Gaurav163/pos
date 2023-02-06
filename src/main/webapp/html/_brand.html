@@ -5,12 +5,11 @@
     <div th:replace="navbar.html :: navbar"></div>
 
     <div class="main">
-      <h5>Brand Page</h5>
       <br />
       <div class="cdiv" onclick="$('#createModal').modal('show')">Create</div>
       <div class="cdiv" onclick="$('#uploadModal').modal('show')">Upload</div>
       <hr />
-      <table class="table table-striped">
+      <table class="table table-striped" id="main-table">
         <thead>
           <tr>
             <th scope="col">Name</th>
@@ -31,7 +30,7 @@
       aria-hidden="true"
       data-bs-backdrop="static"
     >
-      <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">Create Brand</h5>
@@ -42,8 +41,8 @@
               aria-label="Close"
             ></button>
           </div>
-          <div class="modal-body" style="padding: 2rem">
-            <form action="javascript:createBrand()">
+          <div class="modal-body">
+            <form action="#">
               <div class="form-group mb-3">
                 <label for="name">Name </label>
                 <input
@@ -64,18 +63,19 @@
                   id="category"
                 />
               </div>
-              <br />
-              <br />
-              <button type="submit" class="btn btn-primary ms-4">Submit</button>
-              <button
-                type="button"
-                class="btn btn-secondary ms-4"
-                data-bs-dismiss="modal"
-              >
-                Cancel
-              </button>
             </form>
-            <br />
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary ms-4"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button onclick="createBrand()" class="btn btn-primary ms-4">
+              Submit
+            </button>
           </div>
         </div>
       </div>
@@ -91,7 +91,7 @@
       aria-hidden="true"
       data-bs-backdrop="static"
     >
-      <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">Update Brand</h5>
@@ -102,8 +102,8 @@
               aria-label="Close"
             ></button>
           </div>
-          <div class="modal-body" style="padding: 2rem">
-            <form action="javascript:updateBrand()">
+          <div class="modal-body">
+            <form action="#">
               <input type="text" hidden id="u-id" />
               <div class="form-group mb-3">
                 <label for="u-name">Name </label>
@@ -125,18 +125,19 @@
                   id="u-category"
                 />
               </div>
-              <br />
-              <br />
-              <button type="submit" class="btn btn-primary ms-4">Save</button>
-              <button
-                type="button"
-                class="btn btn-secondary ms-4"
-                data-bs-dismiss="modal"
-              >
-                Cancel
-              </button>
             </form>
-            <br />
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary ms-4"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button onclick="updateBrand()" class="btn btn-primary ms-4">
+              Save
+            </button>
           </div>
         </div>
       </div>
@@ -152,7 +153,7 @@
       aria-hidden="true"
       data-bs-backdrop="static"
     >
-      <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">Upload Brands</h5>
@@ -163,10 +164,10 @@
               aria-label="Close"
             ></button>
           </div>
-          <div class="modal-body" id="upload-modal-body" style="padding: 2rem">
-            <form action="javascript:uploadBrand()">
+          <div class="modal-body" id="upload-modal-body">
+            <form action="#">
               <div class="form-group mb-3">
-                <label for="file">File </label>
+                <label class="ps-2" for="file">File </label>
                 <input
                   type="file"
                   class="form-control"
@@ -175,19 +176,30 @@
                   id="file"
                 />
               </div>
-
-              <br />
-              <br />
-              <button type="submit" class="btn btn-primary ms-4">Upload</button>
-              <button
-                type="button"
-                class="btn btn-secondary ms-4"
-                data-bs-dismiss="modal"
-              >
-                Cancel
-              </button>
             </form>
-            <br />
+            <div class="cdiv" onclick="downloadSampleBrand()">
+              Download Sample
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              class="btn btn-warning"
+              disabled="true"
+              id="error-button"
+              onclick="downloadErrorFile()"
+            >
+              Download Errors
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary ms-4"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button onclick="uploadBrand()" class="btn btn-primary ms-4">
+              submit
+            </button>
           </div>
         </div>
       </div>

@@ -12,11 +12,10 @@ import static com.increff.pos.pojo.PojoConstants.USER_SEQUENCE;
 @NoArgsConstructor
 public class User {
     @Id
-    @SequenceGenerator(allocationSize = 10,
-            initialValue = 10001,
+    @SequenceGenerator(allocationSize = 1,
             name = USER_SEQUENCE,
             sequenceName = USER_SEQUENCE)
-    @GeneratedValue(strategy = GenerationType.IDENTITY,
+    @GeneratedValue(strategy = GenerationType.AUTO,
             generator = USER_SEQUENCE)
     private Long id;
     @Column(nullable = false)
@@ -27,4 +26,6 @@ public class User {
     private String password;
     @Column(nullable = false)
     private String role;
+    @Column(nullable = false)
+    private boolean verified;
 }

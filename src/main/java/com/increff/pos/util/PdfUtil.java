@@ -28,19 +28,19 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class PdfUtil {
-    private static final String tempurl = "src/main/resources";
-    private static final String pdfurl = "../../invoices";
+    private static final String tempurl = "src/main/resources/template";
+    private static final String pdfurl = "/home/gaurav_inc/pos/invoices/";
 
     public static void convertToPDF(OrderData order) throws ApiException {
         System.out.println(order);
         // the XSL FO file
         try {
-            File xsltFile = new File(tempurl + "/template/invoice.xsl");
+            File xsltFile = new File(tempurl + "/invoice.xsl");
             String xml = toxml(order);
             StreamSource xmlSource = new StreamSource(new StringReader(xml));
             FopFactory fopFactory = FopFactory.newInstance(new File(".").toURI());
             FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
-            OutputStream out = Files.newOutputStream(Paths.get(tempurl + "/invoices/invoice-" + order.getId() + ".pdf"));
+            OutputStream out = Files.newOutputStream(Paths.get(pdfurl + "invoice-" + order.getId() + ".pdf"));
             try {
                 Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, out);
                 TransformerFactory factory = TransformerFactory.newInstance();

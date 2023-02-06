@@ -2,7 +2,7 @@ package com.increff.pos.service;
 
 import com.increff.pos.dao.InventoryDao;
 import com.increff.pos.model.ApiException;
-import com.increff.pos.pojo.InventoryPojo;
+import com.increff.pos.pojo.Inventory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,63 +15,59 @@ public class InventoryService {
     @Autowired
     private InventoryDao inventoryDao;
 
-    public InventoryPojo getById(Long id) {
-        return inventoryDao.getById(id);
-    }
-
-    public List<InventoryPojo> getAll() {
+    public List<Inventory> getAll() {
         return inventoryDao.getAll();
     }
 
 
-    public InventoryPojo addQuantity(Long id, Long quantity) throws ApiException {
-        InventoryPojo pojo = inventoryDao.getById(id);
-        if (pojo == null) {
-            InventoryPojo newInventory = new InventoryPojo();
+    public Inventory increaseInventory(Long id, Long quantity) throws ApiException {
+        Inventory inventory = inventoryDao.getById(id);
+        if (inventory == null) {
+            Inventory newInventory = new Inventory();
             newInventory.setId(id);
             newInventory.setQuantity(quantity);
             return inventoryDao.create(newInventory);
         } else {
-            pojo.setQuantity(pojo.getQuantity() + quantity);
-            return pojo;
+            inventory.setQuantity(inventory.getQuantity() + quantity);
+            return inventory;
         }
 
     }
 
-    public InventoryPojo getQuantity(Long id) {
-        InventoryPojo pojo = inventoryDao.getById(id);
-        InventoryPojo result = new InventoryPojo();
+    public Inventory getById(Long id) {
+        Inventory inventory = inventoryDao.getById(id);
+        Inventory result = new Inventory();
         result.setId(id);
-        if (pojo == null) {
+        if (inventory == null) {
             result.setQuantity(0L);
         } else {
-            result.setQuantity(pojo.getQuantity());
+            result.setQuantity(inventory.getQuantity());
         }
         return result;
     }
 
-    public InventoryPojo removeQuantity(Long id, Long quantity) throws ApiException {
-        InventoryPojo pojo = inventoryDao.getById(id);
-        if (pojo == null) {
-            throw new ApiException("Quantity of product not satisfied by inventory");
+    public Inventory reduceInventory(Long id, Long quantity) throws ApiException {
+        Inventory inventory = inventoryDao.getById(id);
+        if (inventory == null) {
+            throw new ApiException("Low inventory");
         }
-        if (pojo.getQuantity() < quantity) {
-            throw new ApiException("Quantity of product not satisfied by inventory");
+        if (inventory.getQuantity() < quantity) {
+            throw new ApiException("Low inventory");
         }
-        pojo.setQuantity(pojo.getQuantity() - quantity);
-        return pojo;
+        inventory.setQuantity(inventory.getQuantity() - quantity);
+        return inventory;
     }
 
-    public InventoryPojo updateInventory(Long id, Long quantity) {
-        InventoryPojo pojo = inventoryDao.getById(id);
-        if (pojo == null) {
-            InventoryPojo newInventory = new InventoryPojo();
+    public Inventory updateInventory(Long id, Long quantity) {
+        Inventory inventory = inventoryDao.getById(id);
+        if (inventory == null) {
+            Inventory newInventory = new Inventory();
             newInventory.setId(id);
             newInventory.setQuantity(quantity);
             return inventoryDao.create(newInventory);
         } else {
-            pojo.setQuantity(quantity);
-            return pojo;
+            inventory.setQuantity(quantity);
+            return inventory;
         }
 
     }

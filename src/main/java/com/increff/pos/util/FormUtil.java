@@ -8,9 +8,9 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 public class FormUtil {
@@ -20,12 +20,10 @@ public class FormUtil {
         Validator validator = factory.getValidator();
 
         Set<ConstraintViolation<T>> violations = validator.validate(ob);
-        List<String> errors = new ArrayList<>();
-        for (ConstraintViolation<T> violation : violations) {
-            errors.add(violation.getMessage());
-        }
-        if (!errors.isEmpty()) {
-            throw new ApiException(errors.get(0).toString());
+        if (!violations.isEmpty()) {
+            List<String> details = violations.parallelStream().map(e -> e.getPropertyPath() + " " + e.getMessage())
+                    .collect(Collectors.toList());
+            throw new ApiException(String.join(" , ", details));
         }
     }
 

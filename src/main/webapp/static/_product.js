@@ -1,26 +1,9 @@
+let table;
+
 function initProduct() {
     loadAllProducts();
 }
 
-const brands = {};
-
-function loadAllBrands() {
-    $.ajax({
-        url: "/api/brands/",
-        type: "GET",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        success: function (products) {
-            renderTable(products);
-        },
-        error: function (error) {
-            console.log(error);
-            toast("error", "Error : " + error.responseJSON.message);
-
-        },
-    });
-}
 
 
 
@@ -44,38 +27,37 @@ function loadAllProducts() {
 
 function renderTable(products) {
     $("#tablebody").html("");
+    table = $("#main-table").DataTable();
     products.forEach(product => {
         prependProduct(product);
     });
+    table.draw();
 }
 
 function prependProduct(product) {
-    $("#tablebody").prepend(`
-    <tr id='${product.id}'>
-    <td>${product.name}</td>
-    <td>${product.barcode}</td>
-    <td>${product.mrp}</td>
-    <td>${product.brand}</td>
-    <td>${product.category}</td>
-    <td><div class="cdiv" onclick="editProduct(${product.id},
-        '${product.name}','${product.barcode}','${product.mrp}'
-        ,'${product.brand}','${product.category}')">Edit</div></td>
-    </tr>
-    `);
+    table.row.add([product.barcode, product.name, product.brand, product.category, product.mrp,
+    `<div class="cdiv" onclick="editProduct(${product.id},
+         '${product.name}','${product.barcode}','${product.mrp}'
+         ,'${product.brand}','${product.category}')">Edit</div>`
+    ]).node().id = product.id;
+    // $("#tablebody").prepend(`
+    // <tr id='${product.id}'>
+    // <td>${product.barcode}</td>
+    // <td>${product.name}</td>
+    // <td>${product.brand}</td>
+    // <td>${product.category}</td>
+    // <td>${product.mrp}</td>
+    // <td><div class="cdiv" onclick="editProduct(${product.id},
+    //     '${product.name}','${product.barcode}','${product.mrp}'
+    //     ,'${product.brand}','${product.category}')">Edit</div></td>
+    // </tr>
+    // `);
 }
 
-function insertUpdatedBrand(product) {
-    $("#" + product.id).html(`
-    <td>${product.name}</td>
-    <td>${product.barcode}</td>
-    <td>${product.mrp}</td>
-    <td>${product.brand}</td>
-    <td>${product.category}</td>
-    <td><div class="cdiv" onclick="editProduct(${product.id},
-        '${product.name}','${product.barcode}','${product.mrp}'
-        ,'${product.brand}','${product.category}')">Edit</div>
-    </td>
-    `);
+function insertUpdatedProduct(product) {
+    table.row(`#${product.id}`).remove();
+    prependProduct(product);
+    table.draw();
 }
 
 function createProduct() {
@@ -97,7 +79,8 @@ function createProduct() {
         },
         success: function (data) {
             console.log(data);
-            insertUpdatedBrand(data);
+            prependProduct(data);
+            table.draw();
             $("#createModal").modal("hide");
             toast("success", "Product created");
         },
@@ -127,7 +110,7 @@ function updateProduct() {
         },
         success: function (data) {
             console.log(data);
-            insertUpdatedBrand(data);
+            insertUpdatedProduct(data);
             $("#updateModal").modal("hide");
             toast("success", "Updated product saved");
         },
@@ -148,11 +131,18 @@ function editProduct(id, name, barcode, mrp, brand, category) {
     $("#u-category").val(category);
     $("#updateModal").modal("show");
 }
+function downloadSampleProduct() {
+    console.log("yes");
+    window.open("/sample/product", '_blank').focus();
+}
 
 function uploadProduct() {
     const data = new FormData();
-    data.append("file", $("#file")[0].files[0]);
-    console.log($("#file")[0].files[0]);
+    const file = $("#file")[0].files[0];
+    data.append("file", file);
+    if (file.type != "text/tab-separated-values") {
+        toast("error", "Selected file must be a TSV (tab seperated value) file");
+    }
 
     $.ajax({
         type: "POST",
@@ -170,13 +160,14 @@ function uploadProduct() {
         error: function (e) {
             if (e.status == 400) {
                 let text = e.responseJSON.message;
+                $("#error-file").remove();
                 let element = document.createElement('a');
                 element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
                 element.setAttribute('download', "errors.txt");
                 element.setAttribute('id', "error-file");
                 element.style.display = 'none';
                 document.body.appendChild(element);
-                $("#upload-modal-body").append(`<button class="btn btn-warning ms-4" id="error-button" onclick="downloadErrorFile()">Download Errors</button>`)
+                $("#error-button").attr("disabled", false);
             }
 
             console.log("ERROR : ", e.responseJSON.message);
@@ -184,4 +175,10 @@ function uploadProduct() {
 
         }
     });
+}
+
+function downloadErrorFile() {
+    document.getElementById('error-file').click();
+    $("#error-file").remove();
+    $("#error-button").attr("disabled", "true");
 }

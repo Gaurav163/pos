@@ -1,8 +1,8 @@
 package com.increff.pos.dto;
 
 import com.increff.pos.pojo.DailyReport;
-import com.increff.pos.pojo.OrderItemPojo;
-import com.increff.pos.pojo.OrderPojo;
+import com.increff.pos.pojo.OrderItem;
+import com.increff.pos.pojo.Order;
 import com.increff.pos.service.DailyReportService;
 import com.increff.pos.service.OrderItemService;
 import com.increff.pos.service.OrderService;
@@ -28,14 +28,14 @@ public class DailyReportDto {
     public void scheduleFixedDelayTask() {
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
         ZonedDateTime lastday = now.minusDays(1);
-        List<OrderPojo> orders = orderService.getByDatetimeRange(lastday, now);
+        List<Order> orders = orderService.getByDatetimeRange(lastday, now);
 
         Double totalRevenue = 0.0;
         Long ordersCount = (long) orders.size();
         Long itemsCount = 0L;
-        for (OrderPojo order : orders) {
-            List<OrderItemPojo> items = orderItemService.getListByParameter("orderId", order.getId());
-            for (OrderItemPojo item : items) {
+        for (Order order : orders) {
+            List<OrderItem> items = orderItemService.getListByParameter("orderId", order.getId());
+            for (OrderItem item : items) {
                 itemsCount += item.getQuantity();
                 totalRevenue += item.getQuantity() * item.getSellingPrice();
             }

@@ -14,13 +14,13 @@ import static com.increff.pos.pojo.PojoConstants.BRAND_TABLE_NAME;
         @UniqueConstraint(name = "uq_brands_name_category", columnNames = {"name", "category"})
 })
 @NoArgsConstructor
-public class BrandPojo {
+public class Brand {
 
     @Id
     @SequenceGenerator(allocationSize = 1,
             name = BRAND_SEQUENCE,
             sequenceName = BRAND_SEQUENCE)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+    @GeneratedValue(strategy = GenerationType.AUTO,
             generator = BRAND_SEQUENCE)
     Long id;
     @Column(nullable = false)

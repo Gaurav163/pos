@@ -3,10 +3,10 @@ package com.increff.pos.dto;
 import com.increff.pos.model.ApiException;
 import com.increff.pos.model.ReportData;
 import com.increff.pos.model.ReportForm;
-import com.increff.pos.pojo.BrandPojo;
-import com.increff.pos.pojo.OrderItemPojo;
-import com.increff.pos.pojo.OrderPojo;
-import com.increff.pos.pojo.ProductPojo;
+import com.increff.pos.pojo.Brand;
+import com.increff.pos.pojo.OrderItem;
+import com.increff.pos.pojo.Order;
+import com.increff.pos.pojo.Product;
 import com.increff.pos.service.BrandService;
 import com.increff.pos.service.OrderItemService;
 import com.increff.pos.service.OrderService;
@@ -39,13 +39,13 @@ public class ReportDto {
         normalizeForm(form);
         ZonedDateTime startDate = ZonedDateTime.parse(form.getStartDate());
         ZonedDateTime endDate = ZonedDateTime.parse(form.getEndDate());
-        Map<Long, BrandPojo> brandMap = getBrandMap(form);
-        List<OrderPojo> orders = orderService.getByDatetimeRange(startDate, endDate);
+        Map<Long, Brand> brandMap = getBrandMap(form);
+        List<Order> orders = orderService.getByDatetimeRange(startDate, endDate);
         Map<Long, ReportData> reportMap = new HashMap<>();
-        for (OrderPojo order : orders) {
-            List<OrderItemPojo> orderItems = orderItemService.getListByParameter("orderId", order.getId());
-            for (OrderItemPojo orderItem : orderItems) {
-                ProductPojo product = productService.getById(orderItem.getProductId());
+        for (Order order : orders) {
+            List<OrderItem> orderItems = orderItemService.getListByParameter("orderId", order.getId());
+            for (OrderItem orderItem : orderItems) {
+                Product product = productService.getById(orderItem.getProductId());
                 if (brandMap.get(product.getBrandId()) != null) {
                     ReportData data = reportMap.get(product.getBrandId());
                     if (data == null) {
@@ -67,12 +67,12 @@ public class ReportDto {
         return new ArrayList<>(reportMap.values());
     }
 
-    private Map<Long, BrandPojo> getBrandMap(ReportForm form) {
+    private Map<Long, Brand> getBrandMap(ReportForm form) {
         Boolean isBrandPresent = form.getBrand() != null && !form.getBrand().isEmpty();
         Boolean isCategoryPresent = form.getCategory() != null && !form.getCategory().isEmpty();
-        List<BrandPojo> brands = new ArrayList<>();
+        List<Brand> brands = new ArrayList<>();
         if (isBrandPresent && isCategoryPresent) {
-            BrandPojo brand = brandService.getByNameAndCategory(form.getBrand(), form.getCategory());
+            Brand brand = brandService.getByNameAndCategory(form.getBrand(), form.getCategory());
             if (brand != null) brands.add(brand);
         } else if (isBrandPresent) {
             brands.addAll(brandService.getListByParameter("name", form.getBrand()));
@@ -81,8 +81,8 @@ public class ReportDto {
         } else {
             brands.addAll(brandService.getAll());
         }
-        Map<Long, BrandPojo> brandMap = new HashMap<>();
-        for (BrandPojo brand : brands) {
+        Map<Long, Brand> brandMap = new HashMap<>();
+        for (Brand brand : brands) {
             brandMap.put(brand.getId(), brand);
         }
         return brandMap;

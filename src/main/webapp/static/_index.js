@@ -54,6 +54,38 @@ function login() {
     });
 }
 
+function signup() {
+    const name = $("#name").val()
+    const email = $("#email").val();
+    const password = $("#password").val();
+    if (email.length == 0 || password.length == 0 || name.length == 0) {
+        toast("error", "Enter email ans password");
+        return;
+    }
+    const user = { name, email, password };
+    const data = JSON.stringify(user);
+    $.ajax({
+        url: `/api/users/signup`,
+        type: "POST",
+        data,
+        headers: {
+            "Content-Type": "application/json",
+        },
+        success: function (response) {
+            console.log(response);
+            setTimeout(() => {
+                window.location.replace("/login");
+            }, 2000);
+            toast("success", "Sign up success, Redirecting to signin page");
+
+        },
+        error: function (error) {
+            toast("error", error);
+
+        },
+    });
+}
+
 function setCurrent(page) {
     $("#nav-" + page).addClass("active-link");
 }
@@ -62,7 +94,7 @@ function isNum(x) {
     if (isNaN(x)) {
         return false;
     }
-    return !(Math.abs(x) != parseInt(x, 10) || parseInt(x, 10) <= 0);
+    return !(Math.abs(x) != parseInt(x, 10) || parseInt(x, 10) < 0);
 }
 
 function isFloat(x) {

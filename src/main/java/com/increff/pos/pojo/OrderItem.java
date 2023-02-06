@@ -13,12 +13,12 @@ import static com.increff.pos.pojo.PojoConstants.ORDER_ITEM_TABLE_NAME;
         @Index(name = "idx_order_items_orderID", columnList = "orderId"),
         @Index(name = "idx_order_items_productID", columnList = "productId")
 })
-public class OrderItemPojo {
+public class OrderItem {
     @SequenceGenerator(allocationSize = 1,
             name = ORDER_ITEM_SEQUENCE,
             sequenceName = ORDER_ITEM_SEQUENCE,
             initialValue = 10001)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+    @GeneratedValue(strategy = GenerationType.AUTO,
             generator = ORDER_ITEM_SEQUENCE)
     @Id
     private Long id;

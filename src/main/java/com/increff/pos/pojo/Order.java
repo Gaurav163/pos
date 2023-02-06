@@ -13,16 +13,18 @@ import static com.increff.pos.pojo.PojoConstants.ORDER_TABLE_NAME;
 @NoArgsConstructor
 @Entity
 @Table(name = ORDER_TABLE_NAME)
-public class OrderPojo {
+public class Order {
 
     @Id
     @SequenceGenerator(allocationSize = 1,
             name = ORDER_SEQUENCE,
             sequenceName = ORDER_SEQUENCE,
             initialValue = 10001)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+    @GeneratedValue(strategy = GenerationType.AUTO,
             generator = ORDER_SEQUENCE)
     private Long id;
     @Column(nullable = false)
     private ZonedDateTime datetime;
+    @Column(nullable = false)
+    private Boolean invoiced;
 }

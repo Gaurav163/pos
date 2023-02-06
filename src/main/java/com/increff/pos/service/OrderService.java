@@ -2,7 +2,7 @@ package com.increff.pos.service;
 
 import com.increff.pos.dao.OrderDao;
 import com.increff.pos.model.ApiException;
-import com.increff.pos.pojo.OrderPojo;
+import com.increff.pos.pojo.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,22 +16,31 @@ public class OrderService {
     @Autowired
     private OrderDao orderDao;
 
-    public OrderPojo getById(Long id) {
+    public Order getById(Long id) {
         return orderDao.getById(id);
     }
 
-    public List<OrderPojo> getAll() {
+    public List<Order> getAll() {
         return orderDao.getAll();
     }
 
-    public OrderPojo create() {
-        OrderPojo order = new OrderPojo();
+    public Order create() {
+        Order order = new Order();
         order.setDatetime(ZonedDateTime.now());
+        order.setInvoiced(false);
         orderDao.create(order);
         return order;
     }
 
-    public List<OrderPojo> getByDatetimeRange(ZonedDateTime startTime, ZonedDateTime endTime) {
+    public List<Order> getByDatetimeRange(ZonedDateTime startTime, ZonedDateTime endTime) {
         return orderDao.findByDatetimeRange(startTime, endTime);
+    }
+
+    public Order createInvoice(Long id) throws ApiException {
+        Order order = orderDao.getById(id);
+        if (order == null) {
+            throw new ApiException("Invalid ordered ID");
+        } else order.setInvoiced(true);
+        return order;
     }
 }

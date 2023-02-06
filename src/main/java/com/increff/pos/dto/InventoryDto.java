@@ -3,8 +3,10 @@ package com.increff.pos.dto;
 import com.increff.pos.model.ApiException;
 import com.increff.pos.model.InventoryData;
 import com.increff.pos.model.InventoryForm;
-import com.increff.pos.pojo.InventoryPojo;
-import com.increff.pos.pojo.ProductPojo;
+import com.increff.pos.pojo.Brand;
+import com.increff.pos.pojo.Inventory;
+import com.increff.pos.pojo.Product;
+import com.increff.pos.service.BrandService;
 import com.increff.pos.service.InventoryService;
 import com.increff.pos.service.ProductService;
 import com.increff.pos.util.FileUploadUtil;
@@ -16,6 +18,8 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.increff.pos.util.FormUtil.normalizeForm;
+import static com.increff.pos.util.FormUtil.validateForm;
 import static com.increff.pos.util.MapperUtil.mapper;
 
 @Service
@@ -24,66 +28,87 @@ public class InventoryDto {
     private InventoryService inventoryService;
     @Autowired
     private ProductService productService;
+    @Autowired
+    private BrandService brandService;
 
 
     @Transactional(rollbackOn = ApiException.class)
     public void upload(MultipartFile file) throws ApiException {
         List<InventoryForm> forms = FileUploadUtil.convert(file, InventoryForm.class);
+        if (forms.size() > 5000) {
+            throw new ApiException("Files should not contains more than 5000 entries");
+        }
+        List<String> responses = new ArrayList<>();
+        Long index = 0L;
+        boolean error = false;
+        System.out.println("check1");
         for (InventoryForm form : forms) {
-            addQuantity(form);
+            index += 1;
+            if (form == null) {
+                responses.add("Row " + index + ": invalid row");
+                error = true;
+                continue;
+            }
+            try {
+                increaseInventory(form);
+                responses.add("Row " + index + ": All good");
+            } catch (Exception e) {
+                responses.add("Row " + index + ": Error  -> " + e.getMessage());
+                error = true;
+            }
+        }
+        if (error) {
+            throw new ApiException(String.join("\r", responses));
         }
     }
 
     public List<InventoryData> getAllInventory() throws ApiException {
-        List<ProductPojo> products = productService.getAll();
-        List<InventoryData> inventoryDataList = new ArrayList<>();
-        for (ProductPojo product : products) {
-            InventoryData data = mapper(product, InventoryData.class);
-            InventoryPojo inventoryPojo = inventoryService.getQuantity(product.getId());
-            data.setQuantity(inventoryPojo.getQuantity());
-            inventoryDataList.add(data);
-        }
-        return inventoryDataList;
+        List<Inventory> inventories = inventoryService.getAll();
+        return extendData(inventories);
     }
 
-    public String addQuantity(InventoryForm form) throws ApiException {
-        ProductPojo product = getProduct(form.getBarcode());
+    public InventoryData increaseInventory(InventoryForm form) throws ApiException {
+        validateForm(form);
+        normalizeForm(form);
+        Long productId = getProductId(form.getBarcode());
+        return extendData(inventoryService.increaseInventory(productId, form.getQuantity()));
+    }
+
+    public InventoryData updateInventory(InventoryForm form) throws ApiException {
+        Long productId = getProductId(form.getBarcode());
+        return extendData(inventoryService.updateInventory(productId, form.getQuantity()));
+    }
+
+    public InventoryData getByBarcode(String barcode) throws ApiException {
+        Long productId = getProductId(barcode);
+        return extendData(inventoryService.getById(productId));
+    }
+
+    private Long getProductId(String barcode) throws ApiException {
+        Product product = productService.getOneByParameter("barcode", barcode);
         if (product == null) {
             throw new ApiException("Invalid Barcode");
         }
-        InventoryPojo pojo = inventoryService.getById(product.getId());
-        inventoryService.addQuantity(product.getId(), form.getQuantity());
-        return "Quantity added to inventory of product with barcode : " + form.getBarcode();
+        return product.getId();
     }
 
-    public String updateInventory(InventoryForm form) throws ApiException {
-        ProductPojo product = getProduct(form.getBarcode());
-        if (product == null) {
-            throw new ApiException("Invalid Barcode");
+    private List<InventoryData> extendData(List<Inventory> inventories) throws ApiException {
+        List<InventoryData> dataList = new ArrayList<>();
+        for (Inventory inventory : inventories) {
+            dataList.add(extendData(inventory));
         }
-        InventoryPojo pojo = inventoryService.getById(product.getId());
-        inventoryService.updateInventory(product.getId(), form.getQuantity());
-        return "Inventory updated of product with barcode : " + form.getBarcode();
+        return dataList;
     }
 
-    public InventoryForm getQuantity(String barcode) throws ApiException {
-        ProductPojo product = getProduct(barcode);
-        if (product == null) {
-            throw new ApiException("Invalid Barcode");
-        }
-        InventoryPojo pojo = inventoryService.getById(product.getId());
-        InventoryForm form = new InventoryForm();
-        form.setBarcode(barcode);
-        if (pojo == null) {
-            form.setQuantity(0L);
-        } else {
-            form.setQuantity(pojo.getQuantity());
-        }
-        return form;
-    }
-
-    private ProductPojo getProduct(String barcode) throws ApiException {
-        return productService.getOneByParameter("barcode", barcode);
+    private InventoryData extendData(Inventory inventory) throws ApiException {
+        InventoryData data = mapper(inventory, InventoryData.class);
+        Product product = productService.getById(inventory.getId());
+        data.setName(product.getName());
+        data.setBarcode(product.getBarcode());
+        Brand brand = brandService.getById(product.getBrandId());
+        data.setBrand(brand.getName());
+        data.setCategory(brand.getCategory());
+        return data;
     }
 
 }

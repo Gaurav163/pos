@@ -1,6 +1,6 @@
+let table = null;
 function initBrand() {
     loadAllBrands();
-
 }
 
 function loadAllBrands() {
@@ -21,29 +21,36 @@ function loadAllBrands() {
     });
 }
 
+
+
 function renderTable(brands) {
     $("#tablebody").html("");
+    table = $("#main-table").DataTable();
     brands.forEach(brand => {
         prependBrand(brand);
     });
+    table.draw();
+
 }
 
 function prependBrand(brand) {
-    $("#tablebody").prepend(`
-    <tr id='${brand.id}'>
-    <td>${brand.name}</td>
-    <td>${brand.category}</td>
-    <td><div class="cdiv" onclick="editBrand(${brand.id},'${brand.name}','${brand.category}')">Edit</div></td>
-    </tr>
-    `);
+    table.row.add([brand.name, brand.category,
+    `<div class="cdiv" onclick="editBrand(${brand.id},'${brand.name}','${brand.category}')">Edit</div>`
+    ]).node().id = brand.id;
+    // $("#tablebody").prepend(`
+    // <tr id='${brand.id}'>
+    // <td>${brand.name}</td>
+    // <td>${brand.category}</td>
+    // <td><div class="cdiv" onclick="editBrand(${brand.id},'${brand.name}','${brand.category}')">Edit</div></td>
+    // </tr>
+    // `);
 }
 
 function insertUpdatedBrand(brand) {
-    $("#" + brand.id).html(`
-    <td>${brand.name}</td>
-    <td>${brand.category}</td>
-    <td><div class="cdiv" onclick="editBrand(${brand.id},'${brand.name}','${brand.category}')">Edit</div></td>
-    `);
+    table.row(`#${brand.id}`).remove();
+    // $(`#${brand.id}`).remove();
+    prependBrand(brand);
+    table.draw();
 }
 
 
@@ -70,6 +77,7 @@ function createBrand() {
         success: function (data) {
             console.log(data);
             prependBrand(data);
+            table.draw();
             $("#createModal").modal("hide");
             toast("success", "Brand created");
         },
@@ -107,10 +115,18 @@ function updateBrand() {
 
 }
 
+function downloadSampleBrand() {
+    console.log("yes");
+    window.open("/sample/brand", '_blank').focus();
+}
+
 function uploadBrand() {
     const data = new FormData();
-    data.append("file", $("#file")[0].files[0]);
-    console.log($("#file")[0].files[0]);
+    const file = $("#file")[0].files[0];
+    data.append("file", file);
+    if (file.type != "text/tab-separated-values") {
+        toast("error", "Selected file must be a TSV (tab seperated value) file");
+    }
 
     $.ajax({
         type: "POST",
@@ -128,13 +144,14 @@ function uploadBrand() {
         error: function (e) {
             if (e.status == 400) {
                 let text = e.responseJSON.message;
+                $("#error-file").remove();
                 let element = document.createElement('a');
                 element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
                 element.setAttribute('download', "errors.txt");
                 element.setAttribute('id', "error-file");
                 element.style.display = 'none';
                 document.body.appendChild(element);
-                $("#upload-modal-body").append(`<button class="btn btn-warning ms-4" id="error-button" onclick="downloadErrorFile()">Download Errors</button>`)
+                $("#error-button").attr("disabled", false);
             }
 
             console.log("ERROR : ", e.responseJSON.message);
@@ -147,7 +164,6 @@ function uploadBrand() {
 function downloadErrorFile() {
     document.getElementById('error-file').click();
     $("#error-file").remove();
-    $("#error-button").remove();
-
+    $("#error-button").attr("disabled", "true");
 }
 

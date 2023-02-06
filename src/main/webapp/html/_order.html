@@ -5,19 +5,16 @@
     <div th:replace="navbar.html :: navbar"></div>
 
     <div class="main">
-      <h5>Order Page</h5>
       <br />
-      <div class="cdiv" onclick="$('#createModal').modal('show')">
-        Create New Order
-      </div>
+      <div class="cdiv" onclick="$('#createModal').modal('show')">Create</div>
       <hr />
-      <table class="table table-striped">
+      <table class="table table-striped" id="main-table">
         <thead>
           <tr>
             <th scope="col">Order No</th>
             <th scope="col">Date</th>
             <th scope="col">Time</th>
-            <th scope="col">Invoice</th>
+            <th scope="col">Action(s)</th>
           </tr>
         </thead>
         <tbody id="tablebody2"></tbody>
@@ -33,7 +30,7 @@
       aria-hidden="true"
       data-bs-backdrop="static"
     >
-      <div class="modal-dialog modal-dialog-centered" style="max-width: 1450px">
+      <div class="modal-dialog" style="max-width: 900px">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">Create Brand</h5>
@@ -44,7 +41,7 @@
               aria-label="Close"
             ></button>
           </div>
-          <div class="modal-body" style="padding: 2rem">
+          <div class="modal-body">
             <form action="javascript:addProduct()">
               <div class="form-group mb-3">
                 <label for="barcode">Barcode </label>
@@ -90,15 +87,8 @@
               </thead>
               <tbody id="tablebody"></tbody>
             </table>
-
-            <button
-              type="button"
-              class="btn btn-primary ms-4"
-              onclick="createOrder()"
-            >
-              Create Order
-            </button>
-
+          </div>
+          <div class="modal-footer">
             <button
               type="button"
               class="btn btn-secondary ms-4"
@@ -106,12 +96,75 @@
             >
               Cancel
             </button>
-            <br />
+            <button
+              type="button"
+              class="btn btn-primary ms-4"
+              onclick="createOrder()"
+            >
+              Create Order
+            </button>
           </div>
         </div>
       </div>
     </div>
     <!-- Create Modal end -->
+
+    <!-- Details Modal -->
+    <div
+      class="modal fade"
+      id="detailModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+      data-bs-backdrop="static"
+    >
+      <div class="modal-dialog" style="max-width: 900px">
+        <div class="modal-content text-large">
+          <div class="modal-header">
+            <h5 class="modal-title">Order Details</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div id="orderid"></div>
+            <div id="orderdate"></div>
+            <div id="ordertime"></div>
+
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th scope="col">Barcode</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Brand</th>
+                  <th scope="col">Category</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Selling Price</th>
+                  <th scope="col">Amount</th>
+                </tr>
+              </thead>
+              <tbody id="details-table"></tbody>
+            </table>
+            <br />
+            <div id="total-items"></div>
+            <div id="total-bill"></div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary ms-4"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Details Modal end -->
 
     <div th:replace="snippets.html :: footer"></div>
     <script th:src="@{/static/_order.js}"></script>

@@ -11,4 +11,6 @@ public class OrderItemData {
     private Double mrp;
     private Double sellingPrice;
     private Long quantity;
+    private String brand;
+    private String category;
 }

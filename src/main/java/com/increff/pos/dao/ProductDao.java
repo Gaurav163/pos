@@ -1,11 +1,11 @@
 package com.increff.pos.dao;
 
-import com.increff.pos.pojo.ProductPojo;
+import com.increff.pos.pojo.Product;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class ProductDao extends AbstractDao<ProductPojo> {
+public class ProductDao extends AbstractDao<Product> {
     public ProductDao() {
-        super(ProductPojo.class);
+        super(Product.class);
     }
 }

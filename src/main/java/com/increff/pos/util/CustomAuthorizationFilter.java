@@ -30,10 +30,19 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } else {
             String authorizationHeader = request.getHeader(AUTHORIZATION);
+
+            Cookie[] co = request.getCookies();
+            if (co == null) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
             Optional<String> access_token = stream(request.getCookies())
                     .filter(cookie -> "access_token".equals(cookie.getName()))
                     .map(Cookie::getValue)
                     .findAny();
+
+
             if (access_token.isPresent()) {
                 try {
                     String token = access_token.get();
@@ -60,9 +69,11 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     new ObjectMapper().writeValue(response.getOutputStream(), tokens);
 
                 }
+
             } else {
                 filterChain.doFilter(request, response);
             }
+
         }
     }
 }

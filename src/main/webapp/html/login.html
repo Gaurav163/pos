@@ -3,42 +3,44 @@
   <div th:replace="snippets.html :: header"></div>
   <body>
     <div th:replace="navbar.html :: navbar"></div>
-    <div class="p-4">
-      <form action="javascript:login()">
-        <div class="form-group">
-          <label for="email">Email : </label>
-          <input
-            type="text"
-            class="form-control"
-            id="email"
-            name="email"
-            placeholder="Email"
-          />
+    <div class="main">
+      <div class="user-form">
+        <h3>Login</h3>
+        <br />
+        <form action="javascript:login()">
+          <div class="form-group mb-3">
+            <label for="email">Email : </label>
+            <input
+              type="text"
+              class="form-control"
+              id="email"
+              name="email"
+              placeholder="Email"
+            />
+          </div>
+          <br />
+          <div class="form-group mb-3">
+            <label for="password">Password : </label>
+            <input
+              type="password"
+              class="form-control"
+              id="password"
+              name="password"
+              placeholder="password"
+            />
+          </div>
+          <br />
+          <br />
+          <button class="btn btn-primary" style="width: 350px">Login</button>
+        </form>
+        <br />
+        <div>
+          Don't have an account?
+          <div class="cdiv" onclick="window.location.replace('/signup')">
+            Sign Up
+          </div>
         </div>
-        <br />
-        <div class="form-group">
-          <label for="password">Password : </label>
-          <input
-            type="password"
-            class="form-control"
-            id="password"
-            name="password"
-            placeholder="password"
-          />
-        </div>
-        <br />
-        <br />
-        <button class="btn btn-primary" style="width: 390px">Login</button>
-        <br />
-        <br /><br />
-
-        <div
-          style="cursor: pointer"
-          onclick="window.location.replace('/signup')"
-        >
-          Don't have an account? Sign Up
-        </div>
-      </form>
+      </div>
     </div>
 
     <div th:replace="snippets.html :: footer"></div>

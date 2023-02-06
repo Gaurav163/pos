@@ -5,20 +5,17 @@
     <div th:replace="navbar.html :: navbar"></div>
 
     <div class="main">
-      <h5>Inventory Page</h5>
       <br />
-      <div class="cdiv" onclick="$('#createModal').modal('show')">
-        Add Quantity
-      </div>
-      <div class="cdiv" onclick="$('#uploadModal').modal('show')">
-        Upload Quantities
-      </div>
+      <div class="cdiv" onclick="$('#createModal').modal('show')">Create</div>
+      <div class="cdiv" onclick="$('#uploadModal').modal('show')">Upload</div>
       <hr />
-      <table class="table table-striped">
+      <table class="table table-striped" id="main-table">
         <thead>
           <tr>
             <th scope="col">Barcode</th>
-            <th scope="col">Name</th>
+            <th scope="col">Product Name</th>
+            <th scope="col">Brand</th>
+            <th scope="col">Category</th>
             <th scope="col">Quantity</th>
             <th scope="col">Action</th>
           </tr>
@@ -36,10 +33,10 @@
       aria-hidden="true"
       data-bs-backdrop="static"
     >
-      <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Add Quantity</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Add Inventory</h5>
             <button
               type="button"
               class="btn-close"
@@ -47,8 +44,8 @@
               aria-label="Close"
             ></button>
           </div>
-          <div class="modal-body" style="padding: 2rem">
-            <form action="javascript:addQuantity()">
+          <div class="modal-body">
+            <form action="#">
               <div class="form-group mb-3">
                 <label for="barcode">Barcode </label>
                 <input
@@ -69,18 +66,19 @@
                   id="quantity"
                 />
               </div>
-              <br />
-              <br />
-              <button type="submit" class="btn btn-primary ms-4">Submit</button>
-              <button
-                type="button"
-                class="btn btn-secondary ms-4"
-                data-bs-dismiss="modal"
-              >
-                Cancel
-              </button>
             </form>
-            <br />
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary ms-4"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button onclick="addQuantity()" class="btn btn-primary ms-4">
+              Submit
+            </button>
           </div>
         </div>
       </div>
@@ -108,7 +106,7 @@
             ></button>
           </div>
           <div class="modal-body" style="padding: 2rem">
-            <form action="javascript:updateInventory()">
+            <form action="#">
               <input type="text" hidden id="u-id" />
               <div class="form-group mb-3">
                 <label for="u-barcode">Barcode </label>
@@ -131,18 +129,19 @@
                   id="u-quantity"
                 />
               </div>
-              <br />
-              <br />
-              <button type="submit" class="btn btn-primary ms-4">Save</button>
-              <button
-                type="button"
-                class="btn btn-secondary ms-4"
-                data-bs-dismiss="modal"
-              >
-                Cancel
-              </button>
             </form>
-            <br />
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary ms-4"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button onclick="updateInventory()" class="btn btn-primary ms-4">
+              Save
+            </button>
           </div>
         </div>
       </div>
@@ -158,7 +157,7 @@
       aria-hidden="true"
       data-bs-backdrop="static"
     >
-      <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">
@@ -171,9 +170,9 @@
               aria-label="Close"
             ></button>
           </div>
-          <div class="modal-body" id="upload-modal-body" style="padding: 2rem">
-            <form action="javascript:uploadQuantity()">
-              <div class="form-group mb-3">
+          <div class="modal-body" id="upload-modal-body">
+            <form action="#">
+              <div class="form-group mb-3 ps-2">
                 <label for="file">File </label>
                 <input
                   type="file"
@@ -183,19 +182,22 @@
                   id="file"
                 />
               </div>
-
-              <br />
-              <br />
-              <button type="submit" class="btn btn-primary ms-4">Upload</button>
-              <button
-                type="button"
-                class="btn btn-secondary ms-4"
-                data-bs-dismiss="modal"
-              >
-                Cancel
-              </button>
             </form>
-            <br />
+            <div class="cdiv" onclick="downloadSampleInventory()">
+              Download Sample
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary ms-4"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button onclick="uploadQuantity()" class="btn btn-primary ms-4">
+              Upload
+            </button>
           </div>
         </div>
       </div>

@@ -20,7 +20,7 @@ public class OrderController {
 
     @ApiOperation(value = "Create order with list of order-item list")
     @RequestMapping(path = "/", method = RequestMethod.POST)
-    public String create(@RequestBody List<OrderItemForm> items) throws ApiException {
+    public OrderData create(@RequestBody List<OrderItemForm> items) throws ApiException {
         return orderDto.create(items);
     }
 
@@ -39,6 +39,11 @@ public class OrderController {
     @RequestMapping(path = "/invoice/{id}", method = RequestMethod.GET)
     public String getInvoiceAsBase64(@PathVariable("id") Long id) throws ApiException {
         return orderDto.getInvoiceAsBase64(id);
+    }
+
+    @RequestMapping(path = "/invoice/{id}", method = RequestMethod.POST)
+    public OrderData generateInvoice(@PathVariable("id") Long id) throws ApiException {
+        return orderDto.generateInvoice(id);
     }
 
 }
