@@ -24,7 +24,7 @@ public class OrderItemService {
     }
 
     public <S> List<OrderItem> getListByParameter(String name, S value) {
-        return orderItemDao.getListByMember(name, value);
+        return orderItemDao.getListByParameter(name, value);
     }
 
     public void create(OrderItem orderItem) {

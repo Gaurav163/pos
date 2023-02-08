@@ -46,6 +46,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         User user = (User) authResult.getPrincipal();
+        System.out.println(user);
         Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
         String accessToken = JWT.create()
                 .withSubject(user.getUsername())
@@ -55,7 +56,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                 .sign(algorithm);
         response.setHeader("access_token", accessToken);
 
-        Cookie jwtCookie = new Cookie("access_token", accessToken.toString());
+        Cookie jwtCookie = new Cookie("access_token", accessToken);
         jwtCookie.setMaxAge(30 * 24 * 60 * 60);
         jwtCookie.setHttpOnly(true);
         response.addCookie(jwtCookie);

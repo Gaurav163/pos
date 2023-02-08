@@ -19,7 +19,7 @@ public class UserDetailDto implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userService.getOneByParameter("email", email);
+        User user = userService.getByParameter("email", email);
         if (user == null) {
             throw new UsernameNotFoundException("User with email '" + email + "' not found");
         }

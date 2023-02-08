@@ -1,3 +1,8 @@
+function initReport() {
+    changePage("sales");
+}
+
+
 function showReport() {
     let startDate = new Date($("#startDate").val());
     let endDate = new Date($("#endDate").val());
@@ -41,4 +46,17 @@ function showdata(reports) {
         </tr>
         `);
     });
+}
+
+function changePage(x) {
+    $("#sales-report").hide()
+    $("#inventory-report").hide()
+    $("#brand-report").hide()
+    $("#daily-report").hide()
+    $("#navr-sales").removeClass("activer")
+    $("#navr-inventory").removeClass("activer")
+    $("#navr-brand").removeClass("activer")
+    $("#navr-daily").removeClass("activer")
+    $("#navr-" + x).addClass("activer");
+    $("#" + x + "-report").show();
 }

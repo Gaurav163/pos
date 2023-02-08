@@ -25,34 +25,42 @@ public class ProductService {
     }
 
     public Product getOneByParameter(String name, String value) {
-        return productDao.getOneByMember(name, value);
+        return productDao.getByParameter(name, value);
     }
 
     public List<Product> getListByParameter(String name, String value) {
-        return productDao.getListByMember(name, value);
+        return productDao.getListByParameter(name, value);
     }
 
     public Product create(Product product) throws ApiException {
-        if (productDao.getOneByMember("barcode", product.getBarcode()) != null) {
+        if (productDao.getByParameter("barcode", product.getBarcode()) != null) {
             throw new ApiException("Barcode already assigned to another product");
         }
         productDao.create(product);
         return product;
     }
 
-    public Product update(Long id, Product form) throws ApiException {
-        Product existingBarcode = productDao.getOneByMember("barcode", form.getBarcode());
-        if (existingBarcode != null && !id.equals(existingBarcode.getId())) {
-            throw new ApiException("Barcode already assigned to another product");
-        }
+    public Product update(Long id, Product newProduct) throws ApiException {
         Product product = productDao.getById(id);
         if (product == null) {
             throw new ApiException("Product not found with ID: " + id);
         }
-        product.setBarcode(form.getBarcode());
-        product.setName(form.getName());
-        product.setMrp(form.getMrp());
-        product.setBrandId(form.getBrandId());
+        if (newProduct.getBarcode() != null && !newProduct.getBarcode().isEmpty()) {
+            Product existingProduct = productDao.getByParameter("barcode", newProduct.getBarcode());
+            if (existingProduct != null && !product.getId().equals(existingProduct.getId())) {
+                throw new ApiException("Barcode already assigned to another product");
+            }
+            product.setBarcode(newProduct.getBarcode());
+        }
+        if (newProduct.getName() != null && !newProduct.getName().isEmpty()) {
+            product.setName(newProduct.getName());
+        }
+        if (newProduct.getMrp() != null && newProduct.getMrp() > 0) {
+            product.setMrp(newProduct.getMrp());
+        }
+        if (newProduct.getBrandId() != null) {
+            product.setBrandId(newProduct.getBrandId());
+        }
         return product;
 
     }

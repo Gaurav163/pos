@@ -162,7 +162,12 @@ label {
   max-width: 600px;
   min-height: 500px;
   padding: 30px;
-  border: #20645b solid 2px;
+  border: #20645b solid 1px;
   border-radius: 10px;
   text-align: center;
+}
+
+.activer {
+  color: #20645b;
+  text-shadow: 1px 1px 1px #a1d4ce;
 }

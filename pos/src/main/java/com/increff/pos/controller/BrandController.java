@@ -44,18 +44,6 @@ public class BrandController {
         return brandDto.getAll();
     }
 
-    @ApiOperation(value = "Get all brands with name provided")
-    @RequestMapping(path = "/name/{name}", method = RequestMethod.GET)
-    public List<BrandData> getByName(@PathVariable("name") String name) throws ApiException {
-        return brandDto.getByName(name);
-    }
-
-    @ApiOperation(value = "Get all brands with category provided")
-    @RequestMapping(path = "/category/{category}", method = RequestMethod.GET)
-    public List<BrandData> getByCategory(@PathVariable("category") String category) throws ApiException {
-        return brandDto.getByCategory(category);
-    }
-
     @ApiOperation(value = "Update brand with given ID and provided data")
     @PutMapping("/{id}")
     public BrandData update(@RequestBody BrandForm brandForm, @PathVariable("id") Long id) throws ApiException {

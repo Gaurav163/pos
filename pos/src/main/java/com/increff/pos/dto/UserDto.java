@@ -23,7 +23,7 @@ public class UserDto {
     }
 
     public User getByEmail(String email) {
-        return userService.getOneByParameter("email", email);
+        return userService.getByParameter("email", email);
     }
 
 }

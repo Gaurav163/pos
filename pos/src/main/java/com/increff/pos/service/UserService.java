@@ -30,12 +30,12 @@ public class UserService {
         return userDao.getAll();
     }
 
-    public User getOneByParameter(String name, String value) {
-        return userDao.getOneByMember(name, value);
+    public User getByParameter(String name, String value) {
+        return userDao.getByParameter(name, value);
     }
 
     public void create(User user) throws ApiException {
-        User existingUser = userDao.getOneByMember("email", user.getEmail());
+        User existingUser = userDao.getByParameter("email", user.getEmail());
         if (existingUser != null) {
             throw new ApiException("Email already used");
         }

@@ -3,7 +3,6 @@ package com.increff.pos.dao;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.List;
@@ -37,14 +36,14 @@ public abstract class AbstractDao<T> {
         return getSingle(query);
     }
 
-    public <S> T getOneByMember(String name, S value) {
+    public <S> T getByParameter(String name, S value) {
         String queryString = String.format("select p from %s p where %s=:value", this.clazz.getSimpleName(), name);
         TypedQuery<T> query = getQuery(queryString);
         query.setParameter("value", value);
         return getSingle(query);
     }
 
-    public <S> List<T> getListByMember(String name, S value) {
+    public <S> List<T> getListByParameter(String name, S value) {
         String queryString = String.format("select p from %s p where %s=:value", this.clazz.getSimpleName(), name);
         TypedQuery<T> query = getQuery(queryString);
         query.setParameter("value", value);
@@ -52,16 +51,8 @@ public abstract class AbstractDao<T> {
     }
 
 
-    protected EntityManager em() {
-        return em;
-    }
-
     protected T getSingle(TypedQuery<T> query) {
-        try {
-            return query.getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
+        return query.getResultList().stream().findFirst().orElse(null);
     }
 
     protected TypedQuery<T> getQuery(String jpql) {

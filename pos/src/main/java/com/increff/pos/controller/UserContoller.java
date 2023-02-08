@@ -21,7 +21,7 @@ public class UserContoller {
 
     @ApiOperation(value = "Create user by providing name, email and password")
     @RequestMapping(path = "/signup", method = RequestMethod.POST)
-    private void create(@RequestBody UserForm userForm) throws ApiException {
+    public void create(@RequestBody UserForm userForm) throws ApiException {
         userDto.create(userForm);
     }
 

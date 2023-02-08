@@ -31,6 +31,7 @@ public class MapperUtil {
             }
             return newObj;
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ApiException(e.getMessage());
         }
     }

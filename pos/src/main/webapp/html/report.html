@@ -4,41 +4,66 @@
   <body>
     <div th:replace="navbar.html :: navbar"></div>
     <div class="main">
-      <h3>Report</h3>
-      <form action="javascript:showReport()">
-        <div class="form-group mb-3">
-          <label for="startDate">Start Date : </label>
-          <input type="date" class="form-control" id="startDate" />
-        </div>
-        <div class="form-group mb-3">
-          <label for="endDate">End Date : </label>
-          <input type="date" class="form-control" id="endDate" />
-        </div>
-        <br />
-        <div class="form-group mb-3">
-          <label for="brand">Brand : </label>
-          <input type="text" id="brand" class="form-control" />
-        </div>
-        <div class="form-group mb-3">
-          <label for="category">Category : </label>
-          <input type="text" id="category" class="form-control" />
-        </div>
-        <br />
-        <button class="btn btn-primary" type="submit">Show Report</button>
-      </form>
+      <div class="cdiv" id="navr-sales" onclick="changePage('sales')">
+        Sales Report
+      </div>
+      <div class="cdiv" id="navr-brand" onclick="changePage('brand')">
+        Brand Report
+      </div>
+      <div class="cdiv" id="navr-inventory" onclick="changePage('inventory')">
+        Inventory Report
+      </div>
+      <div class="cdiv" id="navr-daily" onclick="changePage('daily')">
+        Daily Sales Report
+      </div>
+      <br />
+      <br />
+      <div id="sales-report">
+        <h3>Sales Report</h3>
+        <form action="javascript:showReport()">
+          <div class="form-group mb-3">
+            <label for="startDate">Start Date : </label>
+            <input type="date" class="form-control" id="startDate" />
+          </div>
+          <div class="form-group mb-3">
+            <label for="endDate">End Date : </label>
+            <input type="date" class="form-control" id="endDate" />
+          </div>
+          <br />
+          <div class="form-group mb-3">
+            <label for="brand">Brand : </label>
+            <input type="text" id="brand" class="form-control" />
+          </div>
+          <div class="form-group mb-3">
+            <label for="category">Category : </label>
+            <input type="text" id="category" class="form-control" />
+          </div>
+          <br />
+          <button class="btn btn-primary" type="submit">Show Report</button>
+        </form>
 
-      <hr />
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th scope="col">Brand</th>
-            <th scope="col">category</th>
-            <th scope="col">Quantity</th>
-            <th scope="col">Revenue</th>
-          </tr>
-        </thead>
-        <tbody id="tablebody"></tbody>
-      </table>
+        <hr />
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">Brand</th>
+              <th scope="col">category</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Revenue</th>
+            </tr>
+          </thead>
+          <tbody id="tablebody"></tbody>
+        </table>
+      </div>
+      <div id="brand-report">
+        <h3>Brand Report</h3>
+      </div>
+      <div id="inventory-report">
+        <h3>Inventory</h3>
+      </div>
+      <div id="daily-report">
+        <h3>Daily Sales</h3>
+      </div>
     </div>
 
     <div th:replace="snippets.html :: footer"></div>
@@ -46,6 +71,7 @@
     <script>
       $(document).ready(function () {
         setCurrent("report");
+        initReport();
       });
     </script>
   </body>

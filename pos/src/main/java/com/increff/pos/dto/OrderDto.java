@@ -9,12 +9,15 @@ import com.increff.pos.pojo.Order;
 import com.increff.pos.pojo.OrderItem;
 import com.increff.pos.pojo.Product;
 import com.increff.pos.service.*;
-import com.increff.pos.util.PdfUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -26,6 +29,8 @@ import static com.increff.pos.util.MapperUtil.mapper;
 
 @Service
 public class OrderDto {
+
+
     @Autowired
     private OrderService orderService;
     @Autowired
@@ -36,6 +41,10 @@ public class OrderDto {
     private ProductService productService;
     @Autowired
     private BrandService brandService;
+    @Value("${invoicesPath}")
+    private String basePath;
+    @Value("${baseUrl}")
+    private String baseUrl;
 
     @Transactional(rollbackFor = ApiException.class)
     public OrderData create(List<OrderItemForm> itemForms) throws ApiException {
@@ -72,29 +81,47 @@ public class OrderDto {
         return getOrderData(orderService.getById(id));
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public OrderData generateInvoice(Long id) throws ApiException {
-        orderService.createInvoice(id);
         Order order = orderService.getById(id);
         if (order == null) {
             throw new ApiException("Order not exist");
         }
+        orderService.createInvoice(id);
         OrderData orderData = getOrderData(order);
-        PdfUtil.convertToPDF(orderData);
-        return orderData;
+        try {
+            // calling pdf api and get invoice pdf in base64 format
+            RestTemplate restTemplate = new RestTemplate();
+            HttpEntity<OrderData> request = new HttpEntity<>(orderData);
+            String invoice = restTemplate.postForObject(baseUrl, request, String.class);
+
+            // saving base64 invoice as pdf file
+            File file = new File(basePath + "invoice-" + orderData.getId() + ".pdf");
+            FileOutputStream fop = new FileOutputStream(file);
+            byte[] decodedBytes = Base64.getMimeDecoder().decode(invoice);
+            fop.write(decodedBytes);
+            fop.flush();
+            fop.close();
+            return orderData;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ApiException("Invoice generation failed");
+        }
     }
 
     public String getInvoiceAsBase64(Long id) throws ApiException {
         try {
-            String baseurl = "/home/gaurav_inc/pos/invoices/";
-            File file = new File(baseurl + "invoice-" + id.toString() + ".pdf");
+            File file = new File(basePath + "invoice-" + id + ".pdf");
             byte[] bytes = Files.readAllBytes(file.toPath());
             return Base64.getEncoder().encodeToString(bytes);
         } catch (Exception e) {
-            throw new ApiException(e.getMessage());
+            throw new ApiException("Invoice not found");
         }
     }
 
     private OrderData getOrderData(Order order) throws ApiException {
+        if (order == null) return null;
         OrderData orderData = mapper(order, OrderData.class);
         ZonedDateTime dateTime = order.getDatetime().truncatedTo(ChronoUnit.SECONDS);
         orderData.setDate(dateTime.toLocalDate().toString());

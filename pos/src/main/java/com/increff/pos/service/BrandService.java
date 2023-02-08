@@ -24,7 +24,7 @@ public class BrandService {
     }
 
     public List<Brand> getListByParameter(String name, String value) {
-        return brandDao.getListByMember(name, value);
+        return brandDao.getListByParameter(name, value);
     }
 
     public Brand getByNameAndCategory(String name, String category) {
@@ -41,23 +41,27 @@ public class BrandService {
     }
 
     public Brand update(Long id, Brand newBrand) throws ApiException {
-
         Brand brand = brandDao.getById(id);
         if (brand == null) {
             throw new ApiException("Brand with ID :" + id.toString() + " does not exist");
         }
-        if (newBrand.getName() == null || newBrand.getName().isEmpty()) {
-            newBrand.setName(brand.getName());
+        Brand checkBrand = new Brand();
+        if (newBrand.getName() != null && !newBrand.getName().isEmpty()) {
+            checkBrand.setName(newBrand.getName());
+        } else {
+            checkBrand.setName(brand.getName());
         }
-        if (newBrand.getCategory() == null || newBrand.getCategory().isEmpty()) {
-            newBrand.setCategory(brand.getCategory());
+        if (newBrand.getCategory() != null && !newBrand.getCategory().isEmpty()) {
+            checkBrand.setCategory(newBrand.getCategory());
+        } else {
+            checkBrand.setCategory(brand.getCategory());
         }
-        Brand existingBrand = brandDao.getByNameAndCategory(newBrand.getName(), newBrand.getCategory());
+        Brand existingBrand = brandDao.getByNameAndCategory(checkBrand.getName(), checkBrand.getCategory());
         if (existingBrand != null && !existingBrand.getId().equals(id)) {
             throw new ApiException("Brand already exist with provided name and category");
         }
-        brand.setName(newBrand.getName());
-        brand.setCategory(newBrand.getCategory());
+        brand.setName(checkBrand.getName());
+        brand.setCategory(checkBrand.getCategory());
         return brand;
     }
 }

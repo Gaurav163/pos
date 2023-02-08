@@ -21,13 +21,11 @@ import static com.increff.pos.util.MapperUtil.mapper;
 
 @Service
 public class ProductDto {
+    private static final String BRAND_ID = "brandId";
     @Autowired
     private ProductService productService;
     @Autowired
     private BrandService brandService;
-
-    private static final String BRAND_ID = "brandId";
-
 
     public ProductData create(ProductForm form) throws ApiException {
         Product product = convertToProduct(form);
@@ -36,7 +34,17 @@ public class ProductDto {
     }
 
     public ProductData update(Long id, ProductForm form) throws ApiException {
-        return extendData(productService.update(id, convertToProduct(form)));
+        normalizeForm(form);
+        Product product = mapper(form, Product.class);
+        if (form.getBrand() != null && !form.getBrand().isEmpty() && form.getCategory() != null && !form.getCategory().isEmpty()) {
+            Brand existingBrand = brandService.getByNameAndCategory(form.getBrand(), form.getCategory());
+            if (existingBrand == null) {
+                throw new ApiException("Brand with name  '" + form.getBrand() + "' and category '" + form.getCategory() + "' does not exist");
+            }
+            product.setBrandId(existingBrand.getId());
+        }
+        System.out.println(product.toString());
+        return extendData(productService.update(id, product));
     }
 
     @Transactional(rollbackFor = Exception.class)
