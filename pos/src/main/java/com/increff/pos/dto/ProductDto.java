@@ -39,7 +39,7 @@ public class ProductDto {
         if (form.getBrand() != null && !form.getBrand().isEmpty() && form.getCategory() != null && !form.getCategory().isEmpty()) {
             Brand existingBrand = brandService.getByNameAndCategory(form.getBrand(), form.getCategory());
             if (existingBrand == null) {
-                throw new ApiException("Brand with name  '" + form.getBrand() + "' and category '" + form.getCategory() + "' does not exist");
+                throw new ApiException("Invalid brand category");
             }
             product.setBrandId(existingBrand.getId());
         }
@@ -51,7 +51,7 @@ public class ProductDto {
     public void upload(MultipartFile file) throws ApiException {
         List<ProductForm> forms = FileUploadUtil.convert(file, ProductForm.class);
         if (forms.size() > 5000) {
-            throw new ApiException("File should not contains more than 5000 entries");
+            throw new ApiException("File must not contains more than 5000 entries");
         }
         List<String> responses = new ArrayList<>();
         Long index = 0L;
@@ -67,7 +67,7 @@ public class ProductDto {
                 productService.create(convertToProduct(form));
                 responses.add("Row " + index + ": All good");
             } catch (Exception e) {
-                responses.add("Row " + index + ": Error while creating product -" + e.getMessage());
+                responses.add("Row " + index + ": Error -" + e.getMessage());
                 error = true;
             }
         }
@@ -111,12 +111,11 @@ public class ProductDto {
         normalizeForm(form);
         Brand existingBrand = brandService.getByNameAndCategory(form.getBrand(), form.getCategory());
         if (existingBrand == null) {
-            throw new ApiException("Brand with name  '" + form.getBrand() + "' and category '" + form.getCategory() + "' does not exist");
+            throw new ApiException("Invalid brand category");
         }
         Product product = mapper(form, Product.class);
         product.setBrandId(existingBrand.getId());
         return product;
-
     }
 
 }

@@ -36,7 +36,7 @@ public class InventoryDto {
     public void upload(MultipartFile file) throws ApiException {
         List<InventoryForm> forms = FileUploadUtil.convert(file, InventoryForm.class);
         if (forms.size() > 5000) {
-            throw new ApiException("Files should not contains more than 5000 entries");
+            throw new ApiException("Files must not contains more than 5000 entries");
         }
         List<String> responses = new ArrayList<>();
         Long index = 0L;

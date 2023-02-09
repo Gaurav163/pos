@@ -2,7 +2,7 @@ package com.increff.pos.dao;
 
 
 import com.increff.pos.AbstractUnitTest;
-import com.increff.pos.helper.ProductHelper;
+import com.increff.pos.Helper;
 import com.increff.pos.pojo.Product;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ public class ProductDaoTest extends AbstractUnitTest {
     @Autowired
     private ProductDao productDao;
     @Autowired
-    private ProductHelper helper;
+    private Helper helper;
 
     @Test
     public void testCreate() {

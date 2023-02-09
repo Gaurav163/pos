@@ -168,6 +168,18 @@ label {
 }
 
 .activer {
-  color: #20645b;
-  text-shadow: 1px 1px 1px #a1d4ce;
+  border-bottom: solid 3px #015045;
+}
+
+.home-card {
+  width: 40%;
+  text-align: center;
+  padding: 50px auto;
+  font-size: 64px;
+  font-weight: 300;
+  display: inline-block;
+  background-color: #015045;
+  color: #ffffff;
+  margin: 40px;
+  border-radius: 5px;
 }

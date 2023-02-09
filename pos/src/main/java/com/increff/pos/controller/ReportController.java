@@ -1,10 +1,7 @@
 package com.increff.pos.controller;
 
 import com.increff.pos.dto.ReportDto;
-import com.increff.pos.model.ApiException;
-import com.increff.pos.model.BrandForm;
-import com.increff.pos.model.ReportData;
-import com.increff.pos.model.ReportForm;
+import com.increff.pos.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,10 +20,26 @@ public class ReportController {
     @Autowired
     private ReportDto reportDto;
 
-    @RequestMapping(path = "/", method = RequestMethod.POST)
-    public List<ReportData> getReport(@RequestBody ReportForm form) throws ApiException {
-        return reportDto.getReport(form);
+    @RequestMapping(path = "/sales", method = RequestMethod.POST)
+    public List<ReportData> getSalesReport(@RequestBody ReportForm form) throws ApiException {
+        return reportDto.getSalesReport(form);
     }
+
+    @RequestMapping(path = "/brand", method = RequestMethod.GET)
+    public List<BrandData> getBrandReport() throws ApiException {
+        return reportDto.getBrandReport();
+    }
+
+    @RequestMapping(path = "/inventory", method = RequestMethod.GET)
+    public List<InventoryReportData> getInventoryReport() throws ApiException {
+        return reportDto.getInventoryReport();
+    }
+
+    @RequestMapping(value = "/daily", method = RequestMethod.GET)
+    public List<DailyReportData> getDailyReport() throws ApiException {
+        return reportDto.getDailyReport();
+    }
+
 
     @RequestMapping(path = "/checkdate", method = RequestMethod.POST)
     public void printDate(@RequestBody BrandForm form) {

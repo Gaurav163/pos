@@ -34,7 +34,7 @@ public class BrandService {
     public Brand create(Brand brand) throws ApiException {
         Brand existingBrand = brandDao.getByNameAndCategory(brand.getName(), brand.getCategory());
         if (existingBrand != null) {
-            throw new ApiException("Brand already exist with provided name and category");
+            throw new ApiException("Brand category pair already exist");
         }
         brandDao.create(brand);
         return brand;
@@ -43,7 +43,7 @@ public class BrandService {
     public Brand update(Long id, Brand newBrand) throws ApiException {
         Brand brand = brandDao.getById(id);
         if (brand == null) {
-            throw new ApiException("Brand with ID :" + id.toString() + " does not exist");
+            throw new ApiException("Invalid brand ID");
         }
         Brand checkBrand = new Brand();
         if (newBrand.getName() != null && !newBrand.getName().isEmpty()) {
@@ -58,7 +58,7 @@ public class BrandService {
         }
         Brand existingBrand = brandDao.getByNameAndCategory(checkBrand.getName(), checkBrand.getCategory());
         if (existingBrand != null && !existingBrand.getId().equals(id)) {
-            throw new ApiException("Brand already exist with provided name and category");
+            throw new ApiException("Brand category pair already exist");
         }
         brand.setName(checkBrand.getName());
         brand.setCategory(checkBrand.getCategory());

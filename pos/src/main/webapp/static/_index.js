@@ -41,7 +41,7 @@ function login() {
         success: function (response) {
             console.log(response);
             setTimeout(() => {
-                window.location.replace("/");
+                window.location.reload();
             }, 2000);
             toast("success", "Signin success");
 

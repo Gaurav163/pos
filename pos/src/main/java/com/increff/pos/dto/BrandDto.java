@@ -54,7 +54,7 @@ public class BrandDto {
     public void upload(MultipartFile file) throws ApiException {
         List<BrandForm> forms = convert(file, BrandForm.class);
         if (forms.size() > 5000) {
-            throw new ApiException("Files should not contains more than 5000 entries");
+            throw new ApiException("Files must not contains more than 5000 entries");
         }
         List<String> responses = new ArrayList<>();
         Long index = 0L;

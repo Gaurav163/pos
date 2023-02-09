@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class DailyReportService {
@@ -15,6 +17,10 @@ public class DailyReportService {
     public void create(DailyReport report) {
         dailyReportDao.create(report);
         System.out.println(report);
+    }
+
+    public List<DailyReport> getAll() {
+        return dailyReportDao.getAll();
     }
 
 }

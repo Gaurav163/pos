@@ -34,7 +34,7 @@ public class ProductService {
 
     public Product create(Product product) throws ApiException {
         if (productDao.getByParameter("barcode", product.getBarcode()) != null) {
-            throw new ApiException("Barcode already assigned to another product");
+            throw new ApiException("Barcode already used");
         }
         productDao.create(product);
         return product;
@@ -43,12 +43,12 @@ public class ProductService {
     public Product update(Long id, Product newProduct) throws ApiException {
         Product product = productDao.getById(id);
         if (product == null) {
-            throw new ApiException("Product not found with ID: " + id);
+            throw new ApiException("Invalid product ID");
         }
         if (newProduct.getBarcode() != null && !newProduct.getBarcode().isEmpty()) {
             Product existingProduct = productDao.getByParameter("barcode", newProduct.getBarcode());
             if (existingProduct != null && !product.getId().equals(existingProduct.getId())) {
-                throw new ApiException("Barcode already assigned to another product");
+                throw new ApiException("Barcode already used");
             }
             product.setBarcode(newProduct.getBarcode());
         }

@@ -1,8 +1,8 @@
 package com.increff.pos.service;
 
 import com.increff.pos.AbstractUnitTest;
+import com.increff.pos.Helper;
 import com.increff.pos.dao.BrandDao;
-import com.increff.pos.helper.BrandHelper;
 import com.increff.pos.model.ApiException;
 import com.increff.pos.pojo.Brand;
 import org.junit.Test;
@@ -19,7 +19,7 @@ public class BrandServiceTest extends AbstractUnitTest {
     @Autowired
     private BrandDao brandDao;
     @Autowired
-    private BrandHelper helper;
+    private Helper helper;
 
 
     @Test

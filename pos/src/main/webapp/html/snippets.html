@@ -4,20 +4,23 @@
   <!-- <div id="footer"><div>&copy;Copyright POS-Increff</div></div> -->
 
   <script th:src="@{/static/_index.js}"></script>
-  <script th:src="@{/static/jquery.slim.min.js}"></script>
   <script th:src="@{/static/_bootstrap/js/bootstrap.bundle.min.js}"></script>
 
   <script
-    type="text/javascript"
-    th:src="@{/static/DataTables/datatables.min.js}"
     defer
+    th:src="@{/static/DataTables/datatables.min.js}"
+    type="text/javascript"
+  ></script>
+  <script
+    src="https://kit.fontawesome.com/b005553a41.js"
+    crossorigin="anonymous"
   ></script>
   <script th:src="@{/static/jquery.min.js}"></script>
 </div>
 
 <head th:fragment="header">
   <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta content="IE=edge" http-equiv="X-UA-Compatible" />
   <title>POS</title>
 
   <link
@@ -26,8 +29,8 @@
   />
   <link
     rel="stylesheet"
-    type="text/css"
     th:href="@{/static/DataTables/datatables.min.css}"
+    type="text/css"
   />
   <link rel="stylesheet" th:href="@{/static/_index.css}" />
 </head>

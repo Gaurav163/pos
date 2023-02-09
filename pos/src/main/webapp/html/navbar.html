@@ -27,4 +27,25 @@
       <a class="nav-link" href="/report">Report</a>
     </li>
   </ul>
+  <div th:switch="${authenticated}" style="position: absolute; right: 20px">
+    <div th:case="${true}">
+      <div class="dropdown">
+        <div class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
+          <span th:text="${email}"></span> | <span th:text="${role}"></span>
+        </div>
+        <div class="dropdown-menu">
+          <span
+            class="p-3"
+            onchange="logout()"
+            style="cursor: pointer"
+            onclick="window.location.replace('/user/logout')"
+            >Logout <i class="fa-solid fa-right-from-bracket ms-2"></i
+          ></span>
+        </div>
+      </div>
+    </div>
+    <span th:case="${false}">
+      <a class="nav-link" href="/user/login">Login</a>
+    </span>
+  </div>
 </nav>

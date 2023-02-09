@@ -1,16 +1,8 @@
 package com.increff.pos.dto;
 
-import com.increff.pos.model.ApiException;
-import com.increff.pos.model.ReportData;
-import com.increff.pos.model.ReportForm;
-import com.increff.pos.pojo.Brand;
-import com.increff.pos.pojo.OrderItem;
-import com.increff.pos.pojo.Order;
-import com.increff.pos.pojo.Product;
-import com.increff.pos.service.BrandService;
-import com.increff.pos.service.OrderItemService;
-import com.increff.pos.service.OrderService;
-import com.increff.pos.service.ProductService;
+import com.increff.pos.model.*;
+import com.increff.pos.pojo.*;
+import com.increff.pos.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +14,7 @@ import java.util.Map;
 
 import static com.increff.pos.util.FormUtil.normalizeForm;
 import static com.increff.pos.util.FormUtil.validateForm;
+import static com.increff.pos.util.MapperUtil.mapper;
 
 @Service
 public class ReportDto {
@@ -33,8 +26,49 @@ public class ReportDto {
     private OrderItemService orderItemService;
     @Autowired
     private ProductService productService;
+    @Autowired
+    private InventoryService inventoryService;
+    @Autowired
+    private DailyReportService dailyReportService;
 
-    public List<ReportData> getReport(ReportForm form) throws ApiException {
+    public List<DailyReportData> getDailyReport() throws ApiException {
+        List<DailyReport> dailyReports = dailyReportService.getAll();
+        List<DailyReportData> dataList = new ArrayList<>();
+        for (DailyReport report : dailyReports) {
+            DailyReportData data = mapper(report, DailyReportData.class);
+            data.setDate(report.getDate().toLocalDate().toString());
+            System.out.println(data);
+            dataList.add(data);
+        }
+        return dataList;
+    }
+
+    public List<BrandData> getBrandReport() throws ApiException {
+        return mapper(brandService.getAll(), BrandData.class);
+    }
+
+    public List<InventoryReportData> getInventoryReport() throws ApiException {
+        List<Brand> brandList = brandService.getAll();
+        List<Product> products = productService.getAll();
+        Map<Long, Long> reportMap = new HashMap<>();
+        for (Brand brand : brandList) {
+            reportMap.put(brand.getId(), 0L);
+        }
+        for (Product product : products) {
+            Inventory inventory = inventoryService.getById(product.getId());
+            reportMap.put(product.getBrandId(), reportMap.get(product.getBrandId()) + inventory.getQuantity());
+        }
+        List<InventoryReportData> report = new ArrayList<>();
+        for (Brand brand : brandList) {
+            InventoryReportData data = mapper(brand, InventoryReportData.class);
+            data.setQuantity(reportMap.get(brand.getId()));
+            report.add(data);
+        }
+        return report;
+    }
+
+
+    public List<ReportData> getSalesReport(ReportForm form) throws ApiException {
         validateForm(form);
         normalizeForm(form);
         ZonedDateTime startDate = ZonedDateTime.parse(form.getStartDate());

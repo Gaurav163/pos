@@ -1,8 +1,8 @@
 package com.increff.pos.dto;
 
 import com.increff.pos.AbstractUnitTest;
+import com.increff.pos.Helper;
 import com.increff.pos.dao.BrandDao;
-import com.increff.pos.helper.BrandHelper;
 import com.increff.pos.model.ApiException;
 import com.increff.pos.model.BrandData;
 import com.increff.pos.model.BrandForm;
@@ -28,7 +28,7 @@ public class BrandDtoTest extends AbstractUnitTest {
     private BrandDao brandDao;
 
     @Autowired
-    private BrandHelper helper;
+    private Helper helper;
 
 
     @Test
