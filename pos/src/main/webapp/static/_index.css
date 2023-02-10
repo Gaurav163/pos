@@ -16,6 +16,7 @@ a.nav-link {
   padding: 5px 10px !important;
   margin: 0 10px;
   font-size: large;
+  font-weight: 500;
 }
 
 a.nav-link:before {
@@ -132,7 +133,8 @@ label {
 
 .btn {
   cursor: pointer;
-  min-width: 100px;
+  min-width: 80px;
+  font-weight: 500;
 }
 
 .main {
@@ -167,19 +169,19 @@ label {
   text-align: center;
 }
 
-.activer {
-  border-bottom: solid 3px #015045;
+thead {
+  background-color: #20645b;
+  color: white;
 }
 
-.home-card {
-  width: 40%;
-  text-align: center;
-  padding: 50px auto;
-  font-size: 64px;
-  font-weight: 300;
-  display: inline-block;
-  background-color: #015045;
-  color: #ffffff;
-  margin: 40px;
-  border-radius: 5px;
+html {
+  font-size: large;
+}
+
+.dataTables_filter {
+  margin-bottom: 20px;
+}
+.dataTables_info,
+.dataTables_paginate {
+  margin-top: 20px;
 }

@@ -20,7 +20,7 @@ public class InventoryService {
     }
 
 
-    public Inventory increaseInventory(Long id, Long quantity) throws ApiException {
+    public Inventory increaseInventory(Long id, Long quantity) {
         Inventory inventory = inventoryDao.getById(id);
         if (inventory == null) {
             Inventory newInventory = new Inventory();

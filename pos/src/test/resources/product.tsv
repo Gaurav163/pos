@@ -1,6 +1,6 @@
 name	barcode	mrp	brand	category
 name1	barcode1	10.5	brand1	cate1
-name2	barcode2	20.5	brand2	cate2
-name3	barcode3	30.5	brand3	cate3
-name4	barcode4	40.5	brand4	cate4
-name5	barcode5	50.5	brand5	cate5
+name2	barcode2	20.5	brand1	cate1
+name3	barcode3	30.5	brand1	cate1
+name4	barcode4	40.5	brand1	cate1
+name5	barcode5	50.5	brand1	cate1

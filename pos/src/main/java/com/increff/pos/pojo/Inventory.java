@@ -6,14 +6,10 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table;
-
-import static com.increff.pos.pojo.PojoConstants.INVENTORY_TABLE_NAME;
 
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = INVENTORY_TABLE_NAME)
 public class Inventory {
     @Id
     private Long id;

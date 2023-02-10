@@ -52,7 +52,7 @@ public class OrderDto {
         for (OrderItemForm itemForm : itemForms) {
             Product product = productService.getOneByParameter("barcode", itemForm.getBarcode());
             if (product == null) {
-                throw new ApiException("Invalid Barcode");
+                throw new ApiException("Invalid barcode");
             }
             inventoryService.reduceInventory(product.getId(), itemForm.getQuantity());
             OrderItem orderItem = new OrderItem();
@@ -85,7 +85,7 @@ public class OrderDto {
     public OrderData generateInvoice(Long id) throws ApiException {
         Order order = orderService.getById(id);
         if (order == null) {
-            throw new ApiException("Order not exist");
+            throw new ApiException("Order does not exist");
         }
         orderService.createInvoice(id);
         OrderData orderData = getOrderData(order);

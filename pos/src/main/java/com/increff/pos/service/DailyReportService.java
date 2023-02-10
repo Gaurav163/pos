@@ -14,9 +14,9 @@ public class DailyReportService {
     @Autowired
     private DailyReportDao dailyReportDao;
 
-    public void create(DailyReport report) {
+    public DailyReport create(DailyReport report) {
         dailyReportDao.create(report);
-        System.out.println(report);
+        return report;
     }
 
     public List<DailyReport> getAll() {

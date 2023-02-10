@@ -1,7 +1,5 @@
 let table = null;
-function initOrders() {
-    showAll();
-}
+let productList = {};
 
 function showAll() {
     $.ajax({
@@ -26,35 +24,24 @@ function showOrders(orders) {
     orders.forEach(order => {
         console.log(order);
         appendOrder(order);
-        // $("#tablebody2").append(`
-        // <tr>
-        // <td>${order.id}</td>
-        // <td>${order.date}</td>
-        // <td>${order.time}</td>
-        // <td> 
-        // <button class="btn btn-primary mx-2" onclick="getInvoice(${order.id},'download')"> Download </button>
-        // </td>
-        // </tr>
-        // `);
     });
     table.draw();
 }
 
 function appendOrder(order) {
     table.row.add([order.id, order.date, order.time,
-    getInvoiceButton(order.id, order.invoiced) + `<div class="cdiv" onclick="viewDetails(${order.id})"> View Details </div>`]).node().id = order.id;
+    getInvoiceButton(order.id, order.invoiced) + `<div class="btn btn-success ms-4" onclick="viewDetails(${order.id})"><i class="fa-regular fa-eye"></i> View Details </div>`]).node().id = order.id;
 }
 
 function getInvoiceButton(id, invoiced) {
     if (invoiced) {
-        return `<div class="cdiv" onclick="getInvoice(${id})"> Download Invoice </div>`;
+        return `<div class="btn btn-primary" onclick="getInvoice(${id})"><i class="fa-solid fa-file-arrow-down"></i> Download Invoice </div>`;
     } else {
-        return `<div class="cdiv" onclick="generateInvoice(${id})"> Generate Invoice </div>`;
+        return `<div class="btn btn-info" onclick="generateInvoice(${id})"> <i class="fa-solid fa-receipt"></i> Generate Invoice </div>`;
 
     }
 }
 
-let productList = {};
 
 function addProduct() {
     let barcode = $("#barcode").val();
@@ -72,6 +59,9 @@ function addProduct() {
     const product = { barcode, quantity, price };
     productList[product.barcode] = product;
     renderProductList();
+    $("#barcode").val("");
+    $("#quantity").val("");
+    $("#price").val("");
 }
 
 function renderProductList() {
@@ -217,9 +207,6 @@ function renderDetails(order) {
 
     $("#detailModal").modal("show");
 
-
-
-
 }
 
 
@@ -239,6 +226,18 @@ function viewDetails(id) {
             console.log(error);
             toast("error", "Error : " + error.responseJSON.message);
         },
+    });
+}
+
+function initOrders() {
+    showAll();
+    $("#showCreateModal").click(() => {
+        $("#barcode").val("");
+        $("#quantity").val("");
+        $("#price").val("");
+        productList = {};
+        renderProductList();
+        $("#createModal").modal("show");
     });
 }
 

@@ -33,13 +33,13 @@ public class OrderService {
     }
 
     public List<Order> getByDatetimeRange(ZonedDateTime startTime, ZonedDateTime endTime) {
-        return orderDao.findByDatetimeRange(startTime, endTime);
+        return orderDao.getByDatetimeRange(startTime, endTime);
     }
 
     public Order createInvoice(Long id) throws ApiException {
         Order order = orderDao.getById(id);
         if (order == null) {
-            throw new ApiException("Invalid ordered ID");
+            throw new ApiException("Invalid order ID");
         } else order.setInvoiced(true);
         return order;
     }

@@ -1,11 +1,5 @@
 let table;
 
-function initProduct() {
-    loadAllProducts();
-}
-
-
-
 
 function loadAllProducts() {
     $.ajax({
@@ -36,22 +30,13 @@ function renderTable(products) {
 
 function prependProduct(product) {
     table.row.add([product.barcode, product.name, product.brand, product.category, product.mrp,
-    `<div class="cdiv" onclick="editProduct(${product.id},
+    `<div class="btn btn-info" onclick="editProduct(${product.id},
          '${product.name}','${product.barcode}','${product.mrp}'
-         ,'${product.brand}','${product.category}')">Edit</div>`
+         ,'${product.brand}','${product.category}')">
+         <i class="fa-regular fa-pen-to-square"></i> Edit
+    </div>`
     ]).node().id = product.id;
-    // $("#tablebody").prepend(`
-    // <tr id='${product.id}'>
-    // <td>${product.barcode}</td>
-    // <td>${product.name}</td>
-    // <td>${product.brand}</td>
-    // <td>${product.category}</td>
-    // <td>${product.mrp}</td>
-    // <td><div class="cdiv" onclick="editProduct(${product.id},
-    //     '${product.name}','${product.barcode}','${product.mrp}'
-    //     ,'${product.brand}','${product.category}')">Edit</div></td>
-    // </tr>
-    // `);
+
 }
 
 function insertUpdatedProduct(product) {
@@ -167,7 +152,8 @@ function uploadProduct() {
                 element.setAttribute('id', "error-file");
                 element.style.display = 'none';
                 document.body.appendChild(element);
-                $("#error-button").attr("disabled", false);
+                $("#error-button").removeClass("d-none");
+
             }
 
             console.log("ERROR : ", e.responseJSON.message);
@@ -180,5 +166,22 @@ function uploadProduct() {
 function downloadErrorFile() {
     document.getElementById('error-file').click();
     $("#error-file").remove();
-    $("#error-button").attr("disabled", "true");
+    $("#error-button").addClass("d-none");
+}
+
+function initProduct() {
+    loadAllProducts();
+    $("#showCreateModal").click(() => {
+        $("#name").val("");
+        $("#barcode").val("");
+        $("#brand").val("");
+        $("#category").val("");
+        $("#mrp").val("");
+        $("#createModal").modal("show");
+    });
+
+    $("#showUploadModal").click(() => {
+        $("#name").val(null);
+        $("#uploadModal").modal("show");
+    })
 }

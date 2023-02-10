@@ -51,7 +51,6 @@ public class InventoryDto {
             }
             try {
                 increaseInventory(form);
-                responses.add("Row " + index + ": All good");
             } catch (Exception e) {
                 responses.add("Row " + index + ": Error  -> " + e.getMessage());
                 error = true;
@@ -84,7 +83,7 @@ public class InventoryDto {
         return extendData(inventoryService.getById(productId));
     }
 
-    private Long getProductId(String barcode) throws ApiException {
+    protected Long getProductId(String barcode) throws ApiException {
         Product product = productService.getOneByParameter("barcode", barcode);
         if (product == null) {
             throw new ApiException("Invalid Barcode");
@@ -92,7 +91,7 @@ public class InventoryDto {
         return product.getId();
     }
 
-    private List<InventoryData> extendData(List<Inventory> inventories) throws ApiException {
+    protected List<InventoryData> extendData(List<Inventory> inventories) throws ApiException {
         List<InventoryData> dataList = new ArrayList<>();
         for (Inventory inventory : inventories) {
             dataList.add(extendData(inventory));
@@ -100,7 +99,7 @@ public class InventoryDto {
         return dataList;
     }
 
-    private InventoryData extendData(Inventory inventory) throws ApiException {
+    protected InventoryData extendData(Inventory inventory) throws ApiException {
         InventoryData data = mapper(inventory, InventoryData.class);
         Product product = productService.getById(inventory.getId());
         data.setName(product.getName());

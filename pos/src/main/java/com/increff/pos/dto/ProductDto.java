@@ -16,7 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.increff.pos.util.FormUtil.*;
+import static com.increff.pos.util.FormUtil.normalizeForm;
+import static com.increff.pos.util.FormUtil.validateForm;
 import static com.increff.pos.util.MapperUtil.mapper;
 
 @Service
@@ -65,7 +66,6 @@ public class ProductDto {
             }
             try {
                 productService.create(convertToProduct(form));
-                responses.add("Row " + index + ": All good");
             } catch (Exception e) {
                 responses.add("Row " + index + ": Error -" + e.getMessage());
                 error = true;
@@ -86,11 +86,8 @@ public class ProductDto {
         return extendData(productService.getById(id));
     }
 
-    public ProductData getByBarcode(String barcode) throws ApiException {
-        return extendData(productService.getOneByParameter("barcode", normalize(barcode)));
-    }
 
-    private List<ProductData> extendData(List<Product> products) throws ApiException {
+    protected List<ProductData> extendData(List<Product> products) throws ApiException {
         List<ProductData> data = new ArrayList<>();
         for (Product product : products) {
             data.add(extendData(product));
@@ -98,7 +95,8 @@ public class ProductDto {
         return data;
     }
 
-    private ProductData extendData(Product product) throws ApiException {
+    protected ProductData extendData(Product product) throws ApiException {
+        if (product == null) return null;
         ProductData data = mapper(product, ProductData.class);
         Brand brand = brandService.getById(product.getBrandId());
         data.setBrand(brand.getName());
@@ -106,7 +104,7 @@ public class ProductDto {
         return data;
     }
 
-    private Product convertToProduct(ProductForm form) throws ApiException {
+    protected Product convertToProduct(ProductForm form) throws ApiException {
         validateForm(form);
         normalizeForm(form);
         Brand existingBrand = brandService.getByNameAndCategory(form.getBrand(), form.getCategory());

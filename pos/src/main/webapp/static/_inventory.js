@@ -1,7 +1,4 @@
 let table;
-function initInventory() {
-    showAll();
-}
 
 function showAll() {
     $.ajax({
@@ -32,22 +29,9 @@ function renderTable(inventories) {
 
 function appendInventory(inv) {
     table.row.add([inv.barcode, inv.name, inv.brand, inv.category, inv.quantity,
-    `<div class="cdiv" onclick="editInventory('${inv.barcode}','${inv.quantity}')">Edit</div>`
+    `<div class="btn btn-info" onclick="editInventory('${inv.barcode}','${inv.quantity}')">
+        <i class="fa-regular fa-pen-to-square"></i> Edit</div>`
     ]).node().id = inv.barcode;
-    // $("#tablebody").html("");
-    // data.forEach(inv => {
-    //     $("#tablebody").append(`
-    //     <tr id="${inv.barcode}">
-    //     <td>${inv.barcode}</td>
-    //     <td>${inv.name}</td>
-    //     <td>${inv.brand}</td>
-    //     <td>${inv.category}</td>
-    //     <td>${inv.quantity}</td>
-    //     <td><div class="cdiv" onclick="editInventory('${inv.barcode}','${inv.quantity}')">Edit</div></td>
-    //     </tr>
-    //     `);
-    // });
-    // $("#main-table").DataTable();
 }
 
 function updateRow(inv) {
@@ -177,7 +161,7 @@ function uploadQuantity() {
                 element.setAttribute('id', "error-file");
                 element.style.display = 'none';
                 document.body.appendChild(element);
-                $("#error-button").attr("disabled", false);
+                $("#error-button").removeClass("d-none");
             }
 
             console.log("ERROR : ", e.responseJSON.message);
@@ -190,6 +174,20 @@ function uploadQuantity() {
 function downloadErrorFile() {
     document.getElementById('error-file').click();
     $("#error-file").remove();
-    $("#error-button").attr("disabled", true);
+    $("#error-button").addClass("d-none");
+}
 
+function initInventory() {
+    showAll();
+
+    $("#showCreateModal").click(() => {
+        $("#barcode").val("");
+        $("#quantity").val("");
+        $("#createModal").modal("show");
+    });
+
+    $("#showUploadModal").click(() => {
+        $("#name").val(null);
+        $("#uploadModal").modal("show");
+    })
 }

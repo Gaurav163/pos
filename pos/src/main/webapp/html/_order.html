@@ -5,15 +5,18 @@
     <div th:replace="navbar.html :: navbar"></div>
 
     <div class="main">
+      <h2>ORDER</h2>
       <br />
-      <div class="cdiv" onclick="$('#createModal').modal('show')">Create</div>
+      <div class="btn btn-primary" id="showCreateModal">
+        <i class="fa-solid fa-plus"></i> Create Order
+      </div>
       <hr />
       <table class="table table-striped" id="main-table">
         <thead>
           <tr>
             <th scope="col">Order No</th>
-            <th scope="col">Date</th>
-            <th scope="col">Time</th>
+            <th scope="col">Order Date</th>
+            <th scope="col">Order Time</th>
             <th scope="col">Action(s)</th>
           </tr>
         </thead>
@@ -33,13 +36,7 @@
       <div class="modal-dialog" style="max-width: 900px">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Create Brand</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
+            <h5 class="modal-title" id="exampleModalLabel">Create Order</h5>
           </div>
           <div class="modal-body">
             <form action="javascript:addProduct()">
@@ -48,9 +45,10 @@
                 <input
                   type="text"
                   class="form-control"
-                  placeholder="Barcode"
+                  placeholder="Enter Barcode"
                   name="barcode"
                   id="barcode"
+                  required
                 />
               </div>
               <div class="form-group mb-3">
@@ -58,9 +56,10 @@
                 <input
                   type="text"
                   class="form-control"
-                  placeholder="Quantity"
+                  placeholder="Enter Quantity"
                   name="quantity"
                   id="quantity"
+                  required
                 />
               </div>
               <div class="form-group mb-3">
@@ -68,21 +67,22 @@
                 <input
                   type="text"
                   class="form-control"
-                  placeholder="Price"
+                  placeholder="Enter Price"
                   name="price"
                   id="price"
+                  required
                 />
               </div>
               <button type="submit" class="btn btn-primary">Add Product</button>
             </form>
             <hr />
             <table class="table table-striped">
-              <thead>
+              <thead class="row">
                 <tr>
-                  <th scope="col">Barcode</th>
-                  <th scope="col">Quantity</th>
-                  <th scope="col">Price</th>
-                  <th scope="col">Action</th>
+                  <th class="col" scope="col">Barcode</th>
+                  <th class="col" scope="col">Quantity</th>
+                  <th class="col" scope="col">Price</th>
+                  <th class="col" scope="col">Action</th>
                 </tr>
               </thead>
               <tbody id="tablebody"></tbody>

@@ -1,7 +1,5 @@
 let table = null;
-function initBrand() {
-    loadAllBrands();
-}
+
 
 function loadAllBrands() {
     $.ajax({
@@ -35,15 +33,8 @@ function renderTable(brands) {
 
 function prependBrand(brand) {
     table.row.add([brand.name, brand.category,
-    `<div class="cdiv" onclick="editBrand(${brand.id},'${brand.name}','${brand.category}')">Edit</div>`
+    `<div class="btn btn-info" onclick="editBrand(${brand.id},'${brand.name}','${brand.category}')"><i class="fa-regular fa-pen-to-square"></i> Edit</div>`
     ]).node().id = brand.id;
-    // $("#tablebody").prepend(`
-    // <tr id='${brand.id}'>
-    // <td>${brand.name}</td>
-    // <td>${brand.category}</td>
-    // <td><div class="cdiv" onclick="editBrand(${brand.id},'${brand.name}','${brand.category}')">Edit</div></td>
-    // </tr>
-    // `);
 }
 
 function insertUpdatedBrand(brand) {
@@ -106,6 +97,7 @@ function updateBrand() {
             insertUpdatedBrand(data);
             $("#updateModal").modal("hide");
             toast("success", "Brand updated");
+            loadAllBrands();
         },
         error: function (error) {
             console.log(error);
@@ -151,11 +143,11 @@ function uploadBrand() {
                 element.setAttribute('id', "error-file");
                 element.style.display = 'none';
                 document.body.appendChild(element);
-                $("#error-button").attr("disabled", false);
+                $("#error-button").removeClass("d-none")
             }
 
             console.log("ERROR : ", e.responseJSON.message);
-            toast("error", "Something went wrong with file, Download error file for more details")
+            toast("error", "Invalid file, download error file for more info")
 
         }
     });
@@ -164,6 +156,20 @@ function uploadBrand() {
 function downloadErrorFile() {
     document.getElementById('error-file').click();
     $("#error-file").remove();
-    $("#error-button").attr("disabled", "true");
+    $("#error-button").addClass("d-none");
 }
 
+
+function initBrand() {
+    loadAllBrands();
+    $("#showCreateModal").click(() => {
+        $("#name").val("");
+        $("#category").val("");
+        $("#createModal").modal("show");
+    });
+
+    $("#showUploadModal").click(() => {
+        $("#name").val(null);
+        $("#uploadModal").modal("show");
+    })
+}

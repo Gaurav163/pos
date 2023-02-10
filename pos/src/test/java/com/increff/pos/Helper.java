@@ -3,6 +3,7 @@ package com.increff.pos;
 import com.increff.pos.dao.*;
 import com.increff.pos.model.BrandForm;
 import com.increff.pos.model.InventoryForm;
+import com.increff.pos.model.OrderItemForm;
 import com.increff.pos.model.ProductForm;
 import com.increff.pos.pojo.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import java.time.ZonedDateTime;
 
 @Component
 public class Helper {
+
     @Autowired
     private BrandDao brandDao;
     @Autowired
@@ -62,7 +64,6 @@ public class Helper {
     }
 
     public ProductForm createProductForm(String name, String barcode, String brand, String category, Double mrp) {
-        Brand brandPojo = createBrand(brand, category);
         ProductForm form = new ProductForm();
         form.setName(name);
         form.setBarcode(barcode);
@@ -90,8 +91,6 @@ public class Helper {
     }
 
     public InventoryForm createInventoryForm(String barcode, Long quantity) {
-        Brand brand = createBrand("brand1", "category1");
-        Product product = createProduct("product1", barcode, brand.getId(), 90.99);
         InventoryForm form = new InventoryForm();
         form.setQuantity(quantity);
         form.setBarcode(barcode);
@@ -105,25 +104,40 @@ public class Helper {
         return order;
     }
 
-    public Order createOrder(ZonedDateTime datetime) {
-        return orderDao.create(getOrder(datetime));
+    public Order createOrder(ZonedDateTime dateTime) {
+        return orderDao.create(getOrder(dateTime));
     }
 
     public Order createOrder() {
         return orderDao.create(getOrder(ZonedDateTime.now()));
     }
 
-    public OrderItem getOrderItem(Long quantity, Double sellingPrice) {
+    public Long initOrderItem(String barcode, Long quantity) {
+        Brand brand = createBrand("brand_" + barcode, "category_" + barcode);
+        Product product = createProduct("product_" + barcode, barcode, brand.getId(), 90.99);
+        Inventory inventory = inventoryDao.create(getInventory(product.getId(), quantity));
+        return product.getId();
+    }
+
+    public OrderItem getOrderItem(Long orderId, Long productId, Long quantity, Double sellingPrice) {
         OrderItem orderItem = new OrderItem();
-        orderItem.setOrderId(99L);
-        orderItem.setProductId(99L);
+        orderItem.setOrderId(orderId);
+        orderItem.setProductId(productId);
         orderItem.setQuantity(quantity);
         orderItem.setSellingPrice(sellingPrice);
         return orderItem;
     }
 
-    public OrderItem createOrderItem(Long quantity, Double sellingPrice) {
-        return orderItemDao.create(getOrderItem(quantity, sellingPrice));
+    public OrderItem createOrderItem(Long orderId, Long productId, Long quantity, Double sellingPrice) {
+        return orderItemDao.create(getOrderItem(orderId, productId, quantity, sellingPrice));
+    }
+
+    public OrderItemForm createOrderItemForm(String barcode, Long quantity, Double sellingPrice) {
+        OrderItemForm form = new OrderItemForm();
+        form.setBarcode(barcode);
+        form.setQuantity(quantity);
+        form.setSellingPrice(sellingPrice);
+        return form;
     }
 
 

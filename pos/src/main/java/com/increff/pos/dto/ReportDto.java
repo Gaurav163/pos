@@ -37,7 +37,6 @@ public class ReportDto {
         for (DailyReport report : dailyReports) {
             DailyReportData data = mapper(report, DailyReportData.class);
             data.setDate(report.getDate().toLocalDate().toString());
-            System.out.println(data);
             dataList.add(data);
         }
         return dataList;

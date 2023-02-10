@@ -20,7 +20,13 @@ public class HibernateNamingConfig implements PhysicalNamingStrategy {
 
     @Override
     public Identifier toPhysicalTableName(Identifier identifier, JdbcEnvironment jdbcEnvironment) {
-        return convert(identifier);
+        if (identifier == null || identifier.getText().isEmpty()) {
+            return identifier;
+        }
+        String regex = "([a-z])([A-Z])";
+        String replacement = "$1_$2";
+        String newName = identifier.getText().replaceAll(regex, replacement).toLowerCase() + "s";
+        return Identifier.toIdentifier(newName);
     }
 
     @Override

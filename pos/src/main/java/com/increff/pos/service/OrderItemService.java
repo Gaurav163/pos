@@ -15,10 +15,6 @@ public class OrderItemService {
     @Autowired
     private OrderItemDao orderItemDao;
 
-    public OrderItem getById(Long id) {
-        return orderItemDao.getById(id);
-    }
-
     public List<OrderItem> getAll() {
         return orderItemDao.getAll();
     }

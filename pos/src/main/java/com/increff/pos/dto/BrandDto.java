@@ -71,9 +71,8 @@ public class BrandDto {
                 normalizeForm(form);
                 Brand brand = mapper(form, Brand.class);
                 brandService.create(brand);
-                responses.add("Row " + index + ": All good");
             } catch (Exception e) {
-                responses.add("Row " + index + ": Error while creating brand -" + e.getMessage());
+                responses.add("Row " + index + ": Error -" + e.getMessage());
                 error = true;
             }
         }

@@ -14,9 +14,8 @@ public class OrderDao extends AbstractDao<Order> {
         super(Order.class);
     }
 
-    private static final String SELECT_BY_DATETIME_RANGE = "select b from Order b where datetime>=:startTime and datetime<=:endTime";
-
-    public List<Order> findByDatetimeRange(ZonedDateTime startTime, ZonedDateTime endTime) {
+    public List<Order> getByDatetimeRange(ZonedDateTime startTime, ZonedDateTime endTime) {
+        String SELECT_BY_DATETIME_RANGE = "select b from Order b where datetime>=:startTime and datetime<=:endTime";
         TypedQuery<Order> query = getQuery(SELECT_BY_DATETIME_RANGE);
         query.setParameter("startTime", startTime);
         query.setParameter("endTime", endTime);

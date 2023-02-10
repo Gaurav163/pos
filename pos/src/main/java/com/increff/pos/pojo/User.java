@@ -5,18 +5,12 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-import static com.increff.pos.pojo.PojoConstants.USER_SEQUENCE;
-
 @Data
 @Entity
 @NoArgsConstructor
 public class User {
     @Id
-    @SequenceGenerator(allocationSize = 1,
-            name = USER_SEQUENCE,
-            sequenceName = USER_SEQUENCE)
-    @GeneratedValue(strategy = GenerationType.AUTO,
-            generator = USER_SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
     private String name;

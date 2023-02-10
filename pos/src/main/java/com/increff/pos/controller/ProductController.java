@@ -41,11 +41,6 @@ public class ProductController {
         return productDto.getById(id);
     }
 
-    @ApiOperation(value = "Get product by barcode")
-    @RequestMapping(path = "/barcode/{barcode}", method = RequestMethod.GET)
-    public ProductData getByBarcode(@PathVariable("barcode") String barcode) throws ApiException {
-        return productDto.getByBarcode(barcode);
-    }
 
     @ApiOperation(value = "Get all products")
     @RequestMapping(path = "/", method = RequestMethod.GET)
