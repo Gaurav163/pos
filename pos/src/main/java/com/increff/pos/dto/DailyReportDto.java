@@ -1,8 +1,8 @@
 package com.increff.pos.dto;
 
 import com.increff.pos.pojo.DailyReport;
-import com.increff.pos.pojo.OrderItem;
 import com.increff.pos.pojo.Order;
+import com.increff.pos.pojo.OrderItem;
 import com.increff.pos.service.DailyReportService;
 import com.increff.pos.service.OrderItemService;
 import com.increff.pos.service.OrderService;
@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -24,9 +23,9 @@ public class DailyReportDto {
     @Autowired
     private DailyReportService dailyReportService;
 
-    @Scheduled(cron = "0 27 18 * * *", zone = "Asia/Kolkata")
+    @Scheduled(cron = "30 20 11 * * *", zone = "Asia/Kolkata")
     public void scheduleFixedDelayTask() {
-        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
+        ZonedDateTime now = ZonedDateTime.now();
         ZonedDateTime lastday = now.minusDays(1);
         List<Order> orders = orderService.getByDatetimeRange(lastday, now);
 

@@ -96,8 +96,16 @@ public class PdfService {
                 orderItem.appendChild(barcode);
 
                 Element sellingPrice = doc.createElement("sellingPrice");
-                sellingPrice.appendChild(doc.createTextNode(item.getSellingPrice().toString()));
+                sellingPrice.appendChild(doc.createTextNode(String.format("%.2f", item.getSellingPrice())));
                 orderItem.appendChild(sellingPrice);
+
+                Element brand = doc.createElement("brand");
+                brand.appendChild(doc.createTextNode(item.getBrand()));
+                orderItem.appendChild(brand);
+
+                Element category = doc.createElement("category");
+                category.appendChild(doc.createTextNode(item.getCategory()));
+                orderItem.appendChild(category);
 
                 Element quantity = doc.createElement("quantity");
                 quantity.appendChild(doc.createTextNode(item.getQuantity().toString()));

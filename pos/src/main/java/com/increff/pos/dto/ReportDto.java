@@ -31,8 +31,14 @@ public class ReportDto {
     @Autowired
     private DailyReportService dailyReportService;
 
-    public List<DailyReportData> getDailyReport() throws ApiException {
-        List<DailyReport> dailyReports = dailyReportService.getAll();
+    public List<DailyReportData> getDailyReport(String startDate, String endDate) throws ApiException {
+
+        ZonedDateTime startTime = ZonedDateTime.parse(startDate);
+        ZonedDateTime endTime = ZonedDateTime.parse(endDate);
+        System.out.println(startTime);
+
+
+        List<DailyReport> dailyReports = dailyReportService.getByDateRange(startTime, endTime);
         List<DailyReportData> dataList = new ArrayList<>();
         for (DailyReport report : dailyReports) {
             DailyReportData data = mapper(report, DailyReportData.class);
@@ -42,8 +48,8 @@ public class ReportDto {
         return dataList;
     }
 
-    public List<BrandData> getBrandReport() throws ApiException {
-        return mapper(brandService.getAll(), BrandData.class);
+    public List<BrandForm> getBrandReport() throws ApiException {
+        return mapper(brandService.getAll(), BrandForm.class);
     }
 
     public List<InventoryReportData> getInventoryReport() throws ApiException {

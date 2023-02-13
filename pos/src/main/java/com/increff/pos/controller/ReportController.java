@@ -3,10 +3,7 @@ package com.increff.pos.controller;
 import com.increff.pos.dto.ReportDto;
 import com.increff.pos.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -26,7 +23,7 @@ public class ReportController {
     }
 
     @RequestMapping(path = "/brand", method = RequestMethod.GET)
-    public List<BrandData> getBrandReport() throws ApiException {
+    public List<BrandForm> getBrandReport() throws ApiException {
         return reportDto.getBrandReport();
     }
 
@@ -36,8 +33,9 @@ public class ReportController {
     }
 
     @RequestMapping(value = "/daily", method = RequestMethod.GET)
-    public List<DailyReportData> getDailyReport() throws ApiException {
-        return reportDto.getDailyReport();
+    public List<DailyReportData> getDailyReport(@RequestParam(value = "startDate") String startDate,
+                                                @RequestParam(value = "endDate") String endDate) throws ApiException {
+        return reportDto.getDailyReport(startDate, endDate);
     }
 
 

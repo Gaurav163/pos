@@ -1,41 +1,5 @@
-function saveBrand() {
-    console.log("Saving Brand");
-    let name = $("#name").val();
-    let category = $("#category").val();
-    let brand = { name, category };
-    console.log(brand);
-    let data = JSON.stringify(brand);
+let table = null;
 
-    $.ajax({
-        url: "/api/brands/",
-        type: "POST",
-        data: data,
-        headers: {
-            "Content-Type": "application/json",
-        },
-        success: function (response) {
-            console.log(response);
-            toast("success", "Brand Saved Successfully !");
-            brand = response;
-            $("#name").val("");
-            $("#category").val("");
-            $("#tablebody").prepend(
-                `<tr id='${"brand" + brand.id}'>
-                    <td>${brand.name}</td>
-                    <td>${brand.category}</td>
-                    <td><div class="btn btn-primary"
-                    onclick="showUpdateForm(${brand.id},'${brand.name}','${brand.category
-                }')">
-                    Edit</div></td>
-                    </tr>`
-            );
-        },
-        error: function (error) {
-            console.log(error);
-            toast("error", "Error : " + error.responseJSON.message);
-        },
-    });
-}
 
 function loadAllBrands() {
     $.ajax({
@@ -44,71 +8,82 @@ function loadAllBrands() {
         headers: {
             "Content-Type": "application/json",
         },
-        success: function (response) {
-            console.log(response);
-            $("#tablebody").html("");
-            response.forEach((brand) => {
-                $("#tablebody").append(
-                    `<tr id='${"brand" + brand.id}'>
-                    <td>${brand.name}</td>
-                    <td>${brand.category}</td>
-                    <td><div class="btn btn-primary"
-                    onclick="showUpdateForm(${brand.id},'${brand.name}','${brand.category
-                    }')">
-                    Edit</div></td>
-                    </tr>`
-                );
-            });
+        success: function (brands) {
+            renderTable(brands);
         },
         error: function (error) {
             console.log(error);
-            console.log(error);
-            toast(
-                "error",
-                "Error in Fetching All Brands : " + error.responseJSON.message
-            );
+            toast("error", "Error : " + error.responseJSON.message);
+
         },
     });
 }
 
-function showUpdateForm(id, name, category) {
-    $("#brand" + id).html(`<td>
-        <input
-            class="form-control"
-            name=${"name" + id}
-            id=${"name" + id}
-            type="text"
-            placeholder="Brand Name"
-            value='${name}'
-            autofocus
-        /> 
-        </td> <td>
-        <input
-            class="form-control"
-            name=${"category" + id}
-            id=${"category" + id}
-            type="text"
-            placeholder="Category"
-            value='${category}'
-        /> </td>
-        <td>
-        <div class="btn btn-primary" onclick="update(${id})">Edit </div>
-        </td>
-   `);
+
+
+function renderTable(brands) {
+    $("#tablebody").html("");
+    table = $("#main-table").DataTable();
+    brands.forEach(brand => {
+        prependBrand(brand);
+    });
+    table.draw();
+
 }
 
-function update(id) {
-    console.log("Updating " + id);
-    let name = $(`#name${id}`).val();
-    let category = $(`#category${id}`).val();
-    let brand = {
-        name,
-        category,
-    };
-    console.log(brand);
+function prependBrand(brand) {
+    table.row.add([brand.name, brand.category,
+    `<div class="btn btn-info" onclick="editBrand(${brand.id},'${brand.name}','${brand.category}')"><i class="fa-regular fa-pen-to-square"></i> Edit</div>`
+    ]).node().id = brand.id;
+}
 
-    let data = JSON.stringify(brand);
+function insertUpdatedBrand(brand) {
+    table.row(`#${brand.id}`).remove();
+    prependBrand(brand);
+    table.draw();
+}
 
+
+
+function editBrand(id, name, category) {
+    $("#u-id").val(id);
+    $("#u-name").val(name);
+    $("#u-category").val(category);
+    $("#updateModal").modal("show");
+}
+
+function createBrand() {
+    let name = $("#name").val();
+    let category = $("#category").val();
+    const brand = { name, category };
+    const data = JSON.stringify(brand);
+    $.ajax({
+        url: "/api/brands/",
+        type: "POST",
+        data: data,
+        headers: {
+            "Content-Type": "application/json",
+        },
+        success: function (data) {
+            console.log(data);
+            prependBrand(data);
+            table.draw();
+            $("#createModal").modal("hide");
+            toast("success", "Brand created");
+        },
+        error: function (error) {
+            console.log(error);
+            toast("error", "Error : " + error.responseJSON.message);
+        },
+    });
+}
+
+function updateBrand() {
+    let id = $("#u-id").val();
+    let name = $("#u-name").val();
+    let category = $("#u-category").val();
+    const brand = { name, category };
+    const data = JSON.stringify(brand);
     $.ajax({
         url: "/api/brands/" + id,
         type: "PUT",
@@ -116,22 +91,84 @@ function update(id) {
         headers: {
             "Content-Type": "application/json",
         },
-        success: function (response) {
-            console.log(response);
-            brand = response;
-            $("#brand" + id).html(`
-                    <td>${brand.name}</td>
-                    <td>${brand.category}</td>
-                    <td><div class="btn btn-primary"
-                    onclick="showUpdateForm(${brand.id},'${brand.name}','${brand.category}')">
-                    Edit</div></td>
-                    
-                `);
-            toast("success", "Brand Updated Successfully !");
+        success: function (data) {
+            console.log(data);
+            insertUpdatedBrand(data);
+            $("#updateModal").modal("hide");
+            toast("success", "Brand updated");
+            loadAllBrands();
         },
         error: function (error) {
             console.log(error);
             toast("error", "Error : " + error.responseJSON.message);
         },
     });
+
+}
+
+function downloadSampleBrand() {
+    console.log("yes");
+    window.open("/sample/brand", '_blank').focus();
+}
+
+function uploadBrand() {
+    const data = new FormData();
+    const file = $("#file")[0].files[0];
+    data.append("file", file);
+    if (file.type != "text/tab-separated-values") {
+        toast("error", "Selected file must be a TSV (tab seperated value) file");
+    }
+
+    $.ajax({
+        type: "POST",
+        url: "/api/brands/upload",
+        data: data,
+        enctype: "multipart/form-data",
+        contentType: false,
+        cache: false,
+        processData: false,
+        success: function (data) {
+            console.log("SUCCESS : ", data);
+            $("#uploadModal").modal("hide");
+
+        },
+        error: function (e) {
+            if (e.status == 400) {
+                let text = e.responseJSON.message;
+                $("#error-file").remove();
+                let element = document.createElement('a');
+                element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+                element.setAttribute('download', "errors.txt");
+                element.setAttribute('id', "error-file");
+                element.style.display = 'none';
+                document.body.appendChild(element);
+                $("#error-button").removeClass("d-none")
+            }
+
+            console.log("ERROR : ", e.responseJSON.message);
+            toast("error", "Invalid file, download error file for more info")
+
+        }
+    });
+}
+
+function downloadErrorFile() {
+    document.getElementById('error-file').click();
+    $("#error-file").remove();
+    $("#error-button").addClass("d-none");
+}
+
+
+function initBrand() {
+    loadAllBrands();
+    $("#showCreateModal").click(() => {
+        $("#name").val("");
+        $("#category").val("");
+        $("#createModal").modal("show");
+    });
+
+    $("#showUploadModal").click(() => {
+        $("#name").val(null);
+        $("#uploadModal").modal("show");
+    })
 }

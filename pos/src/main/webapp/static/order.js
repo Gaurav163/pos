@@ -1,6 +1,5 @@
-
-const productList = {};
-
+let table = null;
+let productList = {};
 
 function showAll() {
     $.ajax({
@@ -19,74 +18,89 @@ function showAll() {
     });
 }
 
-function getInvoice(id, task) {
-    $.ajax({
-        url: "/api/orders/invoice/" + id,
-        type: "GET",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        success: function (response) {
-            if (task == "print") {
-                printInvoice(response);
-            } else {
-                downloadInvoice(response, id);
-            }
-        },
-        error: function (error) {
-            console.log(error);
-            toast("error", "Error : " + error.responseJSON.message);
-        },
-    });
-}
-
-function printInvoice(data) {
-    let winparams = 'dependent=yes,locationbar=no,scrollbars=yes,menubar=yes,' +
-        'resizable,screenX=50,screenY=50,width=1200,height=1050';
-
-    let htmlPop = '<embed width=100% height=100%'
-        + ' type="application/pdf"'
-        + ' src="data:application/pdf;base64,'
-        + data
-        + '"></embed>';
-
-    let printWindow = window.open("", "PDF", winparams);
-    printWindow.document.write(htmlPop);
-}
-
-function downloadInvoice(data, id) {
-    const linkSource = `data:application/pdf;base64,${data}`;
-    const downloadLink = document.createElement("a");
-    const fileName = "invoice-" + id + ".pdf";
-    downloadLink.href = linkSource;
-    downloadLink.download = fileName;
-    downloadLink.click();
-}
-
 function showOrders(orders) {
     $("#tablebody2").html("");
+    table = $("#main-table").DataTable();
     orders.forEach(order => {
-        $("#tablebody2").append(`
-        <tr>
-        <td>${order.id}</td>
-        <td>${order.date}</td>
-        <td>${order.time}</td>
-        <td> 
-        <button class="btn btn-info" onclick="getInvoice(${order.id},'download')"> Download </button>
-        <button class="btn btn-info" onclick="getInvoice(${order.id},'print')"> Print </button>
-        </td>
+        console.log(order);
+        appendOrder(order);
+    });
+    table.draw();
+}
+
+function appendOrder(order) {
+    table.row.add([order.id, order.date, order.time,
+    getInvoiceButton(order.id, order.invoiced) + `<div class="btn btn-success ms-4" onclick="viewDetails(${order.id})"><i class="fa-regular fa-eye"></i> View Details </div>`]).node().id = order.id;
+}
+
+function getInvoiceButton(id, invoiced) {
+    if (invoiced) {
+        return `<div class="btn btn-primary" onclick="getInvoice(${id})"><i class="fa-solid fa-file-arrow-down"></i> Download Invoice </div>`;
+    } else {
+        return `<div class="btn btn-info" onclick="generateInvoice(${id})"> <i class="fa-solid fa-receipt"></i> Generate Invoice </div>`;
+
+    }
+}
+
+
+function addProduct() {
+    let barcode = $("#barcode").val();
+    let quantity = $("#quantity").val();
+    let price = $("#price").val();
+    if (!isFloat(price)) {
+        toast("error", "Selling Price should be a Postive number.");
+        return;
+    }
+    if (!isNum(quantity)) {
+        toast("error", "Quantity should be positive.");
+        return;
+    }
+
+    const product = { barcode, quantity, price };
+    productList[product.barcode] = product;
+    renderProductList();
+    $("#barcode").val("");
+    $("#quantity").val("");
+    $("#price").val("");
+}
+
+function renderProductList() {
+    $("#tablebody").html("");
+    Object.values(productList).forEach(product => {
+        $("#tablebody").append(`
+        <tr>=
+            <td scope="col">${product.barcode}</td>
+            <td scope="col">${product.quantity}</td>
+            <td scope="col">${product.price}</td>
+            <td scope="col"><div class="cdiv" onclick="editProduct('${product.barcode}')"> Edit</div> <div class="cdiv ms-4" onclick="removeProduct('${product.barcode}')"> Remove</div></td>
         </tr>
         `);
-    });
-
+    })
 }
+
+function removeProduct(barcode) {
+    delete productList[barcode];
+    renderProductList();
+}
+
+function editProduct(barcode) {
+    const product = productList[barcode];
+    delete productList[barcode];
+    renderProductList();
+
+    $("#barcode").val(product.barcode);
+    $("#quantity").val(product.quantity);
+    $("#price").val(product.price);
+}
+
+
 
 function createOrder() {
     const itemList = Object.values(productList).map(item => {
         return {
             barcode: item.barcode,
             quantity: item.quantity,
-            sellingPrice: item.sellingPrice
+            sellingPrice: item.price
         }
     });
     const data = JSON.stringify(itemList);
@@ -98,10 +112,15 @@ function createOrder() {
         headers: {
             "Content-Type": "application/json",
         },
-        success: function (response) {
+        success: function (order) {
             console.log("order created");
-            toast("success", "Order created")
-            printInvoice(response);
+            toast("success", "Order created");
+            appendOrder(order);
+            table.draw();
+            productList = {};
+            renderProductList();
+            $("#createModal").modal("hide");
+
         },
         error: function (error) {
             console.log(error);
@@ -111,57 +130,97 @@ function createOrder() {
 
 }
 
-function addProduct() {
-    let barcode = $("#barcode").val();
-    let quantity = $("#quantity").val();
-    let sellingPrice = $("#sellingPrice").val();
-    if (isNaN(sellingPrice) || parseInt(sellingPrice, 10) <= 0) {
-        toast("error", "Selling Price should be a Postive number.");
-        return;
-    }
-    if (isNaN(quantity)) {
-        toast("error", "Quantity should be number.");
-        return;
-    }
-    if (Math.abs(quantity) != parseInt(quantity, 10) || parseInt(quantity, 10) <= 0) {
-        toast("error", "Quantity should should be a positive number.");
-        return;
-    }
-
-
-
+function generateInvoice(id) {
     $.ajax({
-        url: "/api/inventories/" + barcode,
+        url: "/api/orders/invoice/" + id,
+        type: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        success: function (order) {
+            table.row("#" + order.id).remove();
+            appendOrder(order);
+            table.draw();
+            toast("success", "Invoice created");
+
+        },
+        error: function (error) {
+            console.log(error);
+            toast("error", "Error : " + error.responseJSON.message);
+        },
+    });
+}
+
+
+function getInvoice(id) {
+    $.ajax({
+        url: "/api/orders/invoice/" + id,
         type: "GET",
         headers: {
             "Content-Type": "application/json",
         },
         success: function (response) {
-            if (response.quantity < quantity) {
-                toast("error", "There is only " + response.quantity + " product present in Inventory");
-            }
-            else {
-                getProductByBarcode(barcode, response, quantity, sellingPrice);
-            }
+            downloadInvoice(response, id);
         },
         error: function (error) {
             console.log(error);
             toast("error", "Error : " + error.responseJSON.message);
         },
     });
+}
+
+function downloadInvoice(data, id) {
+    const linkSource = `data:application/pdf;base64,${data}`;
+    const downloadLink = document.createElement("a");
+    const fileName = "invoice-" + id + ".pdf";
+    downloadLink.href = linkSource;
+    downloadLink.download = fileName;
+    downloadLink.click();
+}
+
+function renderDetails(order) {
+    console.log(order);
+    $("#orderid").text("Order ID: " + order.id);
+    $("#orderdate").text("Date: " + order.date);
+    $("#ordertime").text("Time: " + order.time);
+    let total = 0;
+    let count = 0;
+    $("#details-table").html("");
+    order.items.forEach(item => {
+        total += item.sellingPrice * item.quantity;
+        count += item.quantity;
+        $("#details-table").append(`
+        <tr>
+        <td>${item.barcode}</td>
+        <td>${item.name}</td>
+        <td>${item.brand}</td>
+        <td>${item.category}</td>
+        <td>${item.quantity}</td>
+        <td>${item.sellingPrice}</td>
+        <td>${item.quantity * item.sellingPrice}</td>
+        </tr>
+        `)
+    });
+
+    $("#total-items").text("Total Items: " + count);
+    $("#total-bill").text("Total Bill: Rs. " + total);
+
+    $("#detailModal").modal("show");
 
 }
 
-function getProductByBarcode(barcode, inventory, quantity, sellingPrice) {
+
+
+function viewDetails(id) {
+    console.log(id);
     $.ajax({
-        url: "/api/products/barcode/" + barcode,
+        url: "/api/orders/" + id,
         type: "GET",
         headers: {
             "Content-Type": "application/json",
         },
-        success: function (product) {
-            addNewProduct(inventory, product, quantity, sellingPrice);
-
+        success: function (order) {
+            renderDetails(order);
         },
         error: function (error) {
             console.log(error);
@@ -170,47 +229,17 @@ function getProductByBarcode(barcode, inventory, quantity, sellingPrice) {
     });
 }
 
-function addNewProduct(inventory, product, quantity, sellingPrice) {
-    console.log(inventory, product);
-    let newP = {
-        name: product.name,
-        barcode: product.barcode,
-        brand: product.brandName,
-        mrp: product.mrp,
-        quantity,
-        sellingPrice
-    }
-
-    if (productList[product.barcode]) {
-        console.log(product.barcode);
-        toast("error", "Product with given barcode already in cart");
-    }
-    else {
-        productList[product.barcode] = newP;
+function initOrders() {
+    showAll();
+    $("#showCreateModal").click(() => {
+        $("#barcode").val("");
+        $("#quantity").val("");
+        $("#price").val("");
+        productList = {};
         renderProductList();
-    }
-
+        $("#createModal").modal("show");
+    });
 }
 
 
-function renderProductList() {
-    $("#tablebody").html("");
-    Object.values(productList).forEach(product => {
-        $("#tablebody").append(`
-        <tr>
-            <td scope="col">${product.name}</td>
-            <td scope="col">${product.barcode}</td>
-            <td scope="col">${product.brand}</td>
-            <td scope="col">${product.mrp}</td>
-            <td scope="col">${product.sellingPrice}</td>
-            <td scope="col">${product.quantity}</td>
-            <td scope="col"><button class="btn btn-warning" onclick="removeProduct('${product.barcode}')"> Remove</button></td>
-        </tr>
-        `);
-    })
-}
 
-function removeProduct(barcode) {
-    delete productList[barcode];
-    renderProductList();
-}

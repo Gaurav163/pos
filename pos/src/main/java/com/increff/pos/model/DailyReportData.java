@@ -4,7 +4,6 @@ import lombok.Data;
 
 @Data
 public class DailyReportData {
-    private Long id;
     private Long invoicedOrdersCount;
     private Long invoicedItemsCount;
     private Double totalRevenue;

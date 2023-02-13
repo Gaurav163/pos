@@ -24,7 +24,21 @@
     </li>
 
     <li class="nav-item" id="nav-report">
-      <a class="nav-link" href="/report">Report</a>
+      <div class="dropdown">
+        <div
+          class="btn btn-primary dropdown-toggle"
+          data-bs-toggle="dropdown"
+          style="padding: 5px 10px !important"
+        >
+          Report
+        </div>
+        <div class="dropdown-menu" id="drop-report">
+          <a class="nav-link" href="/report/sales">Sales Report</a>
+          <a class="nav-link" href="/report/brand">Brand Report</a>
+          <a class="nav-link" href="/report/inventory">Inventory Report</a>
+          <a class="nav-link" href="/report/daily">Daily Report</a>
+        </div>
+      </div>
     </li>
   </ul>
   <div th:switch="${authenticated}" style="position: absolute; right: 20px">
