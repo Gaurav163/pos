@@ -50,6 +50,8 @@ public class InventoryDto {
                 continue;
             }
             try {
+                validateForm(form);
+                normalizeForm(form);
                 increaseInventory(form);
             } catch (Exception e) {
                 responses.add("Row " + index + ": Error  -> " + e.getMessage());
@@ -74,6 +76,8 @@ public class InventoryDto {
     }
 
     public InventoryData updateInventory(InventoryForm form) throws ApiException {
+        validateForm(form);
+        normalizeForm(form);
         Long productId = getProductId(form.getBarcode());
         return extendData(inventoryService.updateInventory(productId, form.getQuantity()));
     }
@@ -82,6 +86,7 @@ public class InventoryDto {
         Long productId = getProductId(barcode);
         return extendData(inventoryService.getById(productId));
     }
+
 
     protected Long getProductId(String barcode) throws ApiException {
         Product product = productService.getOneByParameter("barcode", barcode);

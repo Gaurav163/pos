@@ -23,7 +23,7 @@ public class FormUtil {
         if (!violations.isEmpty()) {
             List<String> details = violations.parallelStream().map(e -> e.getPropertyPath() + " " + e.getMessage())
                     .collect(Collectors.toList());
-            throw new ApiException(String.join(" , ", details));
+            throw new ApiException("Invalid data");
         }
     }
 

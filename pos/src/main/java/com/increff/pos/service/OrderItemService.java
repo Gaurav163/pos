@@ -15,10 +15,6 @@ public class OrderItemService {
     @Autowired
     private OrderItemDao orderItemDao;
 
-    public List<OrderItem> getAll() {
-        return orderItemDao.getAll();
-    }
-
     public <S> List<OrderItem> getListByParameter(String name, S value) {
         return orderItemDao.getListByParameter(name, value);
     }

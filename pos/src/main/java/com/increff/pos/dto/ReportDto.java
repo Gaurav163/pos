@@ -35,8 +35,6 @@ public class ReportDto {
 
         ZonedDateTime startTime = ZonedDateTime.parse(startDate);
         ZonedDateTime endTime = ZonedDateTime.parse(endDate);
-        System.out.println(startTime);
-
 
         List<DailyReport> dailyReports = dailyReportService.getByDateRange(startTime, endTime);
         List<DailyReportData> dataList = new ArrayList<>();

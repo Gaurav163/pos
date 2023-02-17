@@ -20,9 +20,6 @@ public class DailyReportService {
         return report;
     }
 
-    public List<DailyReport> getAll() {
-        return dailyReportDao.getAll();
-    }
 
     public List<DailyReport> getByDateRange(ZonedDateTime startTime, ZonedDateTime endTime) {
         return dailyReportDao.getByDatetimeRange(startTime, endTime);

@@ -10,7 +10,7 @@
 
 /* navbar */
 
-a.nav-link {
+.nav-link {
   color: #ffffff !important;
   position: relative;
   padding: 5px 10px !important;
@@ -19,7 +19,7 @@ a.nav-link {
   font-weight: 500;
 }
 
-a.nav-link:before {
+.nav-link:before {
   content: "";
   position: absolute;
   width: 100%;
@@ -33,7 +33,7 @@ a.nav-link:before {
   transition: all 0.2s ease-in-out;
 }
 
-a.nav-link:hover:before {
+.nav-link:hover:before {
   visibility: visible;
   transform: scaleX(1);
 }
@@ -90,35 +90,6 @@ label {
   color: rgb(36, 36, 36) !important;
 }
 
-#toaster {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  width: 300px;
-  height: auto;
-  border-radius: 2px;
-  background-color: rgb(255, 255, 255);
-  padding: 10px;
-  font-size: large;
-  display: none;
-  z-index: 10000;
-}
-
-.toast-success {
-  color: seagreen;
-  border-bottom: seagreen solid 2px;
-}
-
-.toast-w {
-  color: darkorange;
-  border-color: darkorange;
-}
-
-.toast-error {
-  color: red;
-  border-bottom: red solid 2px;
-}
-
 /* button style */
 .btn-primary {
   color: white;
@@ -135,11 +106,17 @@ label {
   cursor: pointer;
   min-width: 80px;
   font-weight: 500;
+  color: white;
+}
+
+.btn:hover {
+  color: white;
 }
 
 .main {
   min-height: 85vh;
-  margin: 24px;
+  margin: 0 32px;
+  padding: 32px;
 }
 
 #footer {
@@ -190,4 +167,47 @@ html {
   background-color: #015045;
   width: 210px;
   padding: 10px;
+}
+
+table {
+  width: 100%;
+}
+
+td {
+  word-wrap: break-word;
+}
+
+.index {
+  max-width: 1200px;
+  margin: 20px auto;
+}
+
+.icon-card {
+  width: 200px;
+  display: inline-block;
+  padding: 10px;
+  margin: 20px 40px;
+  border-radius: 20px;
+  text-align: center;
+  background-color: #e0e0e0;
+}
+
+.icon-card:hover {
+  cursor: pointer;
+  box-shadow: 6px 6px 15px grey;
+  text-shadow: 1px 1px 2px #015045;
+  background-color: #eeeeee;
+}
+
+.icon-tag {
+  padding: 10px auto;
+  font-size: 96px;
+  color: #015045;
+  margin: 0;
+}
+
+.icon-name {
+  margin: 0;
+  font-size: xx-large;
+  color: #015045;
 }

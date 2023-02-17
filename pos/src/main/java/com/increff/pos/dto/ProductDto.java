@@ -44,7 +44,6 @@ public class ProductDto {
             }
             product.setBrandId(existingBrand.getId());
         }
-        System.out.println(product.toString());
         return extendData(productService.update(id, product));
     }
 

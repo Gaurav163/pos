@@ -1,28 +1,35 @@
 function toast(type, message) {
-    console.log("toast", message);
-    let c = Date.now();
-    $("#toaster").html("");
-    $("#toaster").attr("class", "");
-    $("#toaster").addClass("toast-" + type);
-    $("#toaster").text(message);
-    $("#toaster").fadeOut();
-    $("#toaster").fadeIn(200);
-    toastId = c;
-    fadeToast(c);
-}
+    let tid = Date.now()
+    if (type == "success") {
+        $("#toast").append(`
+        <div class="toast align-items-center text-white bg-success"
+        role="alert" aria-live="assertive" aria-atomic="true" id="${tid}"  >
+        <div class="d-flex">
+            <div class="toast-body">
+            ${message}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" onclick="$('#${tid}').fadeOut(500).next().remove()" ></button>
+        </div>
+        </div>
+       `);
+        setTimeout(() => {
+            $("#" + tid).fadeOut(500).next().remove();
+        }, 4000);
+    } else {
+        $("#toast").append(`
+        <div class="toast align-items-center text-white bg-danger"
+         role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false" id="${tid}">
+        <div class="d-flex">
+            <div class="toast-body">
+            ${message}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" onclick="$('#${tid}').fadeOut(500).next().remove()" ></button>
+        </div>
+        </div>
+       `);
+    }
+    $('.toast').toast('show');
 
-let toastId = 0;
-
-function fadeToast(time) {
-    setTimeout(
-        () => {
-            if (time == toastId) {
-                $("#toaster").fadeOut(1000);
-            }
-        },
-        7000,
-        time
-    );
 }
 
 function login() {
@@ -32,9 +39,12 @@ function login() {
         toast("error", "Enter email ans password");
         return;
     }
+    const d = { email, password };
+    const jsonData = JSON.stringify(d);
     $.ajax({
-        url: `/login?username=${email}&password=${password}`,
+        url: `/api/users/login`,
         type: "POST",
+        data: jsonData,
         headers: {
             "Content-Type": "application/json",
         },
@@ -43,13 +53,12 @@ function login() {
             setTimeout(() => {
                 window.location.replace("/");
             }, 2000);
-            toast("success", "Signin success");
+            toast("success", "Welcome to pos");
 
 
         },
         error: function (error) {
-            toast("error", error);
-
+            toast("error", error.responseJSON.message);
         },
     });
 }
@@ -58,10 +67,6 @@ function signup() {
     const name = $("#name").val()
     const email = $("#email").val();
     const password = $("#password").val();
-    if (email.length == 0 || password.length == 0 || name.length == 0) {
-        toast("error", "Enter email ans password");
-        return;
-    }
     const user = { name, email, password };
     const data = JSON.stringify(user);
     $.ajax({
@@ -76,11 +81,11 @@ function signup() {
             setTimeout(() => {
                 window.location.replace("/user/login");
             }, 2000);
-            toast("success", "Sign up success, Redirecting to signin page");
+            toast("success", "Sign up success!");
 
         },
         error: function (error) {
-            toast("error", error);
+            toast("error", error.responseJSON.message);
 
         },
     });

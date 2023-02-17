@@ -1,4 +1,4 @@
-package com.increff.pos.util;
+package com.increff.pos.spring;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -9,6 +9,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.NestedServletException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -48,14 +49,16 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                         JWTVerifier jwtVerifier = JWT.require(algorithm).build();
                         DecodedJWT decodedJWT = jwtVerifier.verify(token);
                         String username = decodedJWT.getSubject();
-                        String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
+                        String role = decodedJWT.getClaim("roles").asString();
                         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-                        stream(roles).forEach(role -> {
-                            authorities.add(new SimpleGrantedAuthority(role));
-                        });
+
+                        authorities.add(new SimpleGrantedAuthority(role));
+
                         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
                         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                         filterChain.doFilter(request, response);
+                    } catch (NestedServletException e) {
+                        throw e;
                     } catch (Exception exception) {
                         response.setHeader("error", exception.getMessage());
                         response.setStatus(FORBIDDEN.value());
@@ -72,8 +75,10 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                 }
 
             }
+        } catch (NestedServletException e) {
+            new ObjectMapper().writeValue(response.getOutputStream(), "PAGE NOT FOUND");
         } catch (Exception e) {
-            System.out.println(e.getClass());
+            new ObjectMapper().writeValue(response.getOutputStream(), e);
         }
     }
 }

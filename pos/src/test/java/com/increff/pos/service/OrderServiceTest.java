@@ -43,4 +43,5 @@ public class OrderServiceTest extends AbstractUnitTest {
     public void testCreateInvoiceInvalidId() throws ApiException {
         orderService.createInvoice(10L);
     }
+    
 }

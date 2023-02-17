@@ -55,6 +55,7 @@ function addProduct() {
         toast("error", "Quantity should be positive.");
         return;
     }
+    price = parseFloat(price);
 
     const product = { barcode, quantity, price };
     productList[product.barcode] = product;
@@ -71,8 +72,11 @@ function renderProductList() {
         <tr>=
             <td scope="col">${product.barcode}</td>
             <td scope="col">${product.quantity}</td>
-            <td scope="col">${product.price}</td>
-            <td scope="col"><div class="cdiv" onclick="editProduct('${product.barcode}')"> Edit</div> <div class="cdiv ms-4" onclick="removeProduct('${product.barcode}')"> Remove</div></td>
+            <td scope="col">${product.price.toFixed(2)}</td>
+            <td scope="col"><div class="btn btn-info" onclick="editProduct('${product.barcode}')">
+            <i class="fa-regular fa-pen-to-square"></i> Edit</div>
+             <div class="btn btn-warning ms-2" onclick="removeProduct('${product.barcode}')">
+             <i class="fa-solid fa-xmark"></i> Remove</div></td>
         </tr>
         `);
     })
@@ -124,7 +128,11 @@ function createOrder() {
         },
         error: function (error) {
             console.log(error);
-            toast("error", "Error : " + error.responseJSON.message);
+            if (error.status == 400) {
+                let errs = error.responseJSON.message.split("\n");
+                console.log(errs);
+                errs.forEach(err => toast("error", err));
+            }
         },
     });
 
@@ -196,14 +204,14 @@ function renderDetails(order) {
         <td>${item.brand}</td>
         <td>${item.category}</td>
         <td>${item.quantity}</td>
-        <td>${item.sellingPrice}</td>
-        <td>${item.quantity * item.sellingPrice}</td>
+        <td>${item.sellingPrice.toFixed(2)}</td>
+        <td>${(item.quantity * item.sellingPrice).toFixed(2)}</td>
         </tr>
         `)
     });
 
-    $("#total-items").text("Total Items: " + count);
-    $("#total-bill").text("Total Bill: Rs. " + total);
+    $("#total-items").append("<strong>Total Items: </strong>" + count);
+    $("#total-bill").append("<strong>Total Bill: Rs. </strong>" + total.toFixed(2));
 
     $("#detailModal").modal("show");
 

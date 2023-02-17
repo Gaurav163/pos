@@ -1,5 +1,6 @@
 package com.increff.pos.controller;
 
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,7 @@ import java.nio.file.Files;
 @RequestMapping("/sample")
 public class SampleController {
 
+    @ApiOperation(value = "Download sample TSV file to upload brands")
     @RequestMapping(path = "/brand")
     public void getSampleBrand(HttpServletResponse response) throws IOException {
         response.setContentType("text/tsv");
@@ -31,6 +33,7 @@ public class SampleController {
         }
     }
 
+    @ApiOperation(value = "Download sample TSV file to upload products")
     @RequestMapping(path = "/product")
     public void getSampleProduct(HttpServletResponse response) throws IOException {
         response.setContentType("text/tsv");
@@ -48,6 +51,7 @@ public class SampleController {
         }
     }
 
+    @ApiOperation(value = "Download sample TSV file to upload inventory")
     @RequestMapping(path = "/inventory")
     public void getSampleInventory(HttpServletResponse response) throws IOException {
         response.setContentType("text/tsv");

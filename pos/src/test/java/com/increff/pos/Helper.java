@@ -1,10 +1,7 @@
 package com.increff.pos;
 
 import com.increff.pos.dao.*;
-import com.increff.pos.model.BrandForm;
-import com.increff.pos.model.InventoryForm;
-import com.increff.pos.model.OrderItemForm;
-import com.increff.pos.model.ProductForm;
+import com.increff.pos.model.*;
 import com.increff.pos.pojo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,6 +21,10 @@ public class Helper {
     private OrderDao orderDao;
     @Autowired
     private OrderItemDao orderItemDao;
+    @Autowired
+    private UserDao userDao;
+    @Autowired
+    private DailyReportDao dailyReportDao;
 
     public Brand getBrand(String name, String category) {
         Brand brand = new Brand();
@@ -140,5 +141,41 @@ public class Helper {
         return form;
     }
 
+    public User getUser(String name, String email, String password, String role) {
+        User user = new User();
+        user.setName(name);
+        user.setEmail(email);
+        user.setPassword(password);
+        user.setRole(role);
+        return user;
+    }
+
+    public User createUser(String name, String email, String password, String role) {
+        return userDao.create(getUser(name, email, password, role));
+    }
+
+    public UserForm createUserForm(String name, String email, String password) {
+        UserForm user = new UserForm();
+        user.setName(name);
+        user.setEmail(email);
+        user.setPassword(password);
+        return user;
+    }
+
+    public LoginForm createLoginForm(String email, String password) {
+        LoginForm user = new LoginForm();
+        user.setEmail(email);
+        user.setPassword(password);
+        return user;
+    }
+
+    public DailyReport createDailyReport(ZonedDateTime date, Double revenue, Long items, Long orders) {
+        DailyReport report = new DailyReport();
+        report.setDate(date);
+        report.setTotalRevenue(revenue);
+        report.setInvoicedItemsCount(items);
+        report.setInvoicedOrdersCount(orders);
+        return dailyReportDao.create(report);
+    }
 
 }

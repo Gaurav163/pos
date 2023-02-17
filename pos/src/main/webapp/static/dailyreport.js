@@ -21,7 +21,6 @@ function showReport() {
         },
         success: function (response) {
             showdata(response);
-            data = response;
         },
         error: function (error) {
             console.log(error);
@@ -32,8 +31,11 @@ function showReport() {
 }
 
 function showdata(reports) {
+    data = [];
     table.row().remove();
     reports.forEach(report => {
+        report.totalRevenue = report.totalRevenue.toFixed(2);
+        data.push(report);
         table.row.add([report.date, report.invoicedItemsCount, report.invoicedOrdersCount, report.totalRevenue]);
     });
     table.draw();

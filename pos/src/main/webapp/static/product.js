@@ -29,7 +29,7 @@ function renderTable(products) {
 }
 
 function prependProduct(product) {
-    table.row.add([product.barcode, product.name, product.brand, product.category, product.mrp,
+    table.row.add([product.barcode, product.name, product.brand, product.category, product.mrp.toFixed(2),
     `<div class="btn btn-info" onclick="editProduct(${product.id},
          '${product.name}','${product.barcode}','${product.mrp}'
          ,'${product.brand}','${product.category}')">

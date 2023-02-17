@@ -37,9 +37,9 @@ public class OrderDtoTest extends AbstractUnitTest {
 
     @Test
     public void testCreate() throws ApiException {
-        Long pid1 = helper.initOrderItem("barcode1", 10L);
-        Long pid2 = helper.initOrderItem("barcode2", 20L);
-        Long pid3 = helper.initOrderItem("barcode3", 30L);
+        Long productId1 = helper.initOrderItem("barcode1", 10L);
+        Long productId2 = helper.initOrderItem("barcode2", 20L);
+        Long productId3 = helper.initOrderItem("barcode3", 30L);
         List<OrderItemForm> itemList = new ArrayList<>();
         itemList.add(helper.createOrderItemForm("barcode1", 5L, 99.9));
         itemList.add(helper.createOrderItemForm("barcode2", 20L, 99.9));
@@ -51,9 +51,9 @@ public class OrderDtoTest extends AbstractUnitTest {
         assertNotNull(order);
         List<OrderItem> orderItems = orderItemDao.getListByParameter("orderId", order.getId());
         assertEquals(3, orderItems.size());
-        Inventory inv1 = inventoryDao.getById(pid1);
-        Inventory inv2 = inventoryDao.getById(pid2);
-        Inventory inv3 = inventoryDao.getById(pid3);
+        Inventory inv1 = inventoryDao.getById(productId1);
+        Inventory inv2 = inventoryDao.getById(productId2);
+        Inventory inv3 = inventoryDao.getById(productId3);
         assertEquals(Long.valueOf(5), inv1.getQuantity());
         assertEquals(Long.valueOf(0), inv2.getQuantity());
         assertEquals(Long.valueOf(23), inv3.getQuantity());
@@ -61,8 +61,8 @@ public class OrderDtoTest extends AbstractUnitTest {
 
     @Test(expected = ApiException.class)
     public void testCreateLowInventory() throws ApiException {
-        Long pid1 = helper.initOrderItem("barcode1", 10L);
-        Long pid2 = helper.initOrderItem("barcode2", 20L);
+        Long productId1 = helper.initOrderItem("barcode1", 10L);
+        Long productId2 = helper.initOrderItem("barcode2", 20L);
         List<OrderItemForm> itemList = new ArrayList<>();
         itemList.add(helper.createOrderItemForm("barcode1", 5L, 99.9));
         itemList.add(helper.createOrderItemForm("barcode2", 25L, 99.9));
@@ -71,7 +71,7 @@ public class OrderDtoTest extends AbstractUnitTest {
 
     @Test(expected = ApiException.class)
     public void testCreateWrongBarcode() throws ApiException {
-        Long pid1 = helper.initOrderItem("barcode1", 10L);
+        Long productId1 = helper.initOrderItem("barcode1", 10L);
         List<OrderItemForm> itemList = new ArrayList<>();
         itemList.add(helper.createOrderItemForm("barcode1", 5L, 99.9));
         itemList.add(helper.createOrderItemForm("barcode2", 20L, 99.9));
@@ -84,16 +84,16 @@ public class OrderDtoTest extends AbstractUnitTest {
         Order order2 = helper.createOrder();
         Order order3 = helper.createOrder();
         Order order4 = helper.createOrder();
-        Long pid1 = helper.initOrderItem("barcode1", 50L);
-        Long pid2 = helper.initOrderItem("barcode2", 60L);
-        helper.createOrderItem(order1.getId(), pid1, 5L, 60D);
-        helper.createOrderItem(order1.getId(), pid2, 5L, 60D);
-        helper.createOrderItem(order2.getId(), pid1, 5L, 60D);
-        helper.createOrderItem(order2.getId(), pid2, 5L, 60D);
-        helper.createOrderItem(order3.getId(), pid1, 5L, 60D);
-        helper.createOrderItem(order3.getId(), pid2, 5L, 60D);
-        helper.createOrderItem(order4.getId(), pid1, 5L, 60D);
-        helper.createOrderItem(order4.getId(), pid2, 5L, 60D);
+        Long productId1 = helper.initOrderItem("barcode1", 50L);
+        Long productId2 = helper.initOrderItem("barcode2", 60L);
+        helper.createOrderItem(order1.getId(), productId1, 5L, 60D);
+        helper.createOrderItem(order1.getId(), productId2, 5L, 60D);
+        helper.createOrderItem(order2.getId(), productId1, 5L, 60D);
+        helper.createOrderItem(order2.getId(), productId2, 5L, 60D);
+        helper.createOrderItem(order3.getId(), productId1, 5L, 60D);
+        helper.createOrderItem(order3.getId(), productId2, 5L, 60D);
+        helper.createOrderItem(order4.getId(), productId1, 5L, 60D);
+        helper.createOrderItem(order4.getId(), productId2, 5L, 60D);
         List<OrderData> orderList = orderDto.getAll();
         assertEquals(4, orderList.size());
     }
@@ -101,10 +101,10 @@ public class OrderDtoTest extends AbstractUnitTest {
     @Test
     public void testGetById() throws ApiException {
         Order order1 = helper.createOrder();
-        Long pid1 = helper.initOrderItem("barcode1", 50L);
-        Long pid2 = helper.initOrderItem("barcode2", 60L);
-        helper.createOrderItem(order1.getId(), pid1, 5L, 60D);
-        helper.createOrderItem(order1.getId(), pid2, 5L, 60D);
+        Long productId1 = helper.initOrderItem("barcode1", 50L);
+        Long productId2 = helper.initOrderItem("barcode2", 60L);
+        helper.createOrderItem(order1.getId(), productId1, 5L, 60D);
+        helper.createOrderItem(order1.getId(), productId2, 5L, 60D);
         OrderData savedOrder = orderDto.getById(order1.getId());
         OrderData dummyOrder = orderDto.getById(order1.getId() + 5);
         assertNotNull(savedOrder);
@@ -114,12 +114,12 @@ public class OrderDtoTest extends AbstractUnitTest {
     @Test
     public void testGenerateInvoice() throws ApiException {
         Order order1 = helper.createOrder();
-        Long pid1 = helper.initOrderItem("barcode1", 50L);
-        Long pid2 = helper.initOrderItem("barcode2", 60L);
-        Long pid3 = helper.initOrderItem("barcode3", 60L);
-        helper.createOrderItem(order1.getId(), pid1, 5L, 60D);
-        helper.createOrderItem(order1.getId(), pid2, 5L, 70D);
-        helper.createOrderItem(order1.getId(), pid3, 5L, 80D);
+        Long productId1 = helper.initOrderItem("barcode1", 50L);
+        Long productId2 = helper.initOrderItem("barcode2", 60L);
+        Long productId3 = helper.initOrderItem("barcode3", 60L);
+        helper.createOrderItem(order1.getId(), productId1, 5L, 60D);
+        helper.createOrderItem(order1.getId(), productId2, 5L, 70D);
+        helper.createOrderItem(order1.getId(), productId3, 5L, 80D);
         orderDto.generateInvoice(order1.getId());
         Order order = orderDao.getById(order1.getId());
         assertTrue(order.getInvoiced());
@@ -132,7 +132,7 @@ public class OrderDtoTest extends AbstractUnitTest {
     @Test(expected = ApiException.class)
     public void testGenerateInvoiceInvalidOrder() throws ApiException {
         Order order1 = helper.createOrder();
-        orderDto.generateInvoice(order1.getId() + 10000000L);
+        orderDto.generateInvoice(order1.getId() + 100L);
     }
 
     @Test(expected = ApiException.class)

@@ -22,14 +22,6 @@ public class UserService {
     @Value("${supervisors.email}")
     private String supervisorEmail;
 
-    public User getById(Long id) {
-        return userDao.getById(id);
-    }
-
-    public List<User> getAll() {
-        return userDao.getAll();
-    }
-
     public User getByParameter(String name, String value) {
         return userDao.getByParameter(name, value);
     }

@@ -25,8 +25,8 @@ public class BrandDto {
     private BrandService brandService;
 
     public BrandData create(BrandForm form) throws ApiException {
-        normalizeForm(form);
         validateForm(form);
+        normalizeForm(form);
         Brand brand = mapper(form, Brand.class);
         return mapper(brandService.create(brand), BrandData.class);
     }
@@ -69,8 +69,7 @@ public class BrandDto {
             try {
                 validateForm(form);
                 normalizeForm(form);
-                Brand brand = mapper(form, Brand.class);
-                brandService.create(brand);
+                brandService.create(mapper(form, Brand.class));
             } catch (Exception e) {
                 responses.add("Row " + index + ": Error -" + e.getMessage());
                 error = true;

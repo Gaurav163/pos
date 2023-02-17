@@ -26,7 +26,6 @@ function showReport() {
         },
         success: function (response) {
             showdata(response);
-            data = response;
         },
         error: function (error) {
             console.log(error);
@@ -37,8 +36,11 @@ function showReport() {
 }
 
 function showdata(reports) {
+    data = [];
     table.row().remove();
     reports.forEach(report => {
+        report.revenue = report.revenue.toFixed(2);
+        data.push(report);
         table.row.add([report.brand, report.category, report.quantity, report.revenue]);
     });
     table.draw();

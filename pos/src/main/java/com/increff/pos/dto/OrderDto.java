@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
+import static com.increff.pos.util.FormUtil.normalizeForm;
+import static com.increff.pos.util.FormUtil.validateForm;
 import static com.increff.pos.util.MapperUtil.mapper;
 
 @Service
@@ -49,20 +51,18 @@ public class OrderDto {
     @Transactional(rollbackFor = ApiException.class)
     public OrderData create(List<OrderItemForm> itemForms) throws ApiException {
         Order order = orderService.create();
-        for (OrderItemForm itemForm : itemForms) {
-            Product product = productService.getOneByParameter("barcode", itemForm.getBarcode());
-            if (product == null) {
-                throw new ApiException("Invalid barcode");
-            }
-            inventoryService.reduceInventory(product.getId(), itemForm.getQuantity());
-            OrderItem orderItem = new OrderItem();
-            orderItem.setQuantity(itemForm.getQuantity());
-            orderItem.setOrderId(order.getId());
-            orderItem.setSellingPrice(itemForm.getSellingPrice());
-            orderItem.setProductId(product.getId());
-            orderItemService.create(orderItem);
-        }
+        List<String> errors = new ArrayList<>();
 
+        for (OrderItemForm orderItemForm : itemForms) {
+            try {
+                orderItemService.create(getOrderItem(orderItemForm, order));
+            } catch (Exception e) {
+                errors.add("Barcode: " + orderItemForm.getBarcode() + ", " + e.getMessage());
+            }
+        }
+        if (!errors.isEmpty()) {
+            throw new ApiException(String.join("\n", errors));
+        }
         return getOrderData(order);
     }
 
@@ -118,6 +118,20 @@ public class OrderDto {
         } catch (Exception e) {
             throw new ApiException("Invoice not found");
         }
+    }
+
+    private OrderItem getOrderItem(OrderItemForm orderItemForm, Order order) throws ApiException {
+        validateForm(orderItemForm);
+        normalizeForm(orderItemForm);
+        Product product = productService.getOneByParameter("barcode", orderItemForm.getBarcode());
+        if (product == null) {
+            throw new ApiException("Invalid barcode");
+        }
+        inventoryService.reduceInventory(product.getId(), orderItemForm.getQuantity());
+        OrderItem orderItem = mapper(orderItemForm, OrderItem.class);
+        orderItem.setOrderId(order.getId());
+        orderItem.setProductId(product.getId());
+        return orderItem;
     }
 
     private OrderData getOrderData(Order order) throws ApiException {

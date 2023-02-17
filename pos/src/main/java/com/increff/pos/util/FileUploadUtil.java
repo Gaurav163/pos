@@ -18,7 +18,7 @@ public class FileUploadUtil {
             BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
             Field[] fields = clazz.getDeclaredFields();
             List<T> forms = new ArrayList<>();
-            System.out.println(reader.readLine());
+            reader.readLine();
             while (reader.ready()) {
                 try {
                     String[] values = reader.readLine().split("\t");

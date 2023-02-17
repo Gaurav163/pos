@@ -96,7 +96,6 @@ function updateBrand() {
             insertUpdatedBrand(data);
             $("#updateModal").modal("hide");
             toast("success", "Brand updated");
-            loadAllBrands();
         },
         error: function (error) {
             console.log(error);

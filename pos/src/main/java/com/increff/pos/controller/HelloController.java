@@ -12,7 +12,7 @@ public class HelloController {
 
     @GetMapping("/")
     public String hello(Principal user) {
-        System.out.println(user.getName().toString());
-        return "Hello from POS Server";
+        System.out.println(user.getName());
+        return "backend is up";
     }
 }

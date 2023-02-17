@@ -28,10 +28,6 @@ public class ProductService {
         return productDao.getByParameter(name, value);
     }
 
-    public List<Product> getListByParameter(String name, String value) {
-        return productDao.getListByParameter(name, value);
-    }
-
     public Product create(Product product) throws ApiException {
         if (productDao.getByParameter("barcode", product.getBarcode()) != null) {
             throw new ApiException("Barcode already used");
