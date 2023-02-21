@@ -7,6 +7,7 @@ import com.increff.pos.dao.OrderDao;
 import com.increff.pos.dao.OrderItemDao;
 import com.increff.pos.model.ApiException;
 import com.increff.pos.model.OrderData;
+import com.increff.pos.model.OrderForm;
 import com.increff.pos.model.OrderItemForm;
 import com.increff.pos.pojo.Inventory;
 import com.increff.pos.pojo.Order;
@@ -44,7 +45,9 @@ public class OrderDtoTest extends AbstractUnitTest {
         itemList.add(helper.createOrderItemForm("barcode1", 5L, 99.9));
         itemList.add(helper.createOrderItemForm("barcode2", 20L, 99.9));
         itemList.add(helper.createOrderItemForm("barcode3", 7L, 99.9));
-        OrderData orderData = orderDto.create(itemList);
+        OrderForm orderForm = new OrderForm();
+        orderForm.setItems(itemList);
+        OrderData orderData = orderDto.create(orderForm);
         assertNotNull(orderData);
         assertEquals(3, orderData.getItems().size());
         Order order = orderDao.getById(orderData.getId());
@@ -66,7 +69,9 @@ public class OrderDtoTest extends AbstractUnitTest {
         List<OrderItemForm> itemList = new ArrayList<>();
         itemList.add(helper.createOrderItemForm("barcode1", 5L, 99.9));
         itemList.add(helper.createOrderItemForm("barcode2", 25L, 99.9));
-        OrderData orderData = orderDto.create(itemList);
+        OrderForm orderForm = new OrderForm();
+        orderForm.setItems(itemList);
+        OrderData orderData = orderDto.create(orderForm);
     }
 
     @Test(expected = ApiException.class)
@@ -75,7 +80,9 @@ public class OrderDtoTest extends AbstractUnitTest {
         List<OrderItemForm> itemList = new ArrayList<>();
         itemList.add(helper.createOrderItemForm("barcode1", 5L, 99.9));
         itemList.add(helper.createOrderItemForm("barcode2", 20L, 99.9));
-        OrderData orderData = orderDto.create(itemList);
+        OrderForm orderForm = new OrderForm();
+        orderForm.setItems(itemList);
+        OrderData orderData = orderDto.create(orderForm);
     }
 
     @Test

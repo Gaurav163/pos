@@ -5,7 +5,7 @@
     <div th:replace="navbar.html :: navbar"></div>
 
     <div class="main">
-      <h2>ORDER</h2>
+      <h2>ORDERS</h2>
       <br />
       <div class="btn btn-primary" id="showCreateModal">
         <i class="fa-solid fa-plus"></i> Create Order
@@ -54,7 +54,7 @@
               <div class="form-group mb-3">
                 <label for="quantity">Quantity </label>
                 <input
-                  type="text"
+                  type="number"
                   class="form-control"
                   placeholder="Enter Quantity"
                   name="quantity"
@@ -65,7 +65,7 @@
               <div class="form-group mb-3">
                 <label for="price">Price</label>
                 <input
-                  type="text"
+                  type="number"
                   class="form-control"
                   placeholder="Enter Price"
                   name="price"

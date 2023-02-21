@@ -5,13 +5,21 @@
     <div th:replace="navbar.html :: navbar"></div>
 
     <div class="main">
-      <h2>BRAND</h2>
+      <h2>BRANDS</h2>
       <br />
-      <div class="btn btn-primary" id="showCreateModal">
+      <div
+        th:if="${role=='supervisor'}"
+        class="btn btn-primary"
+        id="showCreateModal"
+      >
         <i class="fa-solid fa-plus"></i> Add Brand
       </div>
-      <div class="btn btn-primary ms-3" id="showUploadModal">
-        <i class="fa-solid fa-upload"></i> Upload
+      <div
+        th:if="${role=='supervisor'}"
+        class="btn btn-primary ms-3"
+        id="showUploadModal"
+      >
+        <i class="fa-solid fa-upload"></i> Upload Brands
       </div>
       <hr />
       <table class="table table-striped" id="main-table">
@@ -19,7 +27,7 @@
           <tr>
             <th scope="col">Brand</th>
             <th scope="col">Category</th>
-            <th scope="col">Action</th>
+            <th th:if="${role=='supervisor'}" scope="col">Action</th>
           </tr>
         </thead>
         <tbody id="tablebody"></tbody>
@@ -28,6 +36,7 @@
 
     <!-- Create Modal -->
     <div
+      th:if="${role=='supervisor'}"
       class="modal fade"
       id="createModal"
       tabindex="-1"
@@ -38,7 +47,7 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Create Brand</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Add Brand</h5>
           </div>
           <form action="javascript:createBrand()">
             <div class="modal-body">
@@ -83,6 +92,7 @@
 
     <!-- Update Modal -->
     <div
+      th:if="${role=='supervisor'}"
       class="modal fade"
       id="updateModal"
       tabindex="-1"
@@ -139,6 +149,7 @@
 
     <!-- Upload Modal -->
     <div
+      th:if="${role=='supervisor'}"
       class="modal fade"
       id="uploadModal"
       tabindex="-1"
@@ -154,13 +165,10 @@
           <form action="javascript:uploadBrand()">
             <div class="modal-body" id="upload-modal-body">
               <div class="form-group mb-3">
-                <label class="ps-2" for="file">Choose File </label>
-                <br />
-                <br />
+                <label class="ps-2" for="file"> File </label>
                 <input
                   type="file"
                   class="form-control"
-                  placeholder="Choose TSV file"
                   name="file"
                   id="file"
                   required

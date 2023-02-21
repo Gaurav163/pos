@@ -107,7 +107,8 @@ function createOrder() {
             sellingPrice: item.price
         }
     });
-    const data = JSON.stringify(itemList);
+    const orderForm = { items: itemList }
+    const data = JSON.stringify(orderForm);
     console.log(data);
     $.ajax({
         url: "/api/orders/",
@@ -188,7 +189,7 @@ function downloadInvoice(data, id) {
 
 function renderDetails(order) {
     console.log(order);
-    $("#orderid").text("Order ID: " + order.id);
+    $("#orderid").text("Order No.: " + order.id);
     $("#orderdate").text("Date: " + order.date);
     $("#ordertime").text("Time: " + order.time);
     let total = 0;
@@ -211,7 +212,7 @@ function renderDetails(order) {
     });
 
     $("#total-items").append("<strong>Total Items: </strong>" + count);
-    $("#total-bill").append("<strong>Total Bill: Rs. </strong>" + total.toFixed(2));
+    $("#total-bill").append("<strong>Total Bill: </strong>" + total.toFixed(2));
 
     $("#detailModal").modal("show");
 

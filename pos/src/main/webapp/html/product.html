@@ -4,13 +4,21 @@
   <body>
     <div th:replace="navbar.html :: navbar"></div>
     <div class="main">
-      <h2>PRODUCT</h2>
+      <h2>PRODUCTS</h2>
       <br />
-      <div class="btn btn-primary" id="showCreateModal">
+      <div
+        th:if="${role=='supervisor'}"
+        class="btn btn-primary"
+        id="showCreateModal"
+      >
         <i class="fa-solid fa-plus"></i> Add Product
       </div>
-      <div class="btn btn-primary ms-3" id="showUploadModal">
-        <i class="fa-solid fa-upload"></i> Upload
+      <div
+        th:if="${role=='supervisor'}"
+        class="btn btn-primary ms-3"
+        id="showUploadModal"
+      >
+        <i class="fa-solid fa-upload"></i> Upload Products
       </div>
       <hr />
       <table class="table table-striped" id="main-table">
@@ -21,7 +29,7 @@
             <th scope="col">Brand</th>
             <th scope="col">Category</th>
             <th scope="col">MRP</th>
-            <th scope="col">Action</th>
+            <th th:if="${role=='supervisor'}" scope="col">Action</th>
           </tr>
         </thead>
         <tbody id="tablebody"></tbody>
@@ -30,6 +38,7 @@
 
     <!-- Create Modal -->
     <div
+      th:if="${role=='supervisor'}"
       class="modal fade"
       id="createModal"
       tabindex="-1"
@@ -40,7 +49,7 @@
       <div class="modal-dialog" style="max-width: 900px">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Create Product</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Add Product</h5>
           </div>
           <form action="javascript:createProduct()">
             <div class="modal-body">
@@ -69,7 +78,7 @@
               <div class="form-group mb-3">
                 <label for="mrp">MRP </label>
                 <input
-                  type="text"
+                  type="number"
                   class="form-control"
                   placeholder="Enter MRP"
                   name="mrp"
@@ -118,6 +127,7 @@
 
     <!-- Update Modal -->
     <div
+      th:if="${role=='supervisor'}"
       class="modal fade"
       id="updateModal"
       tabindex="-1"
@@ -158,7 +168,7 @@
               <div class="form-group mb-3">
                 <label for="u-mrp">MRP </label>
                 <input
-                  type="text"
+                  type="number"
                   class="form-control"
                   placeholder="Enter MRP"
                   name="mrp"
@@ -207,6 +217,7 @@
 
     <!-- Upload Modal -->
     <div
+      th:if="${role=='supervisor'}"
       class="modal fade"
       id="uploadModal"
       tabindex="-1"
@@ -222,12 +233,10 @@
           <form action="javascript:uploadProduct()">
             <div class="modal-body" id="upload-modal-body">
               <div class="form-group ps-2 mb-3">
-                <label for="file">Choose File </label>
-                <br /><br />
+                <label for="file">File </label>
                 <input
                   type="file"
                   class="form-control"
-                  placeholder="Enter Name"
                   name="file"
                   id="file"
                   required

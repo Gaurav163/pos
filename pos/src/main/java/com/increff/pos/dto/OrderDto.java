@@ -1,9 +1,6 @@
 package com.increff.pos.dto;
 
-import com.increff.pos.model.ApiException;
-import com.increff.pos.model.OrderData;
-import com.increff.pos.model.OrderItemData;
-import com.increff.pos.model.OrderItemForm;
+import com.increff.pos.model.*;
 import com.increff.pos.pojo.Brand;
 import com.increff.pos.pojo.Order;
 import com.increff.pos.pojo.OrderItem;
@@ -49,11 +46,15 @@ public class OrderDto {
     private String baseUrl;
 
     @Transactional(rollbackFor = ApiException.class)
-    public OrderData create(List<OrderItemForm> itemForms) throws ApiException {
+    public OrderData create(OrderForm orderForm) throws ApiException {
+        if (orderForm.getItems().isEmpty()) {
+            throw new ApiException("Zero products in order");
+        }
+        validateForm(orderForm);
         Order order = orderService.create();
         List<String> errors = new ArrayList<>();
 
-        for (OrderItemForm orderItemForm : itemForms) {
+        for (OrderItemForm orderItemForm : orderForm.getItems()) {
             try {
                 orderItemService.create(getOrderItem(orderItemForm, order));
             } catch (Exception e) {
@@ -121,7 +122,6 @@ public class OrderDto {
     }
 
     private OrderItem getOrderItem(OrderItemForm orderItemForm, Order order) throws ApiException {
-        validateForm(orderItemForm);
         normalizeForm(orderItemForm);
         Product product = productService.getOneByParameter("barcode", orderItemForm.getBarcode());
         if (product == null) {

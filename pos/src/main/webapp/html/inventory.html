@@ -7,11 +7,19 @@
     <div class="main">
       <h2>INVENTORY</h2>
       <br />
-      <div class="btn btn-primary" id="showCreateModal">
+      <div
+        th:if="${role=='supervisor'}"
+        class="btn btn-primary"
+        id="showCreateModal"
+      >
         <i class="fa-solid fa-plus"></i> Add Inventory
       </div>
-      <div class="btn btn-primary ms-3" id="showUploadModal">
-        <i class="fa-solid fa-upload"></i> Upload
+      <div
+        th:if="${role=='supervisor'}"
+        class="btn btn-primary ms-3"
+        id="showUploadModal"
+      >
+        <i class="fa-solid fa-upload"></i> Upload Inventory
       </div>
       <hr />
       <table class="table table-striped" id="main-table">
@@ -22,7 +30,7 @@
             <th scope="col">Brand</th>
             <th scope="col">Category</th>
             <th scope="col">Quantity</th>
-            <th scope="col">Action</th>
+            <th th:if="${role=='supervisor'}" scope="col">Action</th>
           </tr>
         </thead>
         <tbody id="tablebody"></tbody>
@@ -31,6 +39,7 @@
 
     <!-- Create Modal -->
     <div
+      th:if="${role=='supervisor'}"
       class="modal fade"
       id="createModal"
       tabindex="-1"
@@ -59,7 +68,7 @@
               <div class="form-group mb-3">
                 <label for="quantity">Quantity </label>
                 <input
-                  type="text"
+                  type="number"
                   class="form-control"
                   placeholder="Enter Quantity"
                   name="quantity"
@@ -86,6 +95,7 @@
 
     <!-- Update Modal -->
     <div
+      th:if="${role=='supervisor'}"
       class="modal fade"
       id="updateModal"
       tabindex="-1"
@@ -115,7 +125,7 @@
               <div class="form-group mb-3">
                 <label for="u-quantity">Quantity </label>
                 <input
-                  type="text"
+                  type="number"
                   class="form-control"
                   placeholder="Enter Quantity"
                   name="quantity"
@@ -142,6 +152,7 @@
 
     <!-- Upload Modal -->
     <div
+      th:if="${role=='supervisor'}"
       class="modal fade"
       id="uploadModal"
       tabindex="-1"
@@ -159,12 +170,10 @@
           <form action="javascript:uploadQuantity()">
             <div class="modal-body" id="upload-modal-body">
               <div class="form-group mb-3">
-                <label for="file">Choose File </label>
-                <br /><br />
+                <label for="file">File </label>
                 <input
                   type="file"
                   class="form-control"
-                  placeholder="Enter Name"
                   name="file"
                   id="file"
                   required

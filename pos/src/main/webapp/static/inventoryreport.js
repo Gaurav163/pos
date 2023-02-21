@@ -32,7 +32,7 @@ function showdata(reports) {
 }
 
 function downloadData() {
-    downloadAsTSV(data);
+    downloadAsTSV(data, "Ineventor_Report");
 }
 
 function initReport() {

@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.time.ZonedDateTime;
 import java.util.Base64;
 import java.util.List;
 
@@ -56,6 +57,7 @@ public class PdfService {
 
     private static String toxml(OrderData order) {
         try {
+            ZonedDateTime currentTime = ZonedDateTime.now();
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.newDocument();
@@ -68,11 +70,11 @@ public class PdfService {
             rootElement.appendChild(id);
 
             Element date = doc.createElement("date");
-            date.appendChild(doc.createTextNode(order.getDate()));
+            date.appendChild(doc.createTextNode(currentTime.toLocalDate().toString()));
             rootElement.appendChild(date);
 
             Element time = doc.createElement("time");
-            time.appendChild(doc.createTextNode(order.getTime()));
+            time.appendChild(doc.createTextNode(currentTime.toLocalTime().toString()));
             rootElement.appendChild(time);
 
             Element orderItems = doc.createElement("order-items");

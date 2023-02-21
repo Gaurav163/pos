@@ -4,13 +4,6 @@ let data;
 function showReport() {
     let startDate = new Date($("#startDate").val());
     let endDate = new Date($("#endDate").val());
-    if ($("#startDate").val().length == 0) {
-        startDate = new Date(0);
-    }
-
-    if ($("#endDate").val().length == 0) {
-        endDate = new Date();
-    }
     let brand = $("#brand").val();
     let category = $("#category").val();
     let form = { startDate, endDate, brand, category };
@@ -32,6 +25,7 @@ function showReport() {
             toast("error", "Error : " + error.responseJSON.message);
         },
     });
+    $("#d-report").removeClass("d-none");
 
 }
 
@@ -48,10 +42,11 @@ function showdata(reports) {
 
 function downloadData() {
     console.log(data);
-    downloadAsTSV(data);
+    downloadAsTSV(data, "Sales_Report");
 }
 
 function initReport() {
     table = $("#main-table").DataTable();
-    showReport();
+    $("#startDate").val("2023-01-01");
+    $("#endDate").val(new Date().toISOString().slice(0, 10).replace(":", "-"));
 }

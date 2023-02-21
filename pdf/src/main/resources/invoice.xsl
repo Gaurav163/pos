@@ -58,13 +58,12 @@
                               border-width="0.35mm" border-style="solid" text-align="center" display-align="center"
                               space-after="5mm" space-before="5mm">
                         <fo:table-column column-width="proportional-column-width(6)"/>
-                        <fo:table-column column-width="proportional-column-width(10)"/>
-                        <fo:table-column column-width="proportional-column-width(30)"/>
-                        <fo:table-column column-width="proportional-column-width(12)"/>
-                        <fo:table-column column-width="proportional-column-width(12)"/>
-                        <fo:table-column column-width="proportional-column-width(10)"/>
-                        <fo:table-column column-width="proportional-column-width(10)"/>
-                        <fo:table-column column-width="proportional-column-width(10)"/>
+                        <fo:table-column column-width="proportional-column-width(14)"/>
+                        <fo:table-column column-width="proportional-column-width(20)"/>
+                        <fo:table-column column-width="proportional-column-width(15)"/>
+                        <fo:table-column column-width="proportional-column-width(15)"/>
+                        <fo:table-column column-width="proportional-column-width(15)"/>
+                        <fo:table-column column-width="proportional-column-width(15)"/>
 
                         <fo:table-header font-weight="bold">
                             <fo:table-row border-bottom="solid 1px black" height="10mm">
@@ -81,16 +80,13 @@
                                     <fo:block>Brand</fo:block>
                                 </fo:table-cell>
                                 <fo:table-cell>
-                                    <fo:block>Category</fo:block>
-                                </fo:table-cell>
-                                <fo:table-cell>
                                     <fo:block>Quantity</fo:block>
                                 </fo:table-cell>
                                 <fo:table-cell>
                                     <fo:block>Selling Price</fo:block>
                                 </fo:table-cell>
                                 <fo:table-cell>
-                                    <fo:block>Amount (INR)</fo:block>
+                                    <fo:block>Amount</fo:block>
                                 </fo:table-cell>
                             </fo:table-row>
                         </fo:table-header>
@@ -120,11 +116,6 @@
                                     </fo:table-cell>
                                     <fo:table-cell>
                                         <fo:block>
-                                            <xsl:value-of select="category"/>
-                                        </fo:block>
-                                    </fo:table-cell>
-                                    <fo:table-cell>
-                                        <fo:block>
                                             <xsl:value-of select="quantity"/>
                                         </fo:block>
                                     </fo:table-cell>
@@ -146,14 +137,14 @@
                         <fo:table-column column-width="proportional-column-width(70)"/>
                         <fo:table-column column-width="proportional-column-width(30)"/>
                         <fo:table-body>
-                            <fo:table-row height="5mm">
+                            <fo:table-row height="10mm">
                                 <fo:table-cell>
                                     <fo:block>Total Items:
                                         <xsl:value-of select="items-count"/>
                                     </fo:block>
                                 </fo:table-cell>
                                 <fo:table-cell>
-                                    <fo:block>Total Bill: Rs.
+                                    <fo:block>Total Bill:
                                         <xsl:value-of select="total-bill"/>
                                     </fo:block>
                                 </fo:table-cell>

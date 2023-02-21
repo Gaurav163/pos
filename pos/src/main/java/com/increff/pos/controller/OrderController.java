@@ -3,7 +3,7 @@ package com.increff.pos.controller;
 import com.increff.pos.dto.OrderDto;
 import com.increff.pos.model.ApiException;
 import com.increff.pos.model.OrderData;
-import com.increff.pos.model.OrderItemForm;
+import com.increff.pos.model.OrderForm;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +18,8 @@ public class OrderController {
 
     @ApiOperation(value = "Create order with list of order-item list")
     @RequestMapping(path = "/", method = RequestMethod.POST)
-    public OrderData create(@RequestBody List<OrderItemForm> items) throws ApiException {
-        return orderDto.create(items);
+    public OrderData create(@RequestBody OrderForm orderForm) throws ApiException {
+        return orderDto.create(orderForm);
     }
 
     @ApiOperation(value = "Get all order")

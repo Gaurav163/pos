@@ -36,19 +36,19 @@ public class UiController extends AbstractUiController {
         return mav("inventory.html");
     }
 
-    @GetMapping("/report/{name}")
+    @GetMapping("/reports/{name}")
     public ModelAndView reportPage(Model model, @PathVariable("name") String name) {
         return mav(name + "report.html");
     }
 
     @RequestMapping(path = "/user/login", method = RequestMethod.GET)
-    public String loginPage(Model model) {
-        return "login.html";
+    public ModelAndView loginPage(Model model) {
+        return mav("login.html");
     }
 
     @GetMapping("/user/signup")
-    public String signupPage(Model model) {
-        return "signup.html";
+    public ModelAndView signupPage(Model model) {
+        return mav("signup.html");
     }
 
 }

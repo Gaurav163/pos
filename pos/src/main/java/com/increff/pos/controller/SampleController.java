@@ -19,7 +19,7 @@ public class SampleController {
     @RequestMapping(path = "/brand")
     public void getSampleBrand(HttpServletResponse response) throws IOException {
         response.setContentType("text/tsv");
-        response.addHeader("Content-disposition:", "attachment; filename=sample-brand.tsv");
+        response.addHeader("Content-disposition:", "attachment;filename=sample-brand.tsv");
         String fileClasspath = "src/main/resources/sample-brand.tsv";
         File file = new File(fileClasspath);
         InputStream is = Files.newInputStream(file.toPath());
@@ -55,7 +55,7 @@ public class SampleController {
     @RequestMapping(path = "/inventory")
     public void getSampleInventory(HttpServletResponse response) throws IOException {
         response.setContentType("text/tsv");
-        response.addHeader("Content-disposition:", "attachment; filename = sample-inventory.tsv");
+        response.addHeader("Content-disposition:", "attachment; filename=sample-inventory.tsv");
         String fileClasspath = "src/main/resources/sample-inventory.tsv";
         File file = new File(fileClasspath);
         InputStream is = Files.newInputStream(file.toPath());

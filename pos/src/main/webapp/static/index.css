@@ -64,7 +64,7 @@
 
 /* form style */
 label {
-  min-width: 80px;
+  min-width: 70px;
 }
 
 .form-group {
@@ -195,7 +195,7 @@ td {
 .icon-card:hover {
   cursor: pointer;
   box-shadow: 6px 6px 15px grey;
-  text-shadow: 1px 1px 2px #015045;
+  text-shadow: 1px 1px 1px #015045;
   background-color: #eeeeee;
 }
 
@@ -210,4 +210,15 @@ td {
   margin: 0;
   font-size: xx-large;
   color: #015045;
+  font-weight: 500;
+}
+
+.btn-info {
+  background-color: rgb(9, 113, 161) !important;
+  border-color: rgb(9, 113, 161) !important;
+}
+
+.btn-warning {
+  background-color: #e9a329 !important;
+  border-color: #f7a923 !important;
 }

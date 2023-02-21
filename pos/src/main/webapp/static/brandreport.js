@@ -31,7 +31,7 @@ function showdata(reports) {
 }
 
 function downloadData() {
-    downloadAsTSV(data);
+    downloadAsTSV(data, "Brands_Report");
 }
 
 function initReport() {

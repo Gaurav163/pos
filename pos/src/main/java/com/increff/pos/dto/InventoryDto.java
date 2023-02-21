@@ -41,7 +41,6 @@ public class InventoryDto {
         List<String> responses = new ArrayList<>();
         Long index = 0L;
         boolean error = false;
-        System.out.println("check1");
         for (InventoryForm form : forms) {
             index += 1;
             if (form == null) {

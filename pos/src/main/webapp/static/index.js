@@ -1,7 +1,7 @@
 function toast(type, message) {
     let tid = Date.now()
     if (type == "success") {
-        $("#toast").append(`
+        $("#toast").prepend(`
         <div class="toast align-items-center text-white bg-success"
         role="alert" aria-live="assertive" aria-atomic="true" id="${tid}"  >
         <div class="d-flex">
@@ -16,7 +16,7 @@ function toast(type, message) {
             $("#" + tid).fadeOut(500).next().remove();
         }, 4000);
     } else {
-        $("#toast").append(`
+        $("#toast").prepend(`
         <div class="toast align-items-center text-white bg-danger"
          role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false" id="${tid}">
         <div class="d-flex">
@@ -110,7 +110,7 @@ function isString(x) {
     return x.length > 0;
 }
 
-function downloadAsTSV(data) {
+function downloadAsTSV(data, name) {
     const rows = [];
     rows.push((Object.keys(data[0])).join("\t"));
     data.forEach(e => {
@@ -119,7 +119,7 @@ function downloadAsTSV(data) {
     const tsvData = rows.join("\n");
     const linkSource = `data:text/tsv;utf8,${tsvData}`;
     const downloadLink = document.createElement("a");
-    const fileName = "report.tsv";
+    const fileName = name + ".tsv";
     downloadLink.href = linkSource;
     downloadLink.download = fileName;
     downloadLink.click();
