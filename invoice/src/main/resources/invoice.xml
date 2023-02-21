@@ -1,0 +1,44 @@
+<?xml version = "1.0" encoding = "UTF-8" standalone = "no"?>
+<OrderData>
+    <id>id</id>
+    <date>01-01-2023</date>
+    <time>10:05:36</time>
+    <order-items>
+        <item>
+            <sn>1</sn>
+            <name>name13</name>
+            <barcode>barcode13</barcode>
+            <sellingPrice>987.0</sellingPrice>
+            <quantity>10</quantity>
+            <total>10*987</total>
+        </item>
+        <item>
+            <sn>2</sn>
+            <name>name12</name>
+            <barcode>barcode12</barcode>
+            <sellingPrice>987.0</sellingPrice>
+            <quantity>10</quantity>
+            <total>10*987</total>
+        </item>
+        <item>
+            <sn>3</sn>
+            <name>name11</name>
+            <barcode>barcode11</barcode>
+            <sellingPrice>987.0</sellingPrice>
+            <quantity>10</quantity>
+            <total>10*987</total>
+        </item>
+        <item>
+            <sn>4</sn>
+            <name>name10</name>
+            <barcode>barcode10</barcode>
+            <sellingPrice>987.0</sellingPrice>
+            <quantity>10</quantity>
+            <total>10*987</total>
+        </item>
+    </order-items>
+
+    <items-count>10</items-count>
+    <total-bill>9849</total-bill>
+
+</OrderData>

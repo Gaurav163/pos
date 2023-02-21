@@ -31,7 +31,7 @@ function showdata(reports) {
     reports.forEach(report => {
         report.totalRevenue = report.totalRevenue.toFixed(2);
         data.push(report);
-        table.row.add([report.date, report.invoicedItemsCount, report.invoicedOrdersCount, report.totalRevenue]);
+        table.row.add([report.date, report.invoicedOrdersCount, report.invoicedItemsCount, report.totalRevenue]);
     });
     table.draw();
 }

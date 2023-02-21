@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional(rollbackFor = ApiException.class)
+@Transactional(rollbackFor = Exception.class)
 public class InventoryService {
     @Autowired
     private InventoryDao inventoryDao;
@@ -46,7 +46,7 @@ public class InventoryService {
         return result;
     }
 
-    public Inventory reduceInventory(Long id, Long quantity) throws ApiException {
+    public void reduceInventory(Long id, Long quantity) throws ApiException {
         Inventory inventory = inventoryDao.getById(id);
         if (inventory == null) {
             throw new ApiException("Low inventory");
@@ -55,7 +55,6 @@ public class InventoryService {
             throw new ApiException("Low inventory");
         }
         inventory.setQuantity(inventory.getQuantity() - quantity);
-        return inventory;
     }
 
     public Inventory updateInventory(Long id, Long quantity) {

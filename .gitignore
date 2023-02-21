@@ -7,3 +7,5 @@ pos/jetty.log.1
 /pos/src/main/java/com/increff/pos/pdf/
 /pos/src/main/resources/invoices/
 pdf/.idea
+pom.xml
+

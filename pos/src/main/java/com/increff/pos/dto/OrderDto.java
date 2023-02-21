@@ -28,8 +28,6 @@ import static com.increff.pos.util.MapperUtil.mapper;
 
 @Service
 public class OrderDto {
-
-
     @Autowired
     private OrderService orderService;
     @Autowired
@@ -45,7 +43,7 @@ public class OrderDto {
     @Value("${baseUrl}")
     private String baseUrl;
 
-    @Transactional(rollbackFor = ApiException.class)
+    @Transactional(rollbackFor = Exception.class)
     public OrderData create(OrderForm orderForm) throws ApiException {
         if (orderForm.getItems().isEmpty()) {
             throw new ApiException("Zero products in order");
@@ -56,7 +54,7 @@ public class OrderDto {
 
         for (OrderItemForm orderItemForm : orderForm.getItems()) {
             try {
-                orderItemService.create(getOrderItem(orderItemForm, order));
+                orderItemService.create(getOrderItemFromForm(orderItemForm, order));
             } catch (Exception e) {
                 errors.add("Barcode: " + orderItemForm.getBarcode() + ", " + e.getMessage());
             }
@@ -88,9 +86,11 @@ public class OrderDto {
         if (order == null) {
             throw new ApiException("Order does not exist");
         }
-        orderService.createInvoice(id);
-        OrderData orderData = getOrderData(order);
+
         try {
+            orderService.createInvoice(id);
+            OrderData orderData = getOrderData(order);
+
             // calling pdf api and get invoice pdf in base64 format
             RestTemplate restTemplate = new RestTemplate();
             HttpEntity<OrderData> request = new HttpEntity<>(orderData);
@@ -104,9 +104,7 @@ public class OrderDto {
             fop.flush();
             fop.close();
             return orderData;
-
         } catch (Exception e) {
-            e.printStackTrace();
             throw new ApiException("Invoice generation failed");
         }
     }
@@ -121,9 +119,9 @@ public class OrderDto {
         }
     }
 
-    private OrderItem getOrderItem(OrderItemForm orderItemForm, Order order) throws ApiException {
+    private OrderItem getOrderItemFromForm(OrderItemForm orderItemForm, Order order) throws ApiException {
         normalizeForm(orderItemForm);
-        Product product = productService.getOneByParameter("barcode", orderItemForm.getBarcode());
+        Product product = productService.getByParameter("barcode", orderItemForm.getBarcode());
         if (product == null) {
             throw new ApiException("Invalid barcode");
         }

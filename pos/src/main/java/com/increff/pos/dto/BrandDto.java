@@ -67,9 +67,7 @@ public class BrandDto {
                 continue;
             }
             try {
-                validateForm(form);
-                normalizeForm(form);
-                brandService.create(mapper(form, Brand.class));
+                create(form);
             } catch (Exception e) {
                 responses.add("Row " + index + ": Error -" + e.getMessage());
                 error = true;

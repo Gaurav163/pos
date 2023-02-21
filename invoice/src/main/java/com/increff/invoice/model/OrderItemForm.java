@@ -1,9 +1,9 @@
-package com.increff.pos.model;
+package com.increff.invoice.model;
 
 import lombok.Data;
 
 @Data
-public class OrderItemData {
+public class OrderItemForm {
     private Long id;
     private String name;
     private String barcode;

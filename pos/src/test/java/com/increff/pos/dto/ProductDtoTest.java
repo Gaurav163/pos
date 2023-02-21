@@ -49,7 +49,7 @@ public class ProductDtoTest extends AbstractUnitTest {
         Brand brand = helper.createBrand("brand", "category");
         Product product = helper.createProduct("product1", "barcode1", brand.getId(), 99.90);
         Product savedProduct = productDao.getByParameter("barcode", "barcode1");
-        ProductData data = productDto.extendData(savedProduct);
+        ProductData data = productDto.extendBrand(savedProduct);
         assertNotNull(data);
         assertEquals(brand.getName(), data.getBrand());
         assertEquals(brand.getCategory(), data.getCategory());
@@ -63,7 +63,7 @@ public class ProductDtoTest extends AbstractUnitTest {
         helper.createProduct("product2", "barcode2", brand.getId(), 99.9);
         helper.createProduct("product3", "barcode3", brand.getId(), 99.9);
         helper.createProduct("product4", "barcode4", brand1.getId(), 99.9);
-        List<ProductData> dataList = productDto.extendData(productDao.getAll());
+        List<ProductData> dataList = productDto.extendBrand(productDao.getAll());
         assertEquals(4, dataList.size());
     }
 

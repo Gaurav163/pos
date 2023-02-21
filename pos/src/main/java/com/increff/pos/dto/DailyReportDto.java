@@ -24,8 +24,8 @@ public class DailyReportDto {
     private DailyReportService dailyReportService;
 
     @Scheduled(cron = "30 20 11 * * *", zone = "Asia/Kolkata")
-    public void scheduleFixedDelayTask() {
-        ZonedDateTime now = ZonedDateTime.now();
+    public void dailyScheduler() {
+        ZonedDateTime now = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS);
         ZonedDateTime lastday = now.minusDays(1);
         List<Order> orders = orderService.getByDatetimeRange(lastday, now);
 
@@ -41,11 +41,10 @@ public class DailyReportDto {
         }
 
         DailyReport dailyReport = new DailyReport();
-        dailyReport.setDate(now.truncatedTo(ChronoUnit.DAYS));
+        dailyReport.setDate(now);
         dailyReport.setInvoicedItemsCount(itemsCount);
         dailyReport.setInvoicedOrdersCount(ordersCount);
         dailyReport.setTotalRevenue(totalRevenue);
         dailyReportService.create(dailyReport);
-        System.out.println(dailyReport);
     }
 }

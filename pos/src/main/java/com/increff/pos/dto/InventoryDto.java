@@ -31,8 +31,7 @@ public class InventoryDto {
     @Autowired
     private BrandService brandService;
 
-
-    @Transactional(rollbackOn = ApiException.class)
+    @Transactional(rollbackOn = Exception.class)
     public void upload(MultipartFile file) throws ApiException {
         List<InventoryForm> forms = FileUploadUtil.convert(file, InventoryForm.class);
         if (forms.size() > 5000) {
@@ -49,8 +48,6 @@ public class InventoryDto {
                 continue;
             }
             try {
-                validateForm(form);
-                normalizeForm(form);
                 increaseInventory(form);
             } catch (Exception e) {
                 responses.add("Row " + index + ": Error  -> " + e.getMessage());
@@ -88,7 +85,7 @@ public class InventoryDto {
 
 
     protected Long getProductId(String barcode) throws ApiException {
-        Product product = productService.getOneByParameter("barcode", barcode);
+        Product product = productService.getByParameter("barcode", barcode);
         if (product == null) {
             throw new ApiException("Invalid Barcode");
         }

@@ -29,13 +29,15 @@ public class ProductDto {
     private BrandService brandService;
 
     public ProductData create(ProductForm form) throws ApiException {
+        validateForm(form);
         Product product = convertToProduct(form);
         productService.create(product);
-        return extendData(product);
+        return extendBrand(product);
     }
 
     public ProductData update(Long id, ProductForm form) throws ApiException {
         normalizeForm(form);
+        validateForm(form);
         Product product = mapper(form, Product.class);
         if (form.getBrand() != null && !form.getBrand().isEmpty() && form.getCategory() != null && !form.getCategory().isEmpty()) {
             Brand existingBrand = brandService.getByNameAndCategory(form.getBrand(), form.getCategory());
@@ -44,7 +46,7 @@ public class ProductDto {
             }
             product.setBrandId(existingBrand.getId());
         }
-        return extendData(productService.update(id, product));
+        return extendBrand(productService.update(id, product));
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -64,13 +66,12 @@ public class ProductDto {
                 continue;
             }
             try {
-                productService.create(convertToProduct(form));
+                create(form);
             } catch (Exception e) {
                 responses.add("Row " + index + ": Error -" + e.getMessage());
                 error = true;
             }
         }
-
         if (error) {
             throw new ApiException(String.join("\r", responses));
         }
@@ -78,23 +79,23 @@ public class ProductDto {
 
     public List<ProductData> getAll() throws ApiException {
         List<Product> products = productService.getAll();
-        return extendData(products);
+        return extendBrand(products);
     }
 
     public ProductData getById(Long id) throws ApiException {
-        return extendData(productService.getById(id));
+        return extendBrand(productService.getById(id));
     }
 
 
-    protected List<ProductData> extendData(List<Product> products) throws ApiException {
+    protected List<ProductData> extendBrand(List<Product> products) throws ApiException {
         List<ProductData> data = new ArrayList<>();
         for (Product product : products) {
-            data.add(extendData(product));
+            data.add(extendBrand(product));
         }
         return data;
     }
 
-    protected ProductData extendData(Product product) throws ApiException {
+    protected ProductData extendBrand(Product product) throws ApiException {
         if (product == null) return null;
         ProductData data = mapper(product, ProductData.class);
         Brand brand = brandService.getById(product.getBrandId());
@@ -104,7 +105,6 @@ public class ProductDto {
     }
 
     protected Product convertToProduct(ProductForm form) throws ApiException {
-        validateForm(form);
         normalizeForm(form);
         Brand existingBrand = brandService.getByNameAndCategory(form.getBrand(), form.getCategory());
         if (existingBrand == null) {

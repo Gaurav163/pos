@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional(rollbackFor = ApiException.class)
+@Transactional(rollbackFor = Exception.class)
 public class ProductService {
 
     @Autowired
@@ -24,7 +24,7 @@ public class ProductService {
         return productDao.getAll();
     }
 
-    public Product getOneByParameter(String name, String value) {
+    public Product getByParameter(String name, String value) {
         return productDao.getByParameter(name, value);
     }
 
@@ -58,6 +58,5 @@ public class ProductService {
             product.setBrandId(newProduct.getBrandId());
         }
         return product;
-
     }
 }

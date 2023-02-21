@@ -11,7 +11,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 @Service
-@Transactional(rollbackFor = ApiException.class)
+@Transactional(rollbackFor = Exception.class)
 public class OrderService {
     @Autowired
     private OrderDao orderDao;

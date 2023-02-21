@@ -211,8 +211,8 @@ function renderDetails(order) {
         `)
     });
 
-    $("#total-items").append("<strong>Total Items: </strong>" + count);
-    $("#total-bill").append("<strong>Total Bill: </strong>" + total.toFixed(2));
+    $("#total-items").html("<strong>Total Items: </strong>" + count);
+    $("#total-bill").html("<strong>Total Bill: </strong>" + total.toFixed(2));
 
     $("#detailModal").modal("show");
 
