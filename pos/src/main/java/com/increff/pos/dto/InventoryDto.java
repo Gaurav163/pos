@@ -78,11 +78,6 @@ public class InventoryDto {
         return extendData(inventoryService.updateInventory(productId, form.getQuantity()));
     }
 
-    public InventoryData getByBarcode(String barcode) throws ApiException {
-        Long productId = getProductId(barcode);
-        return extendData(inventoryService.getById(productId));
-    }
-
 
     protected Long getProductId(String barcode) throws ApiException {
         Product product = productService.getByParameter("barcode", barcode);

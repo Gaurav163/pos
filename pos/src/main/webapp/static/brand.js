@@ -116,6 +116,7 @@ function uploadBrand() {
     data.append("file", file);
     if (file.type != "text/tab-separated-values") {
         toast("error", "Selected file must be a TSV (tab seperated value) file");
+        return;
     }
 
     $.ajax({

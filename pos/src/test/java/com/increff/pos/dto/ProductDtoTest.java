@@ -1,7 +1,7 @@
 package com.increff.pos.dto;
 
 import com.increff.pos.AbstractUnitTest;
-import com.increff.pos.Helper;
+import com.increff.pos.TestHelper;
 import com.increff.pos.dao.ProductDao;
 import com.increff.pos.model.ApiException;
 import com.increff.pos.model.ProductData;
@@ -18,7 +18,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class ProductDtoTest extends AbstractUnitTest {
     @Autowired
@@ -26,12 +27,12 @@ public class ProductDtoTest extends AbstractUnitTest {
     @Autowired
     private ProductDao productDao;
     @Autowired
-    private Helper helper;
+    private TestHelper testHelper;
 
     @Test
     public void testCovertToProduct() throws ApiException {
-        helper.createBrand("brand", "category");
-        ProductForm form = helper.createProductForm("prodUCT  ", "barCoDe", "Brand", "   caTEgory", 99.90);
+        testHelper.createBrand("brand", "category");
+        ProductForm form = testHelper.createProductForm("prodUCT  ", "barCoDe", "Brand", "   caTEgory", 99.90);
         Product product = productDto.convertToProduct(form);
         assertNotNull(product);
         assertEquals("product", product.getName());
@@ -40,14 +41,14 @@ public class ProductDtoTest extends AbstractUnitTest {
 
     @Test(expected = ApiException.class)
     public void testCovertToProductInvalidBrand() throws ApiException {
-        ProductForm form = helper.createProductForm("prodUCT  ", "barCoDe", "Brand", "   caTEgory", 99.90);
+        ProductForm form = testHelper.createProductForm("prodUCT  ", "barCoDe", "Brand", "   caTEgory", 99.90);
         Product product = productDto.convertToProduct(form);
     }
 
     @Test
     public void testExtendData() throws ApiException {
-        Brand brand = helper.createBrand("brand", "category");
-        Product product = helper.createProduct("product1", "barcode1", brand.getId(), 99.90);
+        Brand brand = testHelper.createBrand("brand", "category");
+        Product product = testHelper.createProduct("product1", "barcode1", brand.getId(), 99.90);
         Product savedProduct = productDao.getByParameter("barcode", "barcode1");
         ProductData data = productDto.extendBrand(savedProduct);
         assertNotNull(data);
@@ -57,20 +58,20 @@ public class ProductDtoTest extends AbstractUnitTest {
 
     @Test
     public void testExtendDataList() throws ApiException {
-        Brand brand = helper.createBrand("brand", "category");
-        Brand brand1 = helper.createBrand("brand1", "category1");
-        helper.createProduct("product1", "barcode1", brand.getId(), 99.9);
-        helper.createProduct("product2", "barcode2", brand.getId(), 99.9);
-        helper.createProduct("product3", "barcode3", brand.getId(), 99.9);
-        helper.createProduct("product4", "barcode4", brand1.getId(), 99.9);
+        Brand brand = testHelper.createBrand("brand", "category");
+        Brand brand1 = testHelper.createBrand("brand1", "category1");
+        testHelper.createProduct("product1", "barcode1", brand.getId(), 99.9);
+        testHelper.createProduct("product2", "barcode2", brand.getId(), 99.9);
+        testHelper.createProduct("product3", "barcode3", brand.getId(), 99.9);
+        testHelper.createProduct("product4", "barcode4", brand1.getId(), 99.9);
         List<ProductData> dataList = productDto.extendBrand(productDao.getAll());
         assertEquals(4, dataList.size());
     }
 
     @Test
     public void testCreate() throws ApiException {
-        Brand brand = helper.createBrand("brand1", "category1");
-        ProductForm form = helper.createProductForm("product1", "BARCoDE1", "BRand1", "category1", 99.00);
+        Brand brand = testHelper.createBrand("brand1", "category1");
+        ProductForm form = testHelper.createProductForm("product1", "BARCoDE1", "BRand1", "category1", 99.00);
         ProductData data = productDto.create(form);
         assertNotNull(data);
         Product product = productDao.getByParameter("barcode", "barcode1");
@@ -80,34 +81,23 @@ public class ProductDtoTest extends AbstractUnitTest {
 
     @Test
     public void testGetAll() throws ApiException {
-        Brand brand = helper.createBrand("brand1", "category1");
-        helper.createProduct("product1", "barcode1", brand.getId(), 99.0);
-        helper.createProduct("product2", "barcode2", brand.getId(), 99.0);
-        helper.createProduct("product3", "barcode3", brand.getId(), 99.0);
-        helper.createProduct("product4", "barcode4", brand.getId(), 99.0);
-        helper.createProduct("product5", "barcode5", brand.getId(), 99.0);
+        Brand brand = testHelper.createBrand("brand1", "category1");
+        testHelper.createProduct("product1", "barcode1", brand.getId(), 99.0);
+        testHelper.createProduct("product2", "barcode2", brand.getId(), 99.0);
+        testHelper.createProduct("product3", "barcode3", brand.getId(), 99.0);
+        testHelper.createProduct("product4", "barcode4", brand.getId(), 99.0);
+        testHelper.createProduct("product5", "barcode5", brand.getId(), 99.0);
         List<ProductData> dataList = productDto.getAll();
         assertEquals(5, dataList.size());
     }
 
-    @Test
-    public void testGetById() throws ApiException {
-        Brand brand1 = helper.createBrand("brand1", "category1");
-        Product product = helper.createProduct("product1", "BARCoDE1", brand1.getId(), 99.00);
-        ProductData data = productDto.getById(product.getId());
-        ProductData dummyData = productDto.getById(product.getId() + 10);
-        assertNotNull(data);
-        assertNull(dummyData);
-        assertEquals(data.getBrand(), brand1.getName());
-        assertEquals(data.getCategory(), brand1.getCategory());
-    }
 
     @Test
     public void testUpdate() throws ApiException {
-        Brand brand1 = helper.createBrand("brand1", "category1");
-        Brand brand2 = helper.createBrand("brand2", "category2");
-        Product product = helper.createProduct("product1", "BARCoDE1", brand1.getId(), 99.00);
-        ProductForm form = helper.createProductForm("product1", "BARCoDE2", "BRand2", "category2", 100.00);
+        Brand brand1 = testHelper.createBrand("brand1", "category1");
+        Brand brand2 = testHelper.createBrand("brand2", "category2");
+        Product product = testHelper.createProduct("product1", "BARCoDE1", brand1.getId(), 99.00);
+        ProductForm form = testHelper.createProductForm("product1", "BARCoDE2", "BRand2", "category2", 100.00);
         productDto.update(product.getId(), form);
         Product savedProduct = productDao.getByParameter("barcode", "barcode2");
         assertNotNull(savedProduct);
@@ -117,16 +107,16 @@ public class ProductDtoTest extends AbstractUnitTest {
 
     @Test(expected = ApiException.class)
     public void testUpdateInvalidBrand() throws ApiException {
-        Brand brand1 = helper.createBrand("brand1", "category1");
-        Product product = helper.createProduct("product1", "BARCoDE1", brand1.getId(), 99.00);
-        ProductForm form = helper.createProductForm("product1", "BARCoDE2", "BRand2", "category2", 100.00);
+        Brand brand1 = testHelper.createBrand("brand1", "category1");
+        Product product = testHelper.createProduct("product1", "BARCoDE1", brand1.getId(), 99.00);
+        ProductForm form = testHelper.createProductForm("product1", "BARCoDE2", "BRand2", "category2", 100.00);
         productDto.update(product.getId(), form);
         productDao.getByParameter("barcode", "barcode2");
     }
 
     @Test
     public void testUpload() throws ApiException, IOException {
-        helper.createBrand("brand1", "cate1");
+        testHelper.createBrand("brand1", "cate1");
         MultipartFile file = new MockMultipartFile("product.tsv",
                 Files.newInputStream(new File("src/test/resources/product.tsv").toPath()));
         productDto.upload(file);
@@ -135,7 +125,7 @@ public class ProductDtoTest extends AbstractUnitTest {
 
     @Test(expected = ApiException.class)
     public void testUploadDuplicate() throws IOException, ApiException {
-        helper.createBrand("brand1", "category1");
+        testHelper.createBrand("brand1", "category1");
         MultipartFile file = new MockMultipartFile("product.tsv",
                 Files.newInputStream(new File("src/test/resources/product.tsv").toPath()));
         productDto.upload(file);

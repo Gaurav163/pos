@@ -16,31 +16,31 @@ public class OrderController {
     @Autowired
     private OrderDto orderDto;
 
-    @ApiOperation(value = "Create order with list of order-item list")
+    @ApiOperation(value = "Create order with given list of order-item")
     @RequestMapping(path = "/", method = RequestMethod.POST)
     public OrderData create(@RequestBody OrderForm orderForm) throws ApiException {
         return orderDto.create(orderForm);
     }
 
-    @ApiOperation(value = "Get all order")
+    @ApiOperation(value = "Get all orders")
     @RequestMapping(path = "/", method = RequestMethod.GET)
     public List<OrderData> getAll() throws ApiException {
         return orderDto.getAll();
     }
 
-    @ApiOperation(value = "Get order details by order ID")
+    @ApiOperation(value = "Get order details")
     @RequestMapping(path = "/{id}", method = RequestMethod.GET)
     public OrderData getById(@PathVariable("id") Long id) throws ApiException {
         return orderDto.getById(id);
     }
 
-    @ApiOperation(value = "Get order invoice by order ID in base64 format")
+    @ApiOperation(value = "Get order invoice")
     @RequestMapping(path = "/invoice/{id}", method = RequestMethod.GET)
     public String getInvoiceAsBase64(@PathVariable("id") Long id) throws ApiException {
         return orderDto.getInvoiceAsBase64(id);
     }
 
-    @ApiOperation(value = "Generate order invoice by order ID as pdf")
+    @ApiOperation(value = "Generate order invoice")
     @RequestMapping(path = "/invoice/{id}", method = RequestMethod.POST)
     public OrderData generateInvoice(@PathVariable("id") Long id) throws ApiException {
         return orderDto.generateInvoice(id);

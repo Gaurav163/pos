@@ -82,11 +82,6 @@ public class ProductDto {
         return extendBrand(products);
     }
 
-    public ProductData getById(Long id) throws ApiException {
-        return extendBrand(productService.getById(id));
-    }
-
-
     protected List<ProductData> extendBrand(List<Product> products) throws ApiException {
         List<ProductData> data = new ArrayList<>();
         for (Product product : products) {

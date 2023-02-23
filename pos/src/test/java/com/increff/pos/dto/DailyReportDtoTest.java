@@ -1,7 +1,7 @@
 package com.increff.pos.dto;
 
 import com.increff.pos.AbstractUnitTest;
-import com.increff.pos.Helper;
+import com.increff.pos.TestHelper;
 import com.increff.pos.dao.DailyReportDao;
 import com.increff.pos.pojo.DailyReport;
 import com.increff.pos.pojo.Order;
@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 
 public class DailyReportDtoTest extends AbstractUnitTest {
     @Autowired
-    private Helper helper;
+    private TestHelper testHelper;
     @Autowired
     private DailyReportDto dailyReportDto;
     @Autowired
@@ -25,17 +25,17 @@ public class DailyReportDtoTest extends AbstractUnitTest {
     @Test
     public void testScheduler() {
         ZonedDateTime currentTime = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS);
-        Order order1 = helper.createOrder(currentTime.minusDays(2));
-        Order order2 = helper.createOrder(currentTime.minusHours(23));
-        Order order3 = helper.createOrder(currentTime);
-        helper.createOrderItem(order1.getId(), 1L, 10L, 150.0);
-        helper.createOrderItem(order1.getId(), 2L, 10L, 150.0);
-        helper.createOrderItem(order1.getId(), 3L, 10L, 150.0);
-        helper.createOrderItem(order2.getId(), 1L, 10L, 150.0);
-        helper.createOrderItem(order2.getId(), 2L, 10L, 150.0);
-        helper.createOrderItem(order2.getId(), 3L, 5L, 150.0);
-        helper.createOrderItem(order3.getId(), 1L, 10L, 150.0);
-        helper.createOrderItem(order3.getId(), 2L, 5L, 150.0);
+        Order order1 = testHelper.createOrder(currentTime.minusDays(2));
+        Order order2 = testHelper.createOrder(currentTime.minusHours(23));
+        Order order3 = testHelper.createOrder(currentTime);
+        testHelper.createOrderItem(order1.getId(), 1L, 10L, 150.0);
+        testHelper.createOrderItem(order1.getId(), 2L, 10L, 150.0);
+        testHelper.createOrderItem(order1.getId(), 3L, 10L, 150.0);
+        testHelper.createOrderItem(order2.getId(), 1L, 10L, 150.0);
+        testHelper.createOrderItem(order2.getId(), 2L, 10L, 150.0);
+        testHelper.createOrderItem(order2.getId(), 3L, 5L, 150.0);
+        testHelper.createOrderItem(order3.getId(), 1L, 10L, 150.0);
+        testHelper.createOrderItem(order3.getId(), 2L, 5L, 150.0);
         dailyReportDto.dailyScheduler();
         List<DailyReport> dailyReportList = dailyReportDao.getByDatetimeRange(currentTime.minusDays(1), currentTime);
         assertEquals(1, dailyReportList.size());

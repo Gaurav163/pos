@@ -7,7 +7,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 
 @Configuration
-@ComponentScan("com.increff.pdf")
+@ComponentScan("com.increff.invoice")
 @PropertySources({ //
         @PropertySource(value = "file:./invoice.properties", ignoreResourceNotFound = true) //
 })

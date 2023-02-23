@@ -1,7 +1,7 @@
 package com.increff.pos.dao;
 
 import com.increff.pos.AbstractUnitTest;
-import com.increff.pos.Helper;
+import com.increff.pos.TestHelper;
 import com.increff.pos.pojo.Inventory;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +15,11 @@ public class InventoryDaoTest extends AbstractUnitTest {
     @Autowired
     private InventoryDao inventoryDao;
     @Autowired
-    private Helper helper;
+    private TestHelper testHelper;
 
     @Test
     public void testCreate() {
-        Inventory inventory = helper.getInventory(1L, 10L);
+        Inventory inventory = testHelper.getInventory(1L, 10L);
         inventoryDao.create(inventory);
         Inventory savedInv = inventoryDao.getById(1L);
         assertNotNull(savedInv);
@@ -28,17 +28,17 @@ public class InventoryDaoTest extends AbstractUnitTest {
 
     @Test
     public void testGetAll() {
-        helper.createInventory(1L, 10L);
-        helper.createInventory(2L, 20L);
-        helper.createInventory(3L, 30L);
-        helper.createInventory(4L, 40L);
+        testHelper.createInventory(1L, 10L);
+        testHelper.createInventory(2L, 20L);
+        testHelper.createInventory(3L, 30L);
+        testHelper.createInventory(4L, 40L);
         List<Inventory> inventories = inventoryDao.getAll();
         assertEquals(4, inventories.size());
     }
 
     @Test
     public void testGetById() {
-        Inventory inventory1 = helper.createInventory(2L, 20L);
+        Inventory inventory1 = testHelper.createInventory(2L, 20L);
         Inventory savedInv = inventoryDao.getById(2L);
         Inventory dummuyInv = inventoryDao.getById(4L);
         assertNotNull(savedInv);

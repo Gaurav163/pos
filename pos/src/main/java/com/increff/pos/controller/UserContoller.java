@@ -31,6 +31,7 @@ public class UserContoller {
         userDto.create(userForm);
     }
 
+    @ApiOperation(value = "Login user by email and password")
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public void login(@RequestBody LoginForm form, HttpServletResponse response) throws ApiException {
         String accessToken = userDto.login(form);
@@ -41,6 +42,7 @@ public class UserContoller {
         response.addCookie(jwtCookie);
     }
 
+    @ApiOperation(value = "Logout user")
     @RequestMapping(path = "/logout", method = RequestMethod.GET)
     public void logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Cookie newCookie = new Cookie("access_token", null);
@@ -50,6 +52,5 @@ public class UserContoller {
         response.addCookie(newCookie);
         response.sendRedirect("/user/login");
     }
-
-
+    
 }

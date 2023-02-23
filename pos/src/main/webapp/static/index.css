@@ -175,6 +175,8 @@ table {
 
 td {
   word-wrap: break-word;
+  vertical-align: middle;
+  height: 42.5px;
 }
 
 .index {

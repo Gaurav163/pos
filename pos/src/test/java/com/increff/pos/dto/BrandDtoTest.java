@@ -1,7 +1,7 @@
 package com.increff.pos.dto;
 
 import com.increff.pos.AbstractUnitTest;
-import com.increff.pos.Helper;
+import com.increff.pos.TestHelper;
 import com.increff.pos.dao.BrandDao;
 import com.increff.pos.model.ApiException;
 import com.increff.pos.model.BrandData;
@@ -17,7 +17,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class BrandDtoTest extends AbstractUnitTest {
 
@@ -28,12 +29,12 @@ public class BrandDtoTest extends AbstractUnitTest {
     private BrandDao brandDao;
 
     @Autowired
-    private Helper helper;
+    private TestHelper testHelper;
 
 
     @Test
     public void testCreate() throws ApiException {
-        BrandForm form = helper.getBrandForm("nAme6 ", "  CATeGory6");
+        BrandForm form = testHelper.getBrandForm("nAme6 ", "  CATeGory6");
         BrandData data = brandDto.create(form);
         assertNotNull(data);
         assertEquals("name6", data.getName());
@@ -42,40 +43,21 @@ public class BrandDtoTest extends AbstractUnitTest {
 
     @Test(expected = ApiException.class)
     public void testCreateEmpty() throws ApiException {
-        BrandForm form = helper.getBrandForm("nAme6 ", "   ");
+        BrandForm form = testHelper.getBrandForm("nAme6 ", "   ");
         brandDto.create(form);
-        brandDao.getByParameter("name", "name6");
     }
 
     @Test(expected = ApiException.class)
     public void validateNull() throws ApiException {
-        BrandForm form = helper.getBrandForm("nAme6 ", null);
+        BrandForm form = testHelper.getBrandForm("nAme6 ", null);
         brandDto.create(form);
-        brandDao.getByParameter("name", "name6");
     }
 
     @Test
     public void getAll() throws ApiException {
-        helper.generateBrands(5);
+        testHelper.generateBrands(5);
         List<BrandData> dataList = brandDto.getAll();
         assertEquals(5, dataList.size());
-    }
-
-
-    @Test
-    public void testGetById() throws ApiException {
-        Brand brand = helper.createBrand("brand1", "category1");
-        BrandData data = brandDto.getById(brand.getId());
-        assertNotNull(data);
-        assertEquals(brand.getName(), data.getName());
-        assertEquals(brand.getCategory(), data.getCategory());
-    }
-
-    @Test
-    public void testGetByInvalidId() throws ApiException {
-        Brand brand = helper.createBrand("brand1", "category1");
-        BrandData data = brandDto.getById(brand.getId() + 10);
-        assertNull(data);
     }
 
     @Test
@@ -96,8 +78,8 @@ public class BrandDtoTest extends AbstractUnitTest {
 
     @Test
     public void update() throws ApiException {
-        Brand brand = helper.createBrand("brand1", "category1");
-        BrandForm form = helper.getBrandForm("brand13", "category12");
+        Brand brand = testHelper.createBrand("brand1", "category1");
+        BrandForm form = testHelper.getBrandForm("brand13", "category12");
         BrandData data = brandDto.update(brand.getId(), form);
         assertEquals(form.getName(), data.getName());
         assertEquals(form.getCategory(), data.getCategory());

@@ -31,8 +31,8 @@ import java.util.List;
 
 @Service
 public class InvoiceService {
-    @Value("resourcesPath")
-    private static String resourcesPath;
+    @Value("${resourcesPath}")
+    private String resourcesPath;
 
     public String generateInvoice(OrderForm order) throws ApiException {
         // the XSL FO file

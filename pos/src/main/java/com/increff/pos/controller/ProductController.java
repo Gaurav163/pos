@@ -4,7 +4,6 @@ import com.increff.pos.dto.ProductDto;
 import com.increff.pos.model.ApiException;
 import com.increff.pos.model.ProductData;
 import com.increff.pos.model.ProductForm;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@Api
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
@@ -35,20 +33,13 @@ public class ProductController {
         productDto.upload(file);
     }
 
-    @ApiOperation(value = "Get product by Id")
-    @RequestMapping(path = "/{id}", method = RequestMethod.GET)
-    public ProductData getById(@PathVariable("id") Long id) throws ApiException {
-        return productDto.getById(id);
-    }
-
-
     @ApiOperation(value = "Get all products")
     @RequestMapping(path = "/", method = RequestMethod.GET)
     public List<ProductData> getAll() throws ApiException {
         return productDto.getAll();
     }
 
-    @ApiOperation(value = "Update product with provided ID")
+    @ApiOperation(value = "Update product with given ID")
     @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
     public ProductData update(@RequestBody ProductForm brandForm, @PathVariable("id") Long id) throws ApiException {
         return productDto.update(id, brandForm);

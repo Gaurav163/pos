@@ -66,7 +66,6 @@ public class OrderDto {
     }
 
     public List<OrderData> getAll() throws ApiException {
-
         List<Order> orders = orderService.getAll();
         List<OrderData> orderDataList = new ArrayList<>();
         for (Order order : orders) {

@@ -1,11 +1,11 @@
 pos/target/
-pdf/target/
+invoice/target/
 pos/.idea
 docs/
 pos/jetty.log
 pos/jetty.log.1
 /pos/src/main/java/com/increff/pos/pdf/
 /pos/src/main/resources/invoices/
-pdf/.idea
+invoice/.idea
 pom.xml
 

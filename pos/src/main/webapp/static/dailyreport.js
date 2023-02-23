@@ -27,7 +27,7 @@ function showReport() {
 
 function showdata(reports) {
     data = [];
-    table.row().remove();
+    table.rows().remove();
     reports.forEach(report => {
         report.totalRevenue = report.totalRevenue.toFixed(2);
         data.push(report);

@@ -1,7 +1,7 @@
 package com.increff.pos.dao;
 
 import com.increff.pos.AbstractUnitTest;
-import com.increff.pos.Helper;
+import com.increff.pos.TestHelper;
 import com.increff.pos.pojo.Order;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +16,13 @@ public class OrderDaoTest extends AbstractUnitTest {
     @Autowired
     private OrderDao orderDao;
     @Autowired
-    private Helper helper;
+    private TestHelper testHelper;
 
 
     @Test
     public void testCreate() {
         ZonedDateTime currentTime = ZonedDateTime.now();
-        Order order = helper.getOrder(currentTime);
+        Order order = testHelper.getOrder(currentTime);
         orderDao.create(order);
         Order savedOrder = orderDao.getAll().get(0);
         assertNotNull(savedOrder);
@@ -32,7 +32,7 @@ public class OrderDaoTest extends AbstractUnitTest {
     @Test
     public void testGetById() {
         ZonedDateTime currentTime = ZonedDateTime.now();
-        Order order = helper.createOrder(currentTime);
+        Order order = testHelper.createOrder(currentTime);
         Order savedOrder = orderDao.getById(order.getId());
         assertNotNull(order);
         assertEquals(currentTime, savedOrder.getDatetime());
@@ -42,22 +42,22 @@ public class OrderDaoTest extends AbstractUnitTest {
 
     @Test
     public void testGetAll() {
-        helper.createOrder();
-        helper.createOrder();
-        helper.createOrder();
-        helper.createOrder(ZonedDateTime.now().minusDays(5));
-        helper.createOrder(ZonedDateTime.now().minusDays(4));
+        testHelper.createOrder();
+        testHelper.createOrder();
+        testHelper.createOrder();
+        testHelper.createOrder(ZonedDateTime.now().minusDays(5));
+        testHelper.createOrder(ZonedDateTime.now().minusDays(4));
         List<Order> orders = orderDao.getAll();
         assertEquals(5L, orders.size());
     }
 
     @Test
     public void testFindByDatetimeRange() {
-        helper.createOrder();
-        helper.createOrder(ZonedDateTime.now().minusDays(2));
-        helper.createOrder();
-        helper.createOrder(ZonedDateTime.now().minusDays(4));
-        helper.createOrder(ZonedDateTime.now().minusDays(5));
+        testHelper.createOrder();
+        testHelper.createOrder(ZonedDateTime.now().minusDays(2));
+        testHelper.createOrder();
+        testHelper.createOrder(ZonedDateTime.now().minusDays(4));
+        testHelper.createOrder(ZonedDateTime.now().minusDays(5));
         List<Order> orderList1 = orderDao.getByDatetimeRange(ZonedDateTime.now().minusDays(3), ZonedDateTime.now());
         List<Order> orderList2 = orderDao.getByDatetimeRange(ZonedDateTime.now().minusDays(6), ZonedDateTime.now().minusDays(1));
         List<Order> orderList3 = orderDao.getByDatetimeRange(ZonedDateTime.now().minusDays(3), ZonedDateTime.now().minusDays(1));

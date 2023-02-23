@@ -1,7 +1,7 @@
 package com.increff.pos.dto;
 
 import com.increff.pos.AbstractUnitTest;
-import com.increff.pos.Helper;
+import com.increff.pos.TestHelper;
 import com.increff.pos.dao.InventoryDao;
 import com.increff.pos.model.ApiException;
 import com.increff.pos.model.InventoryData;
@@ -27,13 +27,13 @@ public class InventoryDtoTest extends AbstractUnitTest {
     @Autowired
     private InventoryDao inventoryDao;
     @Autowired
-    private Helper helper;
+    private TestHelper testHelper;
 
     @Test
     public void testExtendData() throws ApiException {
-        Brand brand = helper.createBrand("brand1", "category1");
-        Product product = helper.createProduct("product1", "barcode1", brand.getId(), 99.9);
-        Inventory inventory = helper.getInventory(product.getId(), 10L);
+        Brand brand = testHelper.createBrand("brand1", "category1");
+        Product product = testHelper.createProduct("product1", "barcode1", brand.getId(), 99.9);
+        Inventory inventory = testHelper.getInventory(product.getId(), 10L);
         InventoryData data = inventoryDto.extendData(inventory);
         assertNotNull(data);
         assertEquals(brand.getName(), data.getBrand());
@@ -43,8 +43,8 @@ public class InventoryDtoTest extends AbstractUnitTest {
 
     @Test
     public void testGetProductId() throws ApiException {
-        Brand brand = helper.createBrand("brand1", "category1");
-        Product product = helper.createProduct("product1", "barcode1", brand.getId(), 99.9);
+        Brand brand = testHelper.createBrand("brand1", "category1");
+        Product product = testHelper.createProduct("product1", "barcode1", brand.getId(), 99.9);
         Long productId = inventoryDto.getProductId("barcode1");
         assertNotNull(productId);
         assertEquals(product.getId(), productId);
@@ -57,34 +57,26 @@ public class InventoryDtoTest extends AbstractUnitTest {
 
     @Test
     public void testGetAll() throws ApiException {
-        Brand brand = helper.createBrand("brand1", "category1");
-        Product product1 = helper.createProduct("product1", "barcode1", brand.getId(), 99.9);
-        Product product2 = helper.createProduct("product2", "barcode2", brand.getId(), 99.9);
-        Product product3 = helper.createProduct("product3", "barcode3", brand.getId(), 99.9);
-        helper.createInventory(product1.getId(), 5L);
-        helper.createInventory(product2.getId(), 5L);
-        helper.createInventory(product3.getId(), 5L);
+        Brand brand = testHelper.createBrand("brand1", "category1");
+        Product product1 = testHelper.createProduct("product1", "barcode1", brand.getId(), 99.9);
+        Product product2 = testHelper.createProduct("product2", "barcode2", brand.getId(), 99.9);
+        Product product3 = testHelper.createProduct("product3", "barcode3", brand.getId(), 99.9);
+        testHelper.createInventory(product1.getId(), 5L);
+        testHelper.createInventory(product2.getId(), 5L);
+        testHelper.createInventory(product3.getId(), 5L);
         List<InventoryData> dataList = inventoryDto.getAllInventory();
         assertEquals(3, dataList.size());
 
     }
 
     @Test
-    public void testGetByBarcode() throws ApiException {
-        Brand brand = helper.createBrand("brand1", "category1");
-        Product product = helper.createProduct("product1", "barcode1", brand.getId(), 99.9);
-        InventoryData data = inventoryDto.getByBarcode("barcode1");
-        assertNotNull(data);
-    }
-
-    @Test
     public void testUpdate() throws ApiException {
-        Brand brand = helper.createBrand("brand1", "category1");
-        Product product = helper.createProduct("product1", "barcode1", brand.getId(), 99.9);
-        helper.createInventory(product.getId(), 10L);
+        Brand brand = testHelper.createBrand("brand1", "category1");
+        Product product = testHelper.createProduct("product1", "barcode1", brand.getId(), 99.9);
+        testHelper.createInventory(product.getId(), 10L);
         Inventory inventory = inventoryDao.getById(product.getId());
         assertEquals(Long.valueOf(10L), inventory.getQuantity());
-        InventoryForm form = helper.createInventoryForm(product.getBarcode(), 24L);
+        InventoryForm form = testHelper.createInventoryForm(product.getBarcode(), 24L);
         inventoryDto.updateInventory(form);
         Inventory savedInventory = inventoryDao.getById(product.getId());
         assertEquals(Long.valueOf(24L), savedInventory.getQuantity());
@@ -92,11 +84,11 @@ public class InventoryDtoTest extends AbstractUnitTest {
 
     @Test
     public void testIncreaseInventory() throws ApiException {
-        Brand brand = helper.createBrand("brand1", "category1");
-        Product product = helper.createProduct("product1", "barcode1", brand.getId(), 99.9);
+        Brand brand = testHelper.createBrand("brand1", "category1");
+        Product product = testHelper.createProduct("product1", "barcode1", brand.getId(), 99.9);
         Inventory inventory = inventoryDao.getById(product.getId());
         assertNull(inventory);
-        InventoryForm inventoryForm = helper.createInventoryForm("barcode1", 10L);
+        InventoryForm inventoryForm = testHelper.createInventoryForm("barcode1", 10L);
         inventoryDto.increaseInventory(inventoryForm);
         Inventory inventory2 = inventoryDao.getById(product.getId());
         assertNotNull(inventory2);
@@ -105,18 +97,18 @@ public class InventoryDtoTest extends AbstractUnitTest {
 
     @Test(expected = ApiException.class)
     public void testIncreaseInventoryInvalidBarcode() throws ApiException {
-        InventoryForm form = helper.createInventoryForm("barcode1", 10L);
+        InventoryForm form = testHelper.createInventoryForm("barcode1", 10L);
         inventoryDto.increaseInventory(form);
         inventoryDao.getAll();
     }
 
     @Test
     public void testUpload() throws ApiException, IOException {
-        Brand brand = helper.createBrand("brand", "category");
-        helper.createProduct("product1", "barcode1", brand.getId(), 90D);
-        helper.createProduct("product2", "barcode2", brand.getId(), 90D);
-        helper.createProduct("product3", "barcode3", brand.getId(), 90D);
-        helper.createProduct("product4", "barcode4", brand.getId(), 90D);
+        Brand brand = testHelper.createBrand("brand", "category");
+        testHelper.createProduct("product1", "barcode1", brand.getId(), 90D);
+        testHelper.createProduct("product2", "barcode2", brand.getId(), 90D);
+        testHelper.createProduct("product3", "barcode3", brand.getId(), 90D);
+        testHelper.createProduct("product4", "barcode4", brand.getId(), 90D);
         MultipartFile file = new MockMultipartFile("inventory.tsv",
                 Files.newInputStream(new File("src/test/resources/inventory.tsv").toPath()));
         inventoryDto.upload(file);

@@ -1,7 +1,7 @@
 package com.increff.pos.dto;
 
 import com.increff.pos.AbstractUnitTest;
-import com.increff.pos.Helper;
+import com.increff.pos.TestHelper;
 import com.increff.pos.dao.UserDao;
 import com.increff.pos.model.ApiException;
 import com.increff.pos.model.LoginForm;
@@ -15,7 +15,7 @@ import static org.junit.Assert.assertNotNull;
 
 public class UserDtoTest extends AbstractUnitTest {
     @Autowired
-    private Helper helper;
+    private TestHelper testHelper;
     @Autowired
     private UserDto userDto;
     @Autowired
@@ -25,7 +25,7 @@ public class UserDtoTest extends AbstractUnitTest {
 
     @Test
     public void testCreate() throws ApiException {
-        UserForm form = helper.createUserForm("name", "email@g", "password");
+        UserForm form = testHelper.createUserForm("name", "email@g", "password");
         userDto.create(form);
         User user = userDao.getByParameter("email", "email@g");
         assertNotNull(user);
@@ -33,23 +33,23 @@ public class UserDtoTest extends AbstractUnitTest {
 
     @Test
     public void testLogin() throws ApiException {
-        User user = helper.createUser("name", "email@g", passwordEncoder.encode("password@"), "operator");
-        LoginForm form = helper.createLoginForm("email@g", "password@");
+        User user = testHelper.createUser("name", "email@g", passwordEncoder.encode("password@"), "operator");
+        LoginForm form = testHelper.createLoginForm("email@g", "password@");
         String token = userDto.login(form);
         assertNotNull(token);
     }
 
     @Test(expected = ApiException.class)
     public void testLoginInvalidUser() throws ApiException {
-        User user = helper.createUser("name", "email@g", passwordEncoder.encode("password@"), "operator");
-        LoginForm form = helper.createLoginForm("email@invalid", "password@");
+        User user = testHelper.createUser("name", "email@g", passwordEncoder.encode("password@"), "operator");
+        LoginForm form = testHelper.createLoginForm("email@invalid", "password@");
         userDto.login(form);
     }
 
     @Test(expected = ApiException.class)
     public void testLoginWrongPassword() throws ApiException {
-        User user = helper.createUser("name", "email@g", passwordEncoder.encode("password@"), "operator");
-        LoginForm form = helper.createLoginForm("email@", "password@worng");
+        User user = testHelper.createUser("name", "email@g", passwordEncoder.encode("password@"), "operator");
+        LoginForm form = testHelper.createLoginForm("email@", "password@worng");
         userDto.login(form);
     }
 }

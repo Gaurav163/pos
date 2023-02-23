@@ -35,14 +35,6 @@ public class BrandDto {
         return mapper(brandService.getAll(), BrandData.class);
     }
 
-    public BrandData getById(Long id) throws ApiException {
-        Brand brand = brandService.getById(id);
-        if (brand == null) {
-            return null;
-        } else {
-            return mapper(brandService.getById(id), BrandData.class);
-        }
-    }
 
     public BrandData update(Long id, BrandForm form) throws ApiException {
         normalizeForm(form);
@@ -74,7 +66,7 @@ public class BrandDto {
             }
         }
         if (error) {
-            throw new ApiException(String.join("\r", responses));
+            throw new ApiException(String.join("\n", responses));
         }
     }
 

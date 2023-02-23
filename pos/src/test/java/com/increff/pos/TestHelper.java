@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.time.ZonedDateTime;
 
 @Component
-public class Helper {
+public class TestHelper {
 
     @Autowired
     private BrandDao brandDao;

@@ -1,7 +1,7 @@
 package com.increff.pos.service;
 
 import com.increff.pos.AbstractUnitTest;
-import com.increff.pos.Helper;
+import com.increff.pos.TestHelper;
 import com.increff.pos.dao.OrderDao;
 import com.increff.pos.model.ApiException;
 import com.increff.pos.pojo.Order;
@@ -18,7 +18,7 @@ public class OrderServiceTest extends AbstractUnitTest {
     @Autowired
     private OrderDao orderDao;
     @Autowired
-    private Helper helper;
+    private TestHelper testHelper;
 
     @Test
     public void testCreate() {
@@ -32,7 +32,7 @@ public class OrderServiceTest extends AbstractUnitTest {
     @Test
     public void testCreateInvoice() throws ApiException {
         ZonedDateTime currentTime = ZonedDateTime.now();
-        Order order = helper.createOrder(currentTime);
+        Order order = testHelper.createOrder(currentTime);
         orderService.createInvoice(order.getId());
         Order savedOrder = orderDao.getByParameter("datetime", currentTime);
         assertNotNull(savedOrder);
@@ -43,5 +43,5 @@ public class OrderServiceTest extends AbstractUnitTest {
     public void testCreateInvoiceInvalidId() throws ApiException {
         orderService.createInvoice(10L);
     }
-    
+
 }

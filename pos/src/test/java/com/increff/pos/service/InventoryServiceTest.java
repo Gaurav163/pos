@@ -1,7 +1,7 @@
 package com.increff.pos.service;
 
 import com.increff.pos.AbstractUnitTest;
-import com.increff.pos.Helper;
+import com.increff.pos.TestHelper;
 import com.increff.pos.dao.InventoryDao;
 import com.increff.pos.model.ApiException;
 import com.increff.pos.pojo.Inventory;
@@ -16,7 +16,7 @@ public class InventoryServiceTest extends AbstractUnitTest {
     @Autowired
     private InventoryDao inventoryDao;
     @Autowired
-    private Helper helper;
+    private TestHelper testHelper;
 
     @Test
     public void testIncreaseInventory() {
@@ -33,7 +33,7 @@ public class InventoryServiceTest extends AbstractUnitTest {
         Inventory inventory = inventoryService.getById(10L);
         assertNotNull(inventory);
         assertEquals(Long.valueOf(0L), inventory.getQuantity());
-        helper.createInventory(10L, 120L);
+        testHelper.createInventory(10L, 120L);
         Inventory savedInventory = inventoryService.getById(10L);
         assertNotNull(savedInventory);
         assertEquals(Long.valueOf(120L), savedInventory.getQuantity());
@@ -41,8 +41,8 @@ public class InventoryServiceTest extends AbstractUnitTest {
 
     @Test
     public void testReduceInventory() throws ApiException {
-        helper.createInventory(1L, 20L);
-        helper.createInventory(2L, 25L);
+        testHelper.createInventory(1L, 20L);
+        testHelper.createInventory(2L, 25L);
         inventoryService.reduceInventory(1L, 15L);
         Inventory inventory = inventoryDao.getById(1L);
         Inventory inventory1 = inventoryDao.getById(2L);
@@ -52,7 +52,7 @@ public class InventoryServiceTest extends AbstractUnitTest {
 
     @Test(expected = ApiException.class)
     public void testReduceInventoryBelowZero() throws ApiException {
-        helper.createInventory(1L, 20L);
+        testHelper.createInventory(1L, 20L);
         inventoryService.reduceInventory(1L, 21L);
     }
 

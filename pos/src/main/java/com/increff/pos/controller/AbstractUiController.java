@@ -13,7 +13,8 @@ public class AbstractUiController {
     protected ModelAndView mav(String page) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || auth.getPrincipal().toString().equals("anonymousUser")) {
-            ModelAndView mav = new ModelAndView("login.html");
+            String path = Objects.equals(page, "signup.html") ? page : "login.html";
+            ModelAndView mav = new ModelAndView(path);
             mav.addObject("authenticated", false);
             return mav;
         } else if (Objects.equals(page, "login.html") || Objects.equals(page, "signup.html")) {

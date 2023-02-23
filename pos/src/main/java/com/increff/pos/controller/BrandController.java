@@ -18,7 +18,7 @@ public class BrandController {
     @Autowired
     private BrandDto brandDto;
 
-    @ApiOperation(value = "Create brand with provided name and category")
+    @ApiOperation(value = "Create brand with name and category")
     @RequestMapping(path = "/", method = RequestMethod.POST)
     public BrandData create(@RequestBody BrandForm brandForm) throws ApiException {
         return brandDto.create(brandForm);
@@ -30,11 +30,6 @@ public class BrandController {
         brandDto.upload(file);
     }
 
-    @ApiOperation(value = "Get brand by ID")
-    @RequestMapping(path = "/{id}", method = RequestMethod.GET)
-    public BrandData getById(@PathVariable("id") Long id) throws ApiException {
-        return brandDto.getById(id);
-    }
 
     @ApiOperation(value = "Get all brands")
     @RequestMapping(path = "/", method = RequestMethod.GET)
@@ -42,7 +37,7 @@ public class BrandController {
         return brandDto.getAll();
     }
 
-    @ApiOperation(value = "Update brand with given ID and provided data")
+    @ApiOperation(value = "Update brand with given ID")
     @PutMapping("/{id}")
     public BrandData update(@RequestBody BrandForm brandForm, @PathVariable("id") Long id) throws ApiException {
         return brandDto.update(id, brandForm);
