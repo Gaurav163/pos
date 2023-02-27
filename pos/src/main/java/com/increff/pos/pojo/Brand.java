@@ -10,7 +10,6 @@ import javax.persistence.*;
 @Table(uniqueConstraints = {
         @UniqueConstraint(name = "uq_brands_name_category", columnNames = {"name", "category"})
 })
-@NoArgsConstructor
 public class Brand {
 
     @Id

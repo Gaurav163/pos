@@ -3,6 +3,7 @@ package com.increff.pos.dto;
 import com.increff.pos.AbstractUnitTest;
 import com.increff.pos.TestHelper;
 import com.increff.pos.dao.DailyReportDao;
+import com.increff.pos.job.DailyReportJob;
 import com.increff.pos.pojo.DailyReport;
 import com.increff.pos.pojo.Order;
 import org.junit.Test;
@@ -18,7 +19,7 @@ public class DailyReportDtoTest extends AbstractUnitTest {
     @Autowired
     private TestHelper testHelper;
     @Autowired
-    private DailyReportDto dailyReportDto;
+    private DailyReportJob dailyReportDto;
     @Autowired
     private DailyReportDao dailyReportDao;
 

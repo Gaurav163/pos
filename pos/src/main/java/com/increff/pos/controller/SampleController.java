@@ -16,7 +16,7 @@ import java.nio.file.Files;
 public class SampleController {
 
     @ApiOperation(value = "Download sample TSV file to upload brands")
-    @RequestMapping(path = "/brand")
+    @RequestMapping(path = "/sample-brand.tsv")
     public void getSampleBrand(HttpServletResponse response) throws IOException {
         response.setContentType("text/tsv");
         response.addHeader("Content-disposition:", "attachment;filename=sample-brand.tsv");
@@ -34,7 +34,7 @@ public class SampleController {
     }
 
     @ApiOperation(value = "Download sample TSV file to upload products")
-    @RequestMapping(path = "/product")
+    @RequestMapping(path = "/sample-product.tsv")
     public void getSampleProduct(HttpServletResponse response) throws IOException {
         response.setContentType("text/tsv");
         response.addHeader("Content-disposition:", "attachment; filename=sample-product.tsv");
@@ -52,7 +52,7 @@ public class SampleController {
     }
 
     @ApiOperation(value = "Download sample TSV file to upload inventory")
-    @RequestMapping(path = "/inventory")
+    @RequestMapping(path = "/sample-inventory.tsv")
     public void getSampleInventory(HttpServletResponse response) throws IOException {
         response.setContentType("text/tsv");
         response.addHeader("Content-disposition:", "attachment; filename=sample-inventory.tsv");

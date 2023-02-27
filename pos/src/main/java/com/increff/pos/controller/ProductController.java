@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -29,7 +30,7 @@ public class ProductController {
 
     @ApiOperation(value = "Create multiple products using tsv file")
     @RequestMapping(path = "/upload", method = RequestMethod.POST)
-    public void uploadProducts(@RequestPart("file") MultipartFile file) throws ApiException {
+    public void uploadProducts(@RequestPart("file") MultipartFile file) throws ApiException, IOException {
         productDto.upload(file);
     }
 

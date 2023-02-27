@@ -45,20 +45,12 @@ function getInvoiceButton(id, invoiced) {
 
 function addProduct() {
     let barcode = $("#barcode").val();
-    let quantity = $("#quantity").val();
-    let price = $("#price").val();
-    if (!isFloat(price)) {
-        toast("error", "Selling Price should be a Postive number.");
-        return;
-    }
-    if (!isNum(quantity)) {
-        toast("error", "Quantity should be positive.");
-        return;
-    }
-    price = parseFloat(price);
-
+    let quantity = parseInt($("#quantity").val());
+    let price = parseFloat($("#price").val());
     const product = { barcode, quantity, price };
-    productList[product.barcode] = product;
+    const key = barcode + "_" + price.toFixed(2);
+    if (productList[key]) productList[key].quantity = productList[key].quantity + quantity;
+    else productList[key] = product;
     renderProductList();
     $("#barcode").val("");
     $("#quantity").val("");
@@ -73,9 +65,9 @@ function renderProductList() {
             <td scope="col">${product.barcode}</td>
             <td scope="col">${product.quantity}</td>
             <td scope="col">${product.price.toFixed(2)}</td>
-            <td scope="col"><div class="btn btn-info" onclick="editProduct('${product.barcode}')">
+            <td scope="col"><div class="btn btn-info" onclick="editProduct('${product.barcode}_${product.price.toFixed(2)}')">
             <i class="fa-regular fa-pen-to-square"></i> Edit</div>
-             <div class="btn btn-warning ms-2" onclick="removeProduct('${product.barcode}')">
+             <div class="btn btn-warning ms-2" onclick="removeProduct('${product.barcode}_${product.price.toFixed(2)}')">
              <i class="fa-solid fa-xmark"></i> Remove</div></td>
         </tr>
         `);
@@ -130,9 +122,8 @@ function createOrder() {
         error: function (error) {
             console.log(error);
             if (error.status == 400) {
-                let errs = error.responseJSON.message.split("\n");
-                console.log(errs);
-                errs.forEach(err => toast("error", err));
+                let errs = error.responseJSON.message.replace("\n", "<br>");
+                toast("error", errs);
             }
         },
     });
@@ -212,7 +203,7 @@ function renderDetails(order) {
     });
 
     $("#total-items").html("<strong>Total Items: </strong>" + count);
-    $("#total-bill").html("<strong>Total Bill: </strong>" + total.toFixed(2));
+    $("#total-bill").html("<strong>Total Amount: </strong>" + total.toFixed(2));
 
     $("#detailModal").modal("show");
 

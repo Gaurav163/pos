@@ -118,7 +118,7 @@ function editProduct(id, name, barcode, mrp, brand, category) {
 }
 function downloadSampleProduct() {
     console.log("yes");
-    window.open("/sample/product", '_blank').focus();
+    window.open("/sample/sample-product.tsv", '_blank').focus();
 }
 
 function uploadProduct() {
@@ -148,8 +148,8 @@ function uploadProduct() {
                 let text = e.responseJSON.message;
                 $("#error-file").remove();
                 let element = document.createElement('a');
-                element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-                element.setAttribute('download', "errors.txt");
+                element.setAttribute('href', 'data:text/tsv;charset=utf-8,' + encodeURIComponent(text));
+                element.setAttribute('download', "errors" + file.name);
                 element.setAttribute('id', "error-file");
                 element.style.display = 'none';
                 document.body.appendChild(element);

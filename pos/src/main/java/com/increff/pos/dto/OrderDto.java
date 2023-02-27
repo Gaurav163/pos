@@ -55,8 +55,8 @@ public class OrderDto {
         for (OrderItemForm orderItemForm : orderForm.getItems()) {
             try {
                 orderItemService.create(getOrderItemFromForm(orderItemForm, order));
-            } catch (Exception e) {
-                errors.add("Barcode: " + orderItemForm.getBarcode() + ", " + e.getMessage());
+            } catch (ApiException e) {
+                errors.add("Barcode-" + orderItemForm.getBarcode() + ": " + e.getMessage());
             }
         }
         if (!errors.isEmpty()) {

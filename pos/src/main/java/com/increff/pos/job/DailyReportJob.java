@@ -1,4 +1,4 @@
-package com.increff.pos.dto;
+package com.increff.pos.job;
 
 import com.increff.pos.pojo.DailyReport;
 import com.increff.pos.pojo.Order;
@@ -15,7 +15,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
-public class DailyReportDto {
+public class DailyReportJob {
     @Autowired
     private OrderService orderService;
     @Autowired

@@ -49,10 +49,10 @@ public class InventoryService {
     public void reduceInventory(Long id, Long quantity) throws ApiException {
         Inventory inventory = inventoryDao.getById(id);
         if (inventory == null) {
-            throw new ApiException("Low inventory");
+            throw new ApiException("Zero quantity available");
         }
         if (inventory.getQuantity() < quantity) {
-            throw new ApiException("Low inventory");
+            throw new ApiException("Only " + inventory.getQuantity() + " quantity available");
         }
         inventory.setQuantity(inventory.getQuantity() - quantity);
     }

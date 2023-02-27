@@ -76,7 +76,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
             }
         } catch (NestedServletException e) {
-            new ObjectMapper().writeValue(response.getOutputStream(), "PAGE NOT FOUND");
+            response.sendRedirect("/404");
         } catch (Exception e) {
             new ObjectMapper().writeValue(response.getOutputStream(), e);
         }

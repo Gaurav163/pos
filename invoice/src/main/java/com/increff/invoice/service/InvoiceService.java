@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.List;
 
@@ -76,7 +77,7 @@ public class InvoiceService {
             rootElement.appendChild(date);
 
             Element time = doc.createElement("time");
-            time.appendChild(doc.createTextNode(currentTime.toLocalTime().toString()));
+            time.appendChild(doc.createTextNode(currentTime.truncatedTo(ChronoUnit.SECONDS).toLocalTime().toString()));
             rootElement.appendChild(time);
 
             Element orderItems = doc.createElement("order-items");

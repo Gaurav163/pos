@@ -107,12 +107,13 @@ function updateBrand() {
 
 function downloadSampleBrand() {
     console.log("yes");
-    window.open("/sample/brand", '_blank').focus();
+    window.open("/sample/sample-brand.tsv", '_blank').focus();
 }
 
 function uploadBrand() {
     const data = new FormData();
     const file = $("#file")[0].files[0];
+    console.log(file.name);
     data.append("file", file);
     if (file.type != "text/tab-separated-values") {
         toast("error", "Selected file must be a TSV (tab seperated value) file");
@@ -137,8 +138,8 @@ function uploadBrand() {
                 let text = e.responseJSON.message;
                 $("#error-file").remove();
                 let element = document.createElement('a');
-                element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-                element.setAttribute('download', "errors.txt");
+                element.setAttribute('href', 'data:text/tsv;charset=utf-8,' + encodeURIComponent(text));
+                element.setAttribute('download', "errors_" + file.name);
                 element.setAttribute('id', "error-file");
                 element.style.display = 'none';
                 document.body.appendChild(element);

@@ -50,4 +50,9 @@ public class UiController extends AbstractUiController {
         return mav("signup.html");
     }
 
+    @RequestMapping(path = "/404", method = RequestMethod.GET)
+    public String unmappedRequest() {
+        return "pageNotFound.html";
+    }
+
 }
