@@ -21,9 +21,15 @@ public class FormUtil {
 
         Set<ConstraintViolation<T>> violations = validator.validate(ob);
         if (!violations.isEmpty()) {
-            List<String> details = violations.parallelStream().map(e -> e.getPropertyPath() + " " + e.getMessage())
+            List<String> details = violations.stream().map(e -> e.getPropertyPath().toString())
                     .collect(Collectors.toList());
-            throw new ApiException("Invalid data");
+            throw new ApiException("Invalid input parameters : " + String.join(", ", details));
+        }
+    }
+
+    public static <T> void normalizeList(List<T> list) {
+        for (T ob : list) {
+            normalizeForm(ob);
         }
     }
 

@@ -20,4 +20,11 @@ public class DailyReportDao extends AbstractDao<DailyReport> {
         query.setParameter("endTime", endTime);
         return query.getResultList();
     }
+
+    public DailyReport getLastReport() {
+        String queryString = "select b from DailyReport b order by id desc";
+        TypedQuery<DailyReport> query = getQuery(queryString);
+        query.setMaxResults(1);
+        return getSingle(query);
+    }
 }

@@ -25,11 +25,13 @@ function showOrders(orders) {
         console.log(order);
         appendOrder(order);
     });
+    table.order([0, "desc"]);
     table.draw();
 }
 
 function appendOrder(order) {
-    table.row.add([order.id, order.date, order.time,
+    let datetime = new Date(Date.parse(order.datetime));
+    table.row.add([order.id, datetime.toDateString().slice(4), datetime.toLocaleTimeString(),
     getInvoiceButton(order.id, order.invoiced) + `<div class="btn btn-success ms-4" onclick="viewDetails(${order.id})"><i class="fa-regular fa-eye"></i> View Details </div>`]).node().id = order.id;
 }
 
@@ -122,7 +124,8 @@ function createOrder() {
         error: function (error) {
             console.log(error);
             if (error.status == 400) {
-                let errs = error.responseJSON.message.replace("\n", "<br>");
+                let errs = error.responseJSON.message.replaceAll("\n", "<br>");
+                console.log(errs);
                 toast("error", errs);
             }
         },
@@ -132,14 +135,20 @@ function createOrder() {
 
 function generateInvoice(id) {
     $.ajax({
-        url: "/api/orders/invoice/" + id,
-        type: "POST",
+        url: "/api/orders/" + id + "/invoice",
+        type: "GET",
         headers: {
             "Content-Type": "application/json",
         },
-        success: function (order) {
-            table.row("#" + order.id).remove();
-            appendOrder(order);
+        success: function (invoice) {
+            downloadInvoice(invoice, id);
+            let rowData = table.row(`#${id}`).data();
+            let downloadbtn = `<div class=\"btn btn-primary\" onclick=\"getInvoice(${id})\">
+            <i class=\"fa-solid fa-file-arrow-down\"></i> Download Invoice </div><div class=\"btn btn-success ms-4\" onclick=\"viewDetails(${id})\">
+            <i class=\"fa-regular fa-eye\"></i> View Details </div>"`;
+            rowData[3] = downloadbtn;
+            table.row(`#${id}`).remove();
+            table.row.add(rowData).node.id = id;
             table.draw();
             toast("success", "Invoice created");
 
@@ -154,7 +163,7 @@ function generateInvoice(id) {
 
 function getInvoice(id) {
     $.ajax({
-        url: "/api/orders/invoice/" + id,
+        url: "/api/orders/" + id + "/invoice",
         type: "GET",
         headers: {
             "Content-Type": "application/json",

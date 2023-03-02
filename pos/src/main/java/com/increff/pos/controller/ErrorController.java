@@ -7,6 +7,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice
 public class ErrorController {
@@ -19,7 +20,7 @@ public class ErrorController {
         return data;
     }
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ExceptionHandler({HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorMessage handle(HttpMessageNotReadableException e) {
         ErrorMessage data = new ErrorMessage();
@@ -31,6 +32,7 @@ public class ErrorController {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorMessage handle(Throwable e) {
         e.printStackTrace();
+        System.out.println(e.getClass());
         ErrorMessage data = new ErrorMessage();
         data.setMessage("An unknown error has occurred - " + e.getMessage());
         return data;

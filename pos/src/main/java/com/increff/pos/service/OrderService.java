@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -20,13 +21,9 @@ public class OrderService {
         return orderDao.getById(id);
     }
 
-    public List<Order> getAll() {
-        return orderDao.getAll();
-    }
-
     public Order create() {
         Order order = new Order();
-        order.setDatetime(ZonedDateTime.now());
+        order.setDatetime(ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS));
         order.setInvoiced(false);
         orderDao.create(order);
         return order;
@@ -36,11 +33,21 @@ public class OrderService {
         return orderDao.getByDatetimeRange(startTime, endTime);
     }
 
+    public List<Order> getBySizeAndPage(Long size, Long lastId) {
+        if (lastId == null) lastId = Long.MAX_VALUE;
+        if (size == null) size = 100L;
+        return orderDao.getBySizeAndPage(size, lastId);
+    }
+
     public Order createInvoice(Long id) throws ApiException {
         Order order = orderDao.getById(id);
         if (order == null) {
             throw new ApiException("Invalid order ID");
         } else order.setInvoiced(true);
         return order;
+    }
+
+    public Order getFirstOrder() {
+        return orderDao.getFirstOrder();
     }
 }

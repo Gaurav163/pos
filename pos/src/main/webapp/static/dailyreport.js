@@ -33,6 +33,7 @@ function showdata(reports) {
         data.push(report);
         table.row.add([report.date, report.invoicedOrdersCount, report.invoicedItemsCount, report.totalRevenue]);
     });
+    table.order([[0, 'desc']]);
     table.draw();
 }
 

@@ -23,11 +23,31 @@ public class DailyReportJob {
     @Autowired
     private DailyReportService dailyReportService;
 
-    @Scheduled(cron = "30 20 11 * * *", zone = "Asia/Kolkata")
-    public void dailyScheduler() {
-        ZonedDateTime now = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS);
-        ZonedDateTime lastday = now.minusDays(1);
-        List<Order> orders = orderService.getByDatetimeRange(lastday, now);
+    @Scheduled(cron = "0 0/10 * * * *", zone = "Asia/Kolkata")
+    public void run() {
+        System.out.println(ZonedDateTime.now());
+        runJob(ZonedDateTime.now().truncatedTo(ChronoUnit.MINUTES));
+    }
+
+    public void runJob(ZonedDateTime currentTime) {
+        ZonedDateTime startTime = null;
+        DailyReport lastReport = dailyReportService.getLastReport();
+        if (lastReport != null) {
+            startTime = lastReport.getLastEntryTime();
+        } else {
+            Order firstOrder = orderService.getFirstOrder();
+            if (firstOrder == null) return;
+            startTime = firstOrder.getDatetime().minusMinutes(firstOrder.getDatetime().getMinute() % 10).truncatedTo(ChronoUnit.MINUTES);
+        }
+        while (!currentTime.equals(startTime)) {
+            ZonedDateTime endTime = startTime.plusMinutes(10);
+            generateReport(startTime, endTime);
+            startTime = endTime;
+        }
+    }
+
+    public void generateReport(ZonedDateTime startTime, ZonedDateTime endTime) {
+        List<Order> orders = orderService.getByDatetimeRange(startTime, endTime);
 
         Double totalRevenue = 0.0;
         Long ordersCount = (long) orders.size();
@@ -39,12 +59,6 @@ public class DailyReportJob {
                 totalRevenue += item.getQuantity() * item.getSellingPrice();
             }
         }
-
-        DailyReport dailyReport = new DailyReport();
-        dailyReport.setDate(now);
-        dailyReport.setInvoicedItemsCount(itemsCount);
-        dailyReport.setInvoicedOrdersCount(ordersCount);
-        dailyReport.setTotalRevenue(totalRevenue);
-        dailyReportService.create(dailyReport);
+        dailyReportService.updateDailyReport(startTime.truncatedTo(ChronoUnit.DAYS), endTime, ordersCount, itemsCount, totalRevenue);
     }
 }

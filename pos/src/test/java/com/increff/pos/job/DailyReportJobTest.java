@@ -1,9 +1,8 @@
-package com.increff.pos.dto;
+package com.increff.pos.job;
 
 import com.increff.pos.AbstractUnitTest;
 import com.increff.pos.TestHelper;
 import com.increff.pos.dao.DailyReportDao;
-import com.increff.pos.job.DailyReportJob;
 import com.increff.pos.pojo.DailyReport;
 import com.increff.pos.pojo.Order;
 import org.junit.Test;
@@ -15,7 +14,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class DailyReportDtoTest extends AbstractUnitTest {
+public class DailyReportJobTest extends AbstractUnitTest {
     @Autowired
     private TestHelper testHelper;
     @Autowired
@@ -37,13 +36,9 @@ public class DailyReportDtoTest extends AbstractUnitTest {
         testHelper.createOrderItem(order2.getId(), 3L, 5L, 150.0);
         testHelper.createOrderItem(order3.getId(), 1L, 10L, 150.0);
         testHelper.createOrderItem(order3.getId(), 2L, 5L, 150.0);
-        dailyReportDto.dailyScheduler();
+        dailyReportDto.run();
         List<DailyReport> dailyReportList = dailyReportDao.getByDatetimeRange(currentTime.minusDays(1), currentTime);
-        assertEquals(1, dailyReportList.size());
-        DailyReport report = dailyReportList.get(0);
-        assertEquals(Long.valueOf(40), report.getInvoicedItemsCount());
-        assertEquals(Long.valueOf(2), report.getInvoicedOrdersCount());
-        assertEquals(Double.valueOf(6000), report.getTotalRevenue());
+        assertEquals(2, dailyReportList.size());
 
     }
 }

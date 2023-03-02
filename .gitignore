@@ -8,4 +8,5 @@ pos/jetty.log.1
 /pos/src/main/resources/invoices/
 invoice/.idea
 pom.xml
+.idea/
 

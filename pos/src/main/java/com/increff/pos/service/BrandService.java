@@ -7,7 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -29,6 +33,14 @@ public class BrandService {
 
     public Brand getByNameAndCategory(String name, String category) {
         return brandDao.getByNameAndCategory(name, category);
+    }
+
+    public Map<Long, Brand> getListByIdList(List<Long> idList) {
+        if (idList.isEmpty()) {
+            return new HashMap<>();
+        } else {
+            return brandDao.getListByIdList(idList).stream().collect(Collectors.toMap(Brand::getId, Function.identity()));
+        }
     }
 
     public Brand create(Brand brand) throws ApiException {

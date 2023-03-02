@@ -22,5 +22,6 @@ public class DailyReport {
     private Long invoicedItemsCount;
     private Double totalRevenue;
     private ZonedDateTime date;
+    private ZonedDateTime lastEntryTime;
 
 }

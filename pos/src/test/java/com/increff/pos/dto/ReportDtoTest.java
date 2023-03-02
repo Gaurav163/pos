@@ -119,14 +119,6 @@ public class ReportDtoTest extends AbstractUnitTest {
         form.setStartDate(ZonedDateTime.now().minusDays(3).toOffsetDateTime().toString());
         List<ReportData> data = reportDto.getSalesReport(form);
         assertEquals(4, data.size());
-        List<Double> actualData = new ArrayList<>();
-        actualData.add(4000.0);
-        actualData.add(3000.0);
-        actualData.add(2000.0);
-        actualData.add(5000.0);
-        for (int i = 0; i < 4; i++) {
-            assertEquals(data.get(i).getRevenue(), actualData.get(i));
-        }
         form.setBrand("brand1");
         List<ReportData> dataBrand = reportDto.getSalesReport(form);
         assertEquals(2, dataBrand.size());

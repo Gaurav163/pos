@@ -24,8 +24,8 @@ public class OrderController {
 
     @ApiOperation(value = "Get all orders")
     @RequestMapping(path = "/", method = RequestMethod.GET)
-    public List<OrderData> getAll() throws ApiException {
-        return orderDto.getAll();
+    public List<OrderData> getAll(@RequestParam(required = false, name = "size") Long size, @RequestParam(required = false, name = "lastId") Long lastId) throws ApiException {
+        return orderDto.getBySizeAndPage(size, lastId);
     }
 
     @ApiOperation(value = "Get order details")
@@ -35,15 +35,9 @@ public class OrderController {
     }
 
     @ApiOperation(value = "Get order invoice")
-    @RequestMapping(path = "/invoice/{id}", method = RequestMethod.GET)
+    @RequestMapping(path = "/{id}/invoice", method = RequestMethod.GET)
     public String getInvoiceAsBase64(@PathVariable("id") Long id) throws ApiException {
-        return orderDto.getInvoiceAsBase64(id);
-    }
-
-    @ApiOperation(value = "Generate order invoice")
-    @RequestMapping(path = "/invoice/{id}", method = RequestMethod.POST)
-    public OrderData generateInvoice(@PathVariable("id") Long id) throws ApiException {
-        return orderDto.generateInvoice(id);
+        return orderDto.getInvoice(id);
     }
 
 }
