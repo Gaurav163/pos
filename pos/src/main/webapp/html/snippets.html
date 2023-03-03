@@ -1,0 +1,37 @@
+<div th:fragment="footer">
+  <div
+    class="toast-container position-absolute top-0 end-0 p-3"
+    style="z-index: 2000; font-weight: bold"
+    id="toast"
+  ></div>
+
+  <!-- <div id="footer"><div>&copy;Copyright POS-Increff</div></div> -->
+
+  <script th:src="@{/static/index.js}"></script>
+  <script th:src="@{/static/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+  <script
+    defer
+    th:src="@{/static/DataTables/datatables.min.js}"
+    type="text/javascript"
+  ></script>
+  <script
+    src="https://kit.fontawesome.com/b005553a41.js"
+    crossorigin="anonymous"
+  ></script>
+  <script th:src="@{/static/jquery.min.js}"></script>
+</div>
+
+<head th:fragment="header">
+  <meta charset="UTF-8" />
+  <meta content="IE=edge" http-equiv="X-UA-Compatible" />
+  <title>POS</title>
+
+  <link rel="stylesheet" th:href="@{/static/bootstrap/css/bootstrap.min.css}" />
+  <link
+    rel="stylesheet"
+    th:href="@{/static/DataTables/datatables.min.css}"
+    type="text/css"
+  />
+  <link rel="stylesheet" th:href="@{/static/index.css}" />
+</head>

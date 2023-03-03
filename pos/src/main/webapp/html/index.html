@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <div th:replace="snippets.html :: header"></div>
+  <body>
+    <div th:replace="navbar.html :: navbar"></div>
+
+    <div class="index">
+      <h2 class="m-4">FEATURES</h2>
+      <div class="icon-card" onclick="window.location.assign('/brand')">
+        <span class="icon-tag"><i class="fa-solid fa-tag"></i></span>
+        <br />
+        <span class="icon-name">Brands</span>
+      </div>
+
+      <div class="icon-card" onclick="window.location.assign('/product')">
+        <span class="icon-tag"><i class="fa-solid fa-shirt"></i></span>
+        <br />
+        <span class="icon-name">Products</span>
+      </div>
+      <div class="icon-card" onclick="window.location.assign('/inventory')">
+        <span class="icon-tag"><i class="fa-solid fa-warehouse"></i></span>
+        <br />
+        <span class="icon-name">Inventory</span>
+      </div>
+      <div class="icon-card" onclick="window.location.assign('/order')">
+        <span class="icon-tag"><i class="fa-solid fa-cart-shopping"></i></span>
+        <br />
+        <span class="icon-name">Orders</span>
+      </div>
+      <h2 class="m-4">REPORTS</h2>
+      <div class="icon-card" onclick="window.location.assign('/reports/brand')">
+        <span class="icon-tag"><i class="fa-solid fa-file-lines"></i></span>
+        <br />
+        <span class="icon-name">Brands</span>
+      </div>
+      <div
+        class="icon-card"
+        onclick="window.location.assign('/reports/inventory')"
+      >
+        <span class="icon-tag"><i class="fa-solid fa-file-lines"></i></span>
+        <br />
+        <span class="icon-name">Inventory</span>
+      </div>
+      <div class="icon-card" onclick="window.location.assign('/reports/sales')">
+        <span class="icon-tag"><i class="fa-solid fa-file-lines"></i></span>
+        <br />
+        <span class="icon-name">Sales</span>
+      </div>
+      <div class="icon-card" onclick="window.location.assign('/reports/daily')">
+        <span class="icon-tag"><i class="fa-solid fa-file-lines"></i></span>
+        <br />
+        <span class="icon-name">Daily Sales</span>
+      </div>
+    </div>
+
+    <div th:replace="snippets.html :: footer"></div>
+    <script>
+      $(document).ready(function () {
+        setCurrent("index");
+      });
+    </script>
+  </body>
+</html>
