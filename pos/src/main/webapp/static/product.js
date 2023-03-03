@@ -139,8 +139,9 @@ function uploadProduct() {
         cache: false,
         processData: false,
         success: function (data) {
-            console.log("SUCCESS : ", data);
+            toast("success", "Products uploaded successfully");
             $("#uploadModal").modal("hide");
+            loadAllProducts();
 
         },
         error: function (e) {

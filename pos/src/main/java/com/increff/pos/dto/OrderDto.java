@@ -1,10 +1,7 @@
 package com.increff.pos.dto;
 
 import com.increff.pos.model.*;
-import com.increff.pos.pojo.Brand;
-import com.increff.pos.pojo.Order;
-import com.increff.pos.pojo.OrderItem;
-import com.increff.pos.pojo.Product;
+import com.increff.pos.pojo.*;
 import com.increff.pos.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,63 +44,6 @@ public class OrderDto {
     @Value("${baseUrl}")
     private String baseUrl;
 
-    @Transactional(rollbackFor = ApiException.class)
-    public OrderData create(OrderForm orderForm) throws ApiException {
-        if (orderForm.getItems().isEmpty()) {
-            throw new ApiException("Zero products in order");
-        }
-        Order order = orderService.create();
-        List<String> validationErrors = validateOrderItemList(orderForm.getItems());
-        if (!validationErrors.isEmpty()) {
-            throw new ApiException(String.join("\n", validationErrors));
-        }
-
-        List<String> errors = createOrderItems(order, orderForm.getItems());
-        if (!errors.isEmpty()) {
-            throw new ApiException(String.join("\n", errors));
-        }
-        return getOrderData(order);
-    }
-
-    private List<String> createOrderItems(Order order, List<OrderItemForm> orderItemForms) {
-        normalizeList(orderItemForms);
-        List<String> barcodes = new ArrayList<>();
-        for (OrderItemForm orderItemForm : orderItemForms) {
-            barcodes.add(orderItemForm.getBarcode());
-        }
-        Map<String, Product> barcodeProductMap = productService.getListByBarcodeList(barcodes);
-        List<String> errors = new ArrayList<>();
-        for (OrderItemForm orderItemForm : orderItemForms) {
-            try {
-                Product product = barcodeProductMap.get(orderItemForm.getBarcode());
-                if (product == null) {
-                    throw new ApiException("Invalid Barcode");
-                }
-                inventoryService.reduceInventory(product.getId(), orderItemForm.getQuantity());
-                OrderItem orderItem = mapper(orderItemForm, OrderItem.class);
-                orderItem.setOrderId(order.getId());
-                orderItem.setProductId(product.getId());
-                orderItemService.create(orderItem);
-            } catch (ApiException e) {
-                errors.add("Barcode - " + orderItemForm.getBarcode() + " : " + e.getMessage());
-            }
-        }
-        return errors;
-    }
-
-    private List<String> validateOrderItemList(List<OrderItemForm> orderItemForms) {
-        List<String> errors = new ArrayList<>();
-        for (OrderItemForm orderItemForm : orderItemForms) {
-            try {
-                validateForm(orderItemForm);
-            } catch (ApiException e) {
-                errors.add("Barcode - " + orderItemForm.getBarcode() + " : " + e.getMessage());
-            }
-        }
-        return errors;
-    }
-
-
     public List<OrderData> getBySizeAndPage(Long size, Long lastId) throws ApiException {
         List<Order> orders = orderService.getBySizeAndPage(size, lastId);
         List<OrderData> orderDataList = new ArrayList<>();
@@ -118,34 +58,107 @@ public class OrderDto {
         return getOrderData(orderService.getById(id));
     }
 
+    @Transactional(rollbackFor = ApiException.class)
     public String getInvoice(Long id) throws ApiException {
         Order order = orderService.getById(id);
         if (order == null) {
             throw new ApiException("Order not found in system");
         }
-        if (!order.getInvoiced()) generateInvoice(order);
+        if (!order.getInvoiced()) {
+            OrderData orderData = getOrderData(order);
+            String invoice = generateInvoice(orderData);
+
+            saveInvoice(orderData, invoice);
+            orderService.createInvoice(order.getId());
+        }
         return getInvoiceAsBase64(id);
     }
 
     @Transactional(rollbackFor = ApiException.class)
-    public void generateInvoice(Order order) throws ApiException {
-        OrderData orderData = getOrderData(order);
-        String invoice = null;
-        try {
-            // calling pdf api and get invoice pdf in base64 format
-            RestTemplate restTemplate = new RestTemplate();
-            HttpEntity<OrderData> request = new HttpEntity<>(orderData);
-            invoice = restTemplate.postForObject(baseUrl, request, String.class);
-        } catch (ResourceAccessException e) {
-            throw new ApiException("Unable to connect with invoice app");
-        } catch (HttpStatusCodeException e) {
-            if (e.getStatusCode().is4xxClientError()) {
-                throw new ApiException("Error while requesting invoice app : " + e.getResponseBodyAsString());
-            } else {
-                throw new ApiException("Server error occurs while creating invoice");
-            }
+    public OrderData create(OrderForm orderForm) throws ApiException {
+        if (orderForm.getItems().isEmpty()) {
+            throw new ApiException("Zero products in order");
+        }
+        Order order = orderService.create();
+        List<String> validationErrors = validateOrderItemList(orderForm.getItems());
+        if (!validationErrors.isEmpty()) {
+            throw new ApiException(String.join("\n", validationErrors));
         }
 
+        String errors = createOrderItems(order, orderForm.getItems());
+        if (!errors.isEmpty()) {
+            throw new ApiException(String.join("\n", errors));
+        }
+        return getOrderData(order);
+    }
+
+    private String createOrderItems(Order order, List<OrderItemForm> orderItemForms) throws ApiException {
+        normalizeList(orderItemForms);
+        List<String> barcodes = new ArrayList<>();
+        for (OrderItemForm orderItemForm : orderItemForms) {
+            barcodes.add(orderItemForm.getBarcode());
+        }
+        Map<String, Product> barcodeProductMap = productService.getListByBarcodeList(barcodes);
+
+        String errors1 = validateBarcodes(orderItemForms, barcodeProductMap);
+        if (errors1 != null) return errors1;
+
+        String errors2 = validateInventory(orderItemForms, barcodeProductMap);
+        if (errors2 != null) return errors2;
+
+        for (OrderItemForm orderItemForm : orderItemForms) {
+            Product product = barcodeProductMap.get(orderItemForm.getBarcode());
+            inventoryService.reduceInventory(product.getId(), orderItemForm.getQuantity());
+            OrderItem orderItem = mapper(orderItemForm, OrderItem.class);
+            orderItem.setOrderId(order.getId());
+            orderItem.setProductId(product.getId());
+            orderItemService.create(orderItem);
+        }
+        return "";
+    }
+
+    private String validateInventory(List<OrderItemForm> orderItemForms, Map<String, Product> barcodeProductMap) {
+        List<String> errors = new ArrayList<>();
+        for (OrderItemForm orderItemForm : orderItemForms) {
+            Product product = barcodeProductMap.get(orderItemForm.getBarcode());
+            Inventory inventory = inventoryService.getById(product.getId());
+            if (inventory.getQuantity() < orderItemForm.getQuantity()) {
+                errors.add("For barcode:\"" + orderItemForm.getBarcode() + "\" only " + inventory.getQuantity() + " quantity left");
+            }
+        }
+        if (!errors.isEmpty()) {
+            return "Some products have low inventory.\n" + String.join("\n", errors);
+        }
+        return null;
+    }
+
+    private String validateBarcodes(List<OrderItemForm> orderItemForms, Map<String, Product> barcodeProductMap) {
+        List<String> errors = new ArrayList<>();
+        for (OrderItemForm orderItemForm : orderItemForms) {
+            Product product = barcodeProductMap.get(orderItemForm.getBarcode());
+            if (product == null) {
+                errors.add(orderItemForm.getBarcode());
+            }
+        }
+        if (!errors.isEmpty()) {
+            return "There are some invalid barcode.\n Invalid barcodes list : " + String.join(", ", errors);
+        }
+        return null;
+    }
+
+    private List<String> validateOrderItemList(List<OrderItemForm> orderItemForms) {
+        List<String> errors = new ArrayList<>();
+        for (OrderItemForm orderItemForm : orderItemForms) {
+            try {
+                validateForm(orderItemForm);
+            } catch (ApiException e) {
+                errors.add("Barcode - " + orderItemForm.getBarcode() + " : " + e.getMessage());
+            }
+        }
+        return errors;
+    }
+
+    private void saveInvoice(OrderData orderData, String invoice) throws ApiException {
         try {
             File file = new File(basePath + "invoice-" + orderData.getId() + ".pdf");
             FileOutputStream fop = new FileOutputStream(file);
@@ -156,10 +169,26 @@ public class OrderDto {
         } catch (IOException e) {
             throw new ApiException("Something went wrong with invoice file, Contact admin");
         }
-        orderService.createInvoice(order.getId());
     }
 
-    public String getInvoiceAsBase64(Long id) throws ApiException {
+    private String generateInvoice(OrderData orderData) throws ApiException {
+        try {
+            // calling pdf api and get invoice pdf in base64 format
+            RestTemplate restTemplate = new RestTemplate();
+            HttpEntity<OrderData> request = new HttpEntity<>(orderData);
+            return restTemplate.postForObject(baseUrl, request, String.class);
+        } catch (ResourceAccessException e) {
+            throw new ApiException("Unable to connect with invoice app");
+        } catch (HttpStatusCodeException e) {
+            if (e.getStatusCode().is4xxClientError()) {
+                throw new ApiException("Error while requesting invoice app : " + e.getResponseBodyAsString());
+            } else {
+                throw new ApiException("Server error occurs while creating invoice");
+            }
+        }
+    }
+
+    protected String getInvoiceAsBase64(Long id) throws ApiException {
         try {
             File file = new File(basePath + "invoice-" + id + ".pdf");
             byte[] bytes = Files.readAllBytes(file.toPath());

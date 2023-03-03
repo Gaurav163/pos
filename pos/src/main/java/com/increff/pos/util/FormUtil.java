@@ -21,7 +21,7 @@ public class FormUtil {
 
         Set<ConstraintViolation<T>> violations = validator.validate(ob);
         if (!violations.isEmpty()) {
-            List<String> details = violations.stream().map(e -> e.getPropertyPath().toString())
+            List<String> details = violations.stream().map(e -> e.getPropertyPath().toString() + ":" + e.getMessage())
                     .collect(Collectors.toList());
             throw new ApiException("Invalid input parameters : " + String.join(", ", details));
         }

@@ -1,15 +1,20 @@
 let table = null;
 let productList = {};
+let lastId = 100000000;
+let pagesize = 10;
 
-function showAll() {
+function loadOrder() {
     $.ajax({
-        url: "/api/orders/",
+        url: "/api/orders/?size=" + pagesize + "&lastId=" + lastId,
         type: "GET",
         headers: {
             "Content-Type": "application/json",
         },
-        success: function (response) {
-            showOrders(response);
+        success: function (orders) {
+            if (orders.length < pagesize) {
+                $("#load-more-btn").addClass("disabled");
+            }
+            showOrders(orders);
         },
         error: function (error) {
             console.log(error);
@@ -18,28 +23,47 @@ function showAll() {
     });
 }
 
+function loadMoreData() {
+    loadOrder();
+}
+
 function showOrders(orders) {
-    $("#tablebody2").html("");
-    table = $("#main-table").DataTable();
     orders.forEach(order => {
         console.log(order);
         appendOrder(order);
+        lastId = order.id;
     });
-    table.order([0, "desc"]);
-    table.draw();
 }
 
 function appendOrder(order) {
     let datetime = new Date(Date.parse(order.datetime));
-    table.row.add([order.id, datetime.toDateString().slice(4), datetime.toLocaleTimeString(),
-    getInvoiceButton(order.id, order.invoiced) + `<div class="btn btn-success ms-4" onclick="viewDetails(${order.id})"><i class="fa-regular fa-eye"></i> View Details </div>`]).node().id = order.id;
+    $("#tablebody2").append(`
+    <tr id="${order.id}">
+    <td>${order.id}</td>
+    <td>${datetime.toDateString().slice(4)}</td>
+    <td>${datetime.toLocaleTimeString()}</td>
+    <td>${getInvoiceButton(order.id, order.invoiced)}<div class="btn btn-success ms-4" onclick="viewDetails(${order.id})"><i class="fa-regular fa-eye"></i> View Details </div></td>
+    </tr>
+    `);
+}
+
+function prependOrder(order) {
+    let datetime = new Date(Date.parse(order.datetime));
+    $("#tablebody2").prepend(`
+    <tr id="${order.id}">
+    <td>${order.id}</td>
+    <td>${datetime.toDateString().slice(4)}</td>
+    <td>${datetime.toLocaleTimeString()}</td>
+    <td>${getInvoiceButton(order.id, order.invoiced)}<div class="btn btn-success ms-4" onclick="viewDetails(${order.id})"><i class="fa-regular fa-eye"></i> View Details </div></td>
+    </tr>
+    `);
 }
 
 function getInvoiceButton(id, invoiced) {
     if (invoiced) {
-        return `<div class="btn btn-primary" onclick="getInvoice(${id})"><i class="fa-solid fa-file-arrow-down"></i> Download Invoice </div>`;
+        return `<div id="btnn${id}" class="btn btn-primary" onclick="getInvoice(${id})"><i class="fa-solid fa-file-arrow-down"></i> Download Invoice </div>`;
     } else {
-        return `<div class="btn btn-info" onclick="generateInvoice(${id})"> <i class="fa-solid fa-receipt"></i> Generate Invoice </div>`;
+        return `<div id="btnn${id}" class="btn btn-info" onclick="generateInvoice(${id})"> <i class="fa-solid fa-receipt"></i> Generate Invoice </div>`;
 
     }
 }
@@ -50,8 +74,11 @@ function addProduct() {
     let quantity = parseInt($("#quantity").val());
     let price = parseFloat($("#price").val());
     const product = { barcode, quantity, price };
-    const key = barcode + "_" + price.toFixed(2);
-    if (productList[key]) productList[key].quantity = productList[key].quantity + quantity;
+    const key = barcode;
+    if (productList[key]) {
+        productList[key].quantity = productList[key].quantity + quantity;
+        productList[key].price = price;
+    }
     else productList[key] = product;
     renderProductList();
     $("#barcode").val("");
@@ -67,9 +94,9 @@ function renderProductList() {
             <td scope="col">${product.barcode}</td>
             <td scope="col">${product.quantity}</td>
             <td scope="col">${product.price.toFixed(2)}</td>
-            <td scope="col"><div class="btn btn-info" onclick="editProduct('${product.barcode}_${product.price.toFixed(2)}')">
+            <td scope="col"><div class="btn btn-info" onclick="editProduct('${product.barcode}')">
             <i class="fa-regular fa-pen-to-square"></i> Edit</div>
-             <div class="btn btn-warning ms-2" onclick="removeProduct('${product.barcode}_${product.price.toFixed(2)}')">
+             <div class="btn btn-warning ms-2" onclick="removeProduct('${product.barcode}')">
              <i class="fa-solid fa-xmark"></i> Remove</div></td>
         </tr>
         `);
@@ -114,8 +141,7 @@ function createOrder() {
         success: function (order) {
             console.log("order created");
             toast("success", "Order created");
-            appendOrder(order);
-            table.draw();
+            prependOrder(order);
             productList = {};
             renderProductList();
             $("#createModal").modal("hide");
@@ -142,15 +168,10 @@ function generateInvoice(id) {
         },
         success: function (invoice) {
             downloadInvoice(invoice, id);
-            let rowData = table.row(`#${id}`).data();
-            let downloadbtn = `<div class=\"btn btn-primary\" onclick=\"getInvoice(${id})\">
-            <i class=\"fa-solid fa-file-arrow-down\"></i> Download Invoice </div><div class=\"btn btn-success ms-4\" onclick=\"viewDetails(${id})\">
-            <i class=\"fa-regular fa-eye\"></i> View Details </div>"`;
-            rowData[3] = downloadbtn;
-            table.row(`#${id}`).remove();
-            table.row.add(rowData).node.id = id;
-            table.draw();
             toast("success", "Invoice created");
+            $("#btnn" + id).removeClass("btn-info");
+            $("#btnn" + id).addClass("btn-primary");
+            $("#btnn" + id).html("<i class='fa-solid fa-file-arrow-down'></i> Download Invoice");
 
         },
         error: function (error) {
@@ -239,7 +260,7 @@ function viewDetails(id) {
 }
 
 function initOrders() {
-    showAll();
+    loadOrder();
     $("#showCreateModal").click(() => {
         $("#barcode").val("");
         $("#quantity").val("");

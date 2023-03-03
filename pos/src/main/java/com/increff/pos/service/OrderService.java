@@ -47,7 +47,7 @@ public class OrderService {
         return order;
     }
 
-    public Order getFirstOrder() {
-        return orderDao.getFirstOrder();
+    public List<Order> getNextBatch(Integer batchSize, Long startId) {
+        return orderDao.getNextBatch(batchSize, startId);
     }
 }

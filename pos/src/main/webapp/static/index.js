@@ -8,7 +8,7 @@ function toast(type, message) {
             <div class="toast-body">
             ${message}
             </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" onclick="$('#${tid}').fadeOut(500).next().remove()" ></button>
+            <button type="button" class="btn-close btn-close-white me-2 mt-3" onclick="$('#${tid}').fadeOut(500).next().remove()" ></button>
         </div>
         </div>
        `);
@@ -23,7 +23,7 @@ function toast(type, message) {
             <div class="toast-body">
             ${message}
             </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" onclick="$('#${tid}').fadeOut(500).next().remove()" ></button>
+            <button type="button" class="btn-close btn-close-white me-2 mt-3" onclick="$('#${tid}').fadeOut(500).next().remove()" ></button>
         </div>
         </div>
        `);

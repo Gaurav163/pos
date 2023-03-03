@@ -16,6 +16,7 @@ import java.util.List;
 
 @Service
 public class DailyReportJob {
+    private final Integer batchSize = 100;
     @Autowired
     private OrderService orderService;
     @Autowired
@@ -25,40 +26,43 @@ public class DailyReportJob {
 
     @Scheduled(cron = "0 0/10 * * * *", zone = "Asia/Kolkata")
     public void run() {
-        System.out.println(ZonedDateTime.now());
         runJob(ZonedDateTime.now().truncatedTo(ChronoUnit.MINUTES));
     }
 
     public void runJob(ZonedDateTime currentTime) {
-        ZonedDateTime startTime = null;
+
         DailyReport lastReport = dailyReportService.getLastReport();
-        if (lastReport != null) {
-            startTime = lastReport.getLastEntryTime();
-        } else {
-            Order firstOrder = orderService.getFirstOrder();
-            if (firstOrder == null) return;
-            startTime = firstOrder.getDatetime().minusMinutes(firstOrder.getDatetime().getMinute() % 10).truncatedTo(ChronoUnit.MINUTES);
-        }
-        while (!currentTime.equals(startTime)) {
-            ZonedDateTime endTime = startTime.plusMinutes(10);
-            generateReport(startTime, endTime);
-            startTime = endTime;
+        Long lastOrderId = lastReport == null ? 1L : lastReport.getLastOrderId() + 1;
+        while (true) {
+            List<Order> orders = orderService.getNextBatch(batchSize, lastOrderId);
+            if (orders.isEmpty()) break;
+            lastOrderId = generateReport(orders) + 1;
         }
     }
 
-    public void generateReport(ZonedDateTime startTime, ZonedDateTime endTime) {
-        List<Order> orders = orderService.getByDatetimeRange(startTime, endTime);
-
+    public Long generateReport(List<Order> orders) {
+        ZonedDateTime currentReportDate = orders.get(0).getDatetime().truncatedTo(ChronoUnit.DAYS);
+        Long lastOrderId = null;
         Double totalRevenue = 0.0;
-        Long ordersCount = (long) orders.size();
+        Long ordersCount = 0L;
         Long itemsCount = 0L;
         for (Order order : orders) {
             List<OrderItem> items = orderItemService.getListByParameter("orderId", order.getId());
+            ordersCount += 1L;
+            lastOrderId = order.getId();
             for (OrderItem item : items) {
                 itemsCount += item.getQuantity();
                 totalRevenue += item.getQuantity() * item.getSellingPrice();
             }
+            if (!currentReportDate.equals(order.getDatetime().truncatedTo(ChronoUnit.DAYS))) {
+                dailyReportService.updateDailyReport(currentReportDate, lastOrderId, ordersCount, itemsCount, totalRevenue);
+                currentReportDate = order.getDatetime().truncatedTo(ChronoUnit.DAYS);
+                totalRevenue = 0.0;
+                ordersCount = 0L;
+                itemsCount = 0L;
+            }
         }
-        dailyReportService.updateDailyReport(startTime.truncatedTo(ChronoUnit.DAYS), endTime, ordersCount, itemsCount, totalRevenue);
+        dailyReportService.updateDailyReport(currentReportDate, lastOrderId, ordersCount, itemsCount, totalRevenue);
+        return lastOrderId;
     }
 }

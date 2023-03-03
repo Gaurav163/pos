@@ -28,7 +28,7 @@ public class DailyReportService {
         return dailyReportDao.getLastReport();
     }
 
-    public void updateDailyReport(ZonedDateTime date, ZonedDateTime reportEndTime, Long orderCount, Long itemCount, Double totalRevenue) {
+    public void updateDailyReport(ZonedDateTime date, Long lastOrderId, Long orderCount, Long itemCount, Double totalRevenue) {
         DailyReport report = getByDate(date);
         if (report == null) {
             DailyReport newReport = new DailyReport();
@@ -36,13 +36,13 @@ public class DailyReportService {
             newReport.setInvoicedOrdersCount(orderCount);
             newReport.setTotalRevenue(totalRevenue);
             newReport.setDate(date);
-            newReport.setLastEntryTime(reportEndTime);
+            newReport.setLastOrderId(lastOrderId);
             create(newReport);
         } else {
             report.setInvoicedItemsCount(report.getInvoicedItemsCount() + itemCount);
             report.setInvoicedOrdersCount(report.getInvoicedOrdersCount() + orderCount);
             report.setTotalRevenue(report.getTotalRevenue() + totalRevenue);
-            report.setLastEntryTime(reportEndTime);
+            report.setLastOrderId(lastOrderId);
         }
     }
 

@@ -129,9 +129,9 @@ function uploadBrand() {
         cache: false,
         processData: false,
         success: function (data) {
-            console.log("SUCCESS : ", data);
+            toast("success", "Brands uploaded successfully");
             $("#uploadModal").modal("hide");
-
+            loadAllBrands();
         },
         error: function (e) {
             if (e.status == 400) {

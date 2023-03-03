@@ -225,3 +225,9 @@ td {
   background-color: #e9a329 !important;
   border-color: #f7a923 !important;
 }
+
+.toast-body {
+  word-break: break-all;
+  max-height: 200px;
+  overflow-y: hidden;
+}

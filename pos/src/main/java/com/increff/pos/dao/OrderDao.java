@@ -11,7 +11,7 @@ import java.util.List;
 public class OrderDao extends AbstractDao<Order> {
     private static final String SELECT_BY_DATETIME_RANGE = "select b from Order b where datetime>=:startTime and datetime<:endTime";
     private static final String SELECT_BY_PAGINATION = "select b from Order b where id<:lastId order by id desc";
-    private static final String SELECT_FIRST_ORDER = "select b from Order b order by id asc";
+    private static final String SELECT_NEXT_BATCH = "select b from Order b where id>=:startId order by id asc";
 
 
     public OrderDao() {
@@ -32,9 +32,11 @@ public class OrderDao extends AbstractDao<Order> {
         return query.getResultList();
     }
 
-    public Order getFirstOrder() {
-        TypedQuery<Order> query = getQuery(SELECT_FIRST_ORDER);
-        query.setMaxResults(Math.toIntExact(1));
-        return getSingle(query);
+    public List<Order> getNextBatch(Integer batchSize, Long startId) {
+        TypedQuery<Order> query = getQuery(SELECT_NEXT_BATCH);
+        query.setMaxResults(Math.toIntExact(batchSize));
+        query.setParameter("startId", startId);
+        return query.getResultList();
+
     }
 }

@@ -148,8 +148,9 @@ function uploadQuantity() {
         cache: false,
         processData: false,
         success: function (data) {
-            toast("success", "Products quantity added successfully");
+            toast("success", "Inventory uploaded successfully");
             $("#uploadModal").modal("hide");
+            showAll();
 
         },
         error: function (e) {
