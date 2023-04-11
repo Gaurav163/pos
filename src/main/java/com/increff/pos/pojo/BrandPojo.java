@@ -10,7 +10,9 @@ import static com.increff.pos.pojo.PojoConstants.BRAND_TABLE_NAME;
 
 @Entity
 @Data
-@Table(name = BRAND_TABLE_NAME)
+@Table(name = BRAND_TABLE_NAME,
+        uniqueConstraints = {@UniqueConstraint(name = "UniqueNameAndCategory", columnNames = {"name", "category"})}
+)
 @NoArgsConstructor
 public class BrandPojo {
 
@@ -21,9 +23,9 @@ public class BrandPojo {
     @GeneratedValue(strategy = GenerationType.AUTO,
             generator = BRAND_SEQUENCE)
     Long id;
-    @Column(nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
-    @Column(nullable = false)
+    @Column(name = "category", nullable = false)
     private String category;
 
     public BrandPojo(String name, String category) {
