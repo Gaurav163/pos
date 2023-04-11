@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <div th:replace="snippets.html :: header"></div>
+  <body>
+    <div th:replace="navbar.html :: navbar"></div>
+
+    <div class="main">
+      <h2>BRANDS REPORT</h2>
+      <div type="button" class="btn btn-primary" onclick="downloadData()">
+        <i class="fa-solid fa-file-arrow-down"></i> Download Report
+      </div>
+      <hr />
+      <table class="table table-striped" id="main-table">
+        <thead>
+          <tr>
+            <th scope="col">Brand Name</th>
+            <th scope="col">Category</th>
+          </tr>
+        </thead>
+        <tbody id="tablebody"></tbody>
+      </table>
+    </div>
+
+    <div th:replace="snippets.html :: footer"></div>
+    <script th:src="@{/static/brandreport.js}"></script>
+    <script>
+      $(document).ready(function () {
+        setCurrent("report");
+        initReport();
+      });
+    </script>
+  </body>
+</html>

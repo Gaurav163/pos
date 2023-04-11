@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <div th:replace="snippets.html :: header"></div>
+  <body>
+    <div th:replace="navbar.html :: navbar"></div>
+    <div class="main">
+      <h2>SALES REPORT</h2>
+      <br>
+      <div id="sales-report">
+        <form action="javascript:showReport()">
+          <div class="form-group mb-3">
+            <label for="startDate">Start Date  </label>
+            <input type="date" class="form-control" id="startDate" required />
+          </div>
+          <div class="form-group mb-3">
+            <label for="endDate">End Date  </label>
+            <input type="date" class="form-control" id="endDate" required />
+          </div>
+          <div class="form-group mb-3">
+            <label for="brand">Brand  </label>
+            <input type="text" id="brand" class="form-control" placeholder="Enter Brand" />
+          </div>
+          <div class="form-group mb-3">
+            <label for="category">Category  </label>
+            <input type="text" id="category" class="form-control" placeholder="Enter Category" />
+          </div>
+          <br />
+          <button class="btn btn-primary" type="submit">Show Report</button>
+          <div type="button" class="btn btn-primary ms-3 d-none" id="d-report" onclick="downloadData()">
+        <i class="fa-solid fa-file-arrow-down"></i> Download Report
+      </div>
+        </form>
+        
+
+        <hr />
+        <table class="table table-striped" id="main-table">
+          <thead>
+            <tr>
+              <th scope="col">Brand</th>
+              <th scope="col">Category</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Revenue</th>
+            </tr>
+          </thead>
+          <tbody id="tablebody"></tbody>
+        </table>
+      </div>
+
+    <div th:replace="snippets.html :: footer"></div>
+    <script th:src="@{/static/salesreport.js}"></script>
+    <script>
+      $(document).ready(function () {
+        setCurrent("report");
+        initReport();
+      });
+    </script>
+  </body>
+</html>
